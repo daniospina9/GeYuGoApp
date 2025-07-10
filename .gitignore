@@ -1,0 +1,36 @@
+# IDE files and directories
+.idea/
+.gradle/
+local.properties
+*.iml
+*.hprof
+*.orig
+captures/
+build/
+app/build/
+
+# Android Studio generated files
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google services
+app/google-services.json
+
+# Local configuration files (if any)
+# For example:
+# .env
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Crashlytics files
+app/src/main/assets/crashlytics-build.properties
+
