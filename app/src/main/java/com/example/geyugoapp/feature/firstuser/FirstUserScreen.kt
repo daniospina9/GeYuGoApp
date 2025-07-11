@@ -58,8 +58,7 @@ fun FirstUserScreen(
                 is FirstUserViewModel.Event.NavigateToMain -> {
                     navController.navigate(
                         MainRoute(
-                            userId = ,
-                            name = state.name
+                            userId = event.userId,
                         )
                     )
                 }

@@ -3,6 +3,7 @@ package com.example.geyugoapp.feature.firstuser
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geyugoapp.domain.users.models.User
+import com.example.geyugoapp.domain.users.usecases.GetUserById
 import com.example.geyugoapp.domain.users.usecases.InsertUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,8 @@ data class FirstUserState(
 
 @HiltViewModel
 class FirstUserViewModel @Inject constructor(
-    private val insertUser: InsertUser
+    private val insertUser: InsertUser,
+    private val getUserById: GetUserById,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FirstUserState())
@@ -33,39 +35,33 @@ class FirstUserViewModel @Inject constructor(
         _state.update { it.copy(name = name) }
     }
 
-    fun addUser(user: User) {
-        viewModelScope.launch(Dispatchers.IO) {
-            insertUser(user)
-        }
-    }
-
     fun insertUser() {
         val userName = _state.value.name
         val notificationTime = 300000L
         val notificationActive = true
-        if (userName == "") {
-            viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (userName == "") {
                 _events.send(Event.ShowMessage("Name is empty"))
+                return@launch
             }
-            return
-        }
-        addUser(
-            User(
+
+            val newUser = User(
                 name = userName,
                 notificationTime = notificationTime,
                 notificationsActive = notificationActive
             )
-        )
-        //getUser
-        //_events.send(Event.NavigateToMain)
-        //
-        viewModelScope.launch {
-            _events.send(Event.NavigateToMain)
+
+            insertUser(newUser)
+
+            val userFromDb = getUserById(newUser.id) ?: return@launch
+
+            _events.send(Event.NavigateToMain(userFromDb.id))
         }
     }
 
     sealed class Event {
         data class ShowMessage(val message: String) : Event()
-        data class NavigateToMain(val userId: Int): Event()
+        data class NavigateToMain(val userId: Int) : Event()
     }
 }
+

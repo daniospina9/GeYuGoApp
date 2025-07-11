@@ -1,5 +1,6 @@
 package com.example.geyugoapp.di
 
+import com.example.geyugoapp.domain.users.usecases.GetUserById
 import com.example.geyugoapp.domain.users.usecases.InsertUser
 import com.example.geyugoapp.domain.users.usecases.ObserveAllUsers
 import com.example.geyugoapp.repository.UserRepository
@@ -26,6 +27,14 @@ object UserUseCaseModule {
     fun provideObserveAllUsers(
         repository: UserRepository
     ): ObserveAllUsers = ObserveAllUsers(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetUserById(
+        repository: UserRepository
+    ): GetUserById = GetUserById(
         repository = repository
     )
 }

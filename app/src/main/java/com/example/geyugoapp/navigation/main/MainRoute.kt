@@ -5,5 +5,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MainRoute(
     val userId: Int,
-    val name: String,
 )
