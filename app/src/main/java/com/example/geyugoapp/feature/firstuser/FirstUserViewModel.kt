@@ -37,8 +37,6 @@ class FirstUserViewModel @Inject constructor(
 
     fun insertUser() {
         val userName = _state.value.name
-        val notificationTime = 300000L
-        val notificationActive = true
         viewModelScope.launch(Dispatchers.IO) {
             if (userName == "") {
                 _events.send(Event.ShowMessage("Name is empty"))
@@ -47,8 +45,6 @@ class FirstUserViewModel @Inject constructor(
 
             val newUser = User(
                 name = userName,
-                notificationTime = notificationTime,
-                notificationsActive = notificationActive
             )
 
             insertUser(newUser)
