@@ -10,7 +10,11 @@ class UserRepositoryImpl(
 
     override fun observeAll(): Flow<List<User>> = userDataSource.observeAll()
 
-    override suspend fun insert(user: User) {
-        userDataSource.insert(user)
+    override suspend fun insert(user: User): Long {
+        return userDataSource.insert(user)
+    }
+
+    override suspend fun getUserById(userId: Int): User? {
+        return userDataSource.getUserById(userId)
     }
 }

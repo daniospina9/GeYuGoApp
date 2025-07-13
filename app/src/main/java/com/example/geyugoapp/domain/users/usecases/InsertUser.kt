@@ -6,7 +6,7 @@ import com.example.geyugoapp.repository.UserRepository
 class InsertUser(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(user: User) {
-        repository.insert(user)
+    suspend operator fun invoke(user: User): Long {
+        return repository.insert(user)
     }
 }

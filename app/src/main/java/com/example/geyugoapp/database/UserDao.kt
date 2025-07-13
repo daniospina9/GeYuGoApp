@@ -13,5 +13,8 @@ interface UserDao {
     fun observeAll(): Flow<List<UserDbDto>>
 
     @Insert
-    suspend fun insert(user: UserDbDto)
+    suspend fun insert(user: UserDbDto): Long
+
+    @Query("SELECT * FROM users WHERE id = :userId")
+    suspend fun getUserById(userId: Int): UserDbDto?
 }

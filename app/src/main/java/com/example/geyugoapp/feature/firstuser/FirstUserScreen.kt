@@ -128,7 +128,7 @@ fun FirstUserScreen(
             Spacer(modifier = Modifier.weight(0.4f))
             Button(
                 modifier = Modifier.size(width = 65.dp, height = 70.dp),
-                onClick = { viewModel.insertUser() },
+                onClick = { viewModel.saveUser() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = FirstUserButton,
                 )

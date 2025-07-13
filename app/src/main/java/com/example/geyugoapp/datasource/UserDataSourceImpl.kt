@@ -15,7 +15,11 @@ class UserDataSourceImpl(
         flowList.map { it.toUser() }
     }
 
-    override suspend fun insert(user: User) {
-        userDao.insert(user.toDbDto())
+    override suspend fun insert(user: User): Long {
+        return userDao.insert(user.toDbDto())
+    }
+
+    override suspend fun getUserById(userId: Int): User? {
+        return userDao.getUserById(userId)?.toUser()
     }
 }

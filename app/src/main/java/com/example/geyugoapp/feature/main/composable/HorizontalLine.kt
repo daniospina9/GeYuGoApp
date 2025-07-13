@@ -1,10 +1,7 @@
 package com.example.geyugoapp.feature.main.composable
 
-import android.icu.number.IntegerWidth
-import android.icu.text.ListFormatter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width

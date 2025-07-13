@@ -35,7 +35,7 @@ class FirstUserViewModel @Inject constructor(
         _state.update { it.copy(name = name) }
     }
 
-    fun insertUser() {
+    fun saveUser() {
         val userName = _state.value.name
         viewModelScope.launch(Dispatchers.IO) {
             if (userName == "") {
@@ -43,13 +43,11 @@ class FirstUserViewModel @Inject constructor(
                 return@launch
             }
 
-            val newUser = User(
-                name = userName,
-            )
+            val newUser = User(name = userName)
 
-            insertUser(newUser)
+            val newUserId = insertUser(newUser).toInt()
 
-            val userFromDb = getUserById(newUser.id) ?: return@launch
+            val userFromDb = getUserById(newUserId) ?: return@launch
 
             _events.send(Event.NavigateToMain(userFromDb.id))
         }

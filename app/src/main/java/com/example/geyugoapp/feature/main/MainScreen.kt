@@ -47,7 +47,7 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
 
-    val userName = viewModel.user?.name.orEmpty()
+    val userName by viewModel.userName.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
