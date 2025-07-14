@@ -134,7 +134,7 @@ fun FirstUserScreen(
                 )
             ) {
                 Image(
-                    painter = painterResource(R.drawable.right_arrow),
+                    painter = painterResource(R.drawable.arrow_right),
                     modifier = Modifier.size(40.dp),
                     contentDescription = "A right arrow to continue",
                     contentScale = ContentScale.Inside,

@@ -23,3 +23,9 @@ val BackgroundMainScreen = Color(0xFF0E1F54)
 val LogosMainScreen = Color(0xFFA5889E)
 
 val FramePhotoProfile = Color(0xFF9B06A6)
+
+val MenuSeparator = Color(0xFF8B90A6)
+
+val BackgroundFunctionScreens = Color(0xFF344FA1)
+
+val UnselectedMenuBackground = Color(0xFF8B90A6)
