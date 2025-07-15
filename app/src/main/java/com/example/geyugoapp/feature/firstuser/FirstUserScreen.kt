@@ -35,7 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.navigation.main.MainRoute
-import com.example.geyugoapp.ui.theme.BackgroundFirstUser
+import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.FirstUserButton
 import com.example.geyugoapp.ui.theme.FirstUserLTF
 import com.example.geyugoapp.ui.theme.FirstUserTFT
@@ -71,7 +71,7 @@ fun FirstUserScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(BackgroundFirstUser)
+                .background(BackgroundLevel1)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -115,9 +115,9 @@ fun FirstUserScreen(
                     )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = BackgroundFirstUser,
-                    unfocusedContainerColor = BackgroundFirstUser,
-                    disabledContainerColor = BackgroundFirstUser,
+                    focusedContainerColor = BackgroundLevel1,
+                    unfocusedContainerColor = BackgroundLevel1,
+                    disabledContainerColor = BackgroundLevel1,
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
                     cursorColor = FirstUserLTF,
