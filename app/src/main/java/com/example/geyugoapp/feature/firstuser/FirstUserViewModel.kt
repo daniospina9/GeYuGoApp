@@ -45,7 +45,7 @@ class FirstUserViewModel @Inject constructor(
 
             val newUser = User(name = userName)
 
-            val newUserId = insertUser(newUser).toInt()
+            val newUserId = insertUser(newUser)
 
             val userFromDb = getUserById(newUserId) ?: return@launch
 
@@ -55,7 +55,7 @@ class FirstUserViewModel @Inject constructor(
 
     sealed class Event {
         data class ShowMessage(val message: String) : Event()
-        data class NavigateToMain(val userId: Int) : Event()
+        data class NavigateToMain(val userId: Long) : Event()
     }
 }
 

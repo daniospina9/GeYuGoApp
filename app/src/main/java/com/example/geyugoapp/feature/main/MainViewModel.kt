@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(
     private val _userName = MutableStateFlow<String?>("")
     val userName = _userName.asStateFlow()
 
-    val userId = savedStateHandle.get<Int?>("userId")
+    val userId = savedStateHandle.get<Long?>("userId")
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

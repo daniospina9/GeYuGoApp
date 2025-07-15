@@ -19,7 +19,7 @@ class UserDataSourceImpl(
         return userDao.insert(user.toDbDto())
     }
 
-    override suspend fun getUserById(userId: Int): User? {
+    override suspend fun getUserById(userId: Long): User? {
         return userDao.getUserById(userId)?.toUser()
     }
 }

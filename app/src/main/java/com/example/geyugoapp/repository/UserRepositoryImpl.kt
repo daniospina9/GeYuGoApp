@@ -14,7 +14,7 @@ class UserRepositoryImpl(
         return userDataSource.insert(user)
     }
 
-    override suspend fun getUserById(userId: Int): User? {
+    override suspend fun getUserById(userId: Long): User? {
         return userDataSource.getUserById(userId)
     }
 }
