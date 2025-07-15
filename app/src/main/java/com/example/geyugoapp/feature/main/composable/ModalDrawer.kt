@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.geyugoapp.R
-import com.example.geyugoapp.ui.theme.BackgroundFirstUser
-import com.example.geyugoapp.ui.theme.BackgroundFunctionScreens
+import com.example.geyugoapp.ui.theme.BackgroundLevel1
+import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.MenuSeparator
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
 
@@ -43,7 +43,7 @@ fun ModalDrawer(
     userName: String?,
     content: @Composable () -> Unit
 ) {
-    val navigationDrawerWidth = 210.dp
+    val navigationDrawerWidth = 260.dp
 
     ModalNavigationDrawer(
         modifier = modifier,
@@ -52,14 +52,14 @@ fun ModalDrawer(
             ModalDrawerSheet(
                 modifier = Modifier
                     .width(navigationDrawerWidth),
-                drawerContainerColor = BackgroundFunctionScreens
+                drawerContainerColor = BackgroundLevel3
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 15.dp, end = 15.dp)
                         .height(120.dp)
-                        .background(BackgroundFunctionScreens),
+                        .background(BackgroundLevel3),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -100,7 +100,7 @@ fun ModalDrawer(
                         .width((navigationDrawerWidth.value * 0.8).dp),
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BackgroundFirstUser,
+                        containerColor = BackgroundLevel1,
                     )
                 ) {
                     Row(
@@ -129,7 +129,7 @@ fun ModalDrawer(
                         .width((navigationDrawerWidth.value * 0.8).dp),
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BackgroundFirstUser,
+                        containerColor = BackgroundLevel1,
                     )
                 ) {
                     Row(

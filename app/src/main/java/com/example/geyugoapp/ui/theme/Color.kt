@@ -10,7 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val BackgroundFirstUser = Color(0xFF273B78)
+val BackgroundLevel1 = Color(0xFF273B78)
 
 val FirstUserTFT = Color(0xFFBEC4D7)
 
@@ -18,14 +18,14 @@ val FirstUserLTF = Color(0xFFE5E7EB)
 
 val FirstUserButton = Color(0xFFA589E1)
 
-val BackgroundMainScreen = Color(0xFF0E1F54)
+val BackgroundLevel2 = Color(0xFF0E1F54)
 
-val LogosMainScreen = Color(0xFFA5889E)
+val LogosMainScreen = Color(0xFFAAEDED)
 
-val FramePhotoProfile = Color(0xFF9B06A6)
+val FramePhotoProfile = Color(0xFF135A83)
 
 val MenuSeparator = Color(0xFF8B90A6)
 
-val BackgroundFunctionScreens = Color(0xFF344FA1)
+val BackgroundLevel3 = Color(0xFF344FA1)
 
 val UnselectedMenuBackground = Color(0xFF8B90A6)
