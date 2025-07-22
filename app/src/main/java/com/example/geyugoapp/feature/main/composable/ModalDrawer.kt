@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
@@ -26,11 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.geyugoapp.R
+import com.example.geyugoapp.navigation.categories.CategoriesRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.MenuSeparator
@@ -41,7 +45,10 @@ fun ModalDrawer(
     modifier: Modifier = Modifier,
     drawerState: DrawerState,
     userName: String?,
+    navController: NavController,
+    userId: Long?,
     content: @Composable () -> Unit
+
 ) {
     val navigationDrawerWidth = 260.dp
 
@@ -76,7 +83,8 @@ fun ModalDrawer(
                             fontSize = 28.sp,
                             textAlign = TextAlign.Center,
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            fontWeight = FontWeight.ExtraBold
                         )
                         Image(
                             painter = painterResource(R.drawable.arrow_down),
@@ -98,10 +106,17 @@ fun ModalDrawer(
                     modifier = Modifier
                         .padding(20.dp)
                         .width((navigationDrawerWidth.value * 0.8).dp),
-                    onClick = {},
+                    onClick = {
+                        navController.navigate(
+                            CategoriesRoute(
+                                userId = userId
+                            )
+                        )
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = BackgroundLevel1,
-                    )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -130,7 +145,8 @@ fun ModalDrawer(
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
                         containerColor = BackgroundLevel1,
-                    )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
