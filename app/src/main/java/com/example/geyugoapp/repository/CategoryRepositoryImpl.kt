@@ -10,6 +10,10 @@ class CategoryRepositoryImpl(
 
     override fun observeAll(): Flow<List<Category>> = categoryDataSource.observeAll()
 
+    override suspend fun getCategoriesByUserId(userId: Long): List<Category> {
+        return categoryDataSource.getCategoriesByUserId(userId)
+    }
+
     override suspend fun insert(category: Category) {
         categoryDataSource.insert(category)
     }

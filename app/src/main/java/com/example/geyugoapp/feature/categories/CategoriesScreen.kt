@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -32,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,6 +87,10 @@ fun CategoriesScreen(
     val screenHeight = configuration.screenHeightDp.dp
 
     val screenWidth = configuration.screenWidthDp.dp
+
+    var showOptionsCategory by remember { mutableStateOf(false) }
+
+    var expanded by remember { mutableStateOf(false) }
 
     Scaffold { innerPadding ->
         Column(
@@ -162,7 +170,7 @@ fun CategoriesScreen(
                                     .pointerInput(Unit) {
                                         detectTapGestures(
                                             onLongPress = {
-                                                Toast.makeText(context, "Long Press", Toast.LENGTH_SHORT).show()
+                                                showOptionsCategory = true
                                             },
                                             onTap = {
                                                 Toast.makeText(context, "Tap", Toast.LENGTH_SHORT).show()
@@ -202,6 +210,24 @@ fun CategoriesScreen(
                                         contentDescription = "A line with category color",
                                         contentScale = ContentScale.FillWidth,
                                         colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                    )
+                                }
+                            }
+                            if (showOptionsCategory) {
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = {expanded = false},
+                                    offset = DpOffset(45.dp, 0.dp)
+                                ) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = "Edit"
+                                            )
+                                        },
+                                        onClick = {
+
+                                        }
                                     )
                                 }
                             }

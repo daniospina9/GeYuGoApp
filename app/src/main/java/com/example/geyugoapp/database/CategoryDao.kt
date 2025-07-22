@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.geyugoapp.database.dtos.CategoryDbDto
+import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,6 +14,9 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories")
     fun observeAll(): Flow<List<CategoryDbDto>>
+
+    @Query("SELECT * FROM categories WHERE userId = :userId")
+    suspend fun getCategoriesByUserId(userId: Long): List<CategoryDbDto>
 
     @Insert
     suspend fun insert(category: CategoryDbDto)

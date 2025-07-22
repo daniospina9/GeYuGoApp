@@ -4,6 +4,7 @@ import com.example.geyugoapp.database.AppDatabase
 import com.example.geyugoapp.database.CategoryDao
 import com.example.geyugoapp.datasource.CategoryDataSource
 import com.example.geyugoapp.datasource.CategoryDataSourceImpl
+import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.categories.usecases.ObserveAllCategories
 import com.example.geyugoapp.repository.CategoryRepository
@@ -53,6 +54,14 @@ object CategoryUseCaseModule {
     fun provideInsertCategory(
         repository: CategoryRepository
     ): InsertCategory = InsertCategory(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetCategoriesByUserId(
+        repository: CategoryRepository
+    ): GetCategoriesByUserId = GetCategoriesByUserId(
         repository = repository
     )
 }

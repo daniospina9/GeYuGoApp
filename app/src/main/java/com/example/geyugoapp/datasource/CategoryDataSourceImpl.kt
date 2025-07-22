@@ -15,6 +15,10 @@ class CategoryDataSourceImpl(
         listFlow.map { it.toCategory() }
     }
 
+    override suspend fun getCategoriesByUserId(userId: Long): List<Category> {
+        return categoryDao.getCategoriesByUserId(userId).map { it.toCategory() }
+    }
+
     override suspend fun insert(category: Category) {
         categoryDao.insert(category.toDbDto())
     }
