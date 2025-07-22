@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.geyugoapp.database.dtos.CategoryDbDto
 import kotlinx.coroutines.flow.Flow
 
@@ -18,4 +19,10 @@ interface CategoryDao {
 
     @Delete
     suspend fun delete(category: CategoryDbDto)
+
+    @Update
+    suspend fun update(category: CategoryDbDto)
+
+    /* val updatedCategory = existingCategory.copy(name = "New Name", color = 0xFF0000)
+    categoryDao.update(updatedCategory) */
 }
