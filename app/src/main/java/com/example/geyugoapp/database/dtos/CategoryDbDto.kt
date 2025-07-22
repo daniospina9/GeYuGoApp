@@ -19,5 +19,5 @@ data class CategoryDbDto(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val name: String,
     val color: Long,
-    val userId: Int
+    val userId: Long?
 )

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -41,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.feature.main.composable.ModalDrawer
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
@@ -53,12 +53,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
+    navController: NavController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
 
     val userName by viewModel.userName.collectAsStateWithLifecycle()
+
+    val userId = viewModel.userId
 
     val simpleUserName = getFirstWord(userName)
 
@@ -80,7 +83,9 @@ fun MainScreen(
         ModalDrawer(
             modifier = Modifier.padding(innerPadding),
             drawerState = drawerState,
-            userName = userName
+            userName = userName,
+            userId = userId,
+            navController = navController
         ) {
             Column(
                 modifier = Modifier

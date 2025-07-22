@@ -1,0 +1,58 @@
+package com.example.geyugoapp.di
+
+import com.example.geyugoapp.database.AppDatabase
+import com.example.geyugoapp.database.CategoryDao
+import com.example.geyugoapp.datasource.CategoryDataSource
+import com.example.geyugoapp.datasource.CategoryDataSourceImpl
+import com.example.geyugoapp.domain.categories.usecases.InsertCategory
+import com.example.geyugoapp.domain.categories.usecases.ObserveAllCategories
+import com.example.geyugoapp.repository.CategoryRepository
+import com.example.geyugoapp.repository.CategoryRepositoryImpl
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object CategoryUseCaseModule {
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(
+        appDatabase: AppDatabase
+    ): CategoryDao = appDatabase.categoryDao()
+
+    @Singleton
+    @Provides
+    fun provideCategoryDataSource(
+        categoryDao: CategoryDao
+    ): CategoryDataSource = CategoryDataSourceImpl(
+        categoryDao = categoryDao
+    )
+
+    @Singleton
+    @Provides
+    fun provideCategoryRepository(
+        categoryDataSource: CategoryDataSource
+    ): CategoryRepository = CategoryRepositoryImpl(
+        categoryDataSource = categoryDataSource
+    )
+
+    @Singleton
+    @Provides
+    fun provideObserveAllCategories(
+        repository: CategoryRepository
+    ): ObserveAllCategories = ObserveAllCategories(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideInsertCategory(
+        repository: CategoryRepository
+    ): InsertCategory = InsertCategory(
+        repository = repository
+    )
+}
