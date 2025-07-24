@@ -47,7 +47,7 @@ class FirstUserViewModel @Inject constructor(
 
             val newUserId = insertUser(newUser)
 
-            val userFromDb = getUserById(newUserId) ?: return@launch
+            val userFromDb = getUserById(newUserId)
 
             _events.send(Event.NavigateToMain(userFromDb.id))
         }

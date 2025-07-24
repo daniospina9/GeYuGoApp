@@ -9,5 +9,5 @@ interface UserDataSource {
 
     suspend fun insert(user: User): Long
 
-    suspend fun getUserById(userId: Long): User?
+    suspend fun getUserById(userId: Long): User
 }

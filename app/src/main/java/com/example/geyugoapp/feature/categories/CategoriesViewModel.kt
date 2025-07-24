@@ -52,7 +52,6 @@ class CategoriesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (currentUserId != null) {
                 _categoriesByUser.update{  getCategoriesByUserId(userId = currentUserId) }
-
             }
             return@launch
         }
@@ -114,15 +113,20 @@ class CategoriesViewModel @Inject constructor(
             if (myNewCategory.isNullOrBlank()) {
                 _events.send(Event.ShowMessage("Category is empty"))
                 return@launch
-            }
-            insertCategory(
-                Category(
-                    name = myNewCategory,
-                    userId = currentUserId,
-                    color = newColor
+            } else if (currentUserId != null) {
+                insertCategory(
+                    Category(
+                        name = myNewCategory,
+                        userId = currentUserId,
+                        color = newColor
+                    )
                 )
-            )
-            _state.update { it.copy(newCategory = "") }
+                _state.update { it.copy(newCategory = "") }
+            } else {
+                _events.send(Event.ShowMessage("Error: Impossible to save categories without userId"))
+                _state.update { it.copy(newCategory = "") }
+            }
+
         }
     }
 

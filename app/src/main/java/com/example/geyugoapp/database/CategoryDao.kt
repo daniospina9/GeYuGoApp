@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.geyugoapp.database.dtos.CategoryDbDto
-import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,6 +26,4 @@ interface CategoryDao {
     @Update
     suspend fun update(category: CategoryDbDto)
 
-    /* val updatedCategory = existingCategory.copy(name = "New Name", color = 0xFF0000)
-    categoryDao.update(updatedCategory) */
 }

@@ -16,5 +16,5 @@ interface UserDao {
     suspend fun insert(user: UserDbDto): Long
 
     @Query("SELECT * FROM users WHERE id = :userId")
-    suspend fun getUserById(userId: Long): UserDbDto?
+    suspend fun getUserById(userId: Long): UserDbDto
 }

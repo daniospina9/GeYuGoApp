@@ -6,10 +6,7 @@ import com.example.geyugoapp.repository.UserRepository
 class GetUserById(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Long?): User? {
-        if (userId == null) {
-            return null
-        }
+    suspend operator fun invoke(userId: Long): User {
         return repository.getUserById(userId)
     }
 }

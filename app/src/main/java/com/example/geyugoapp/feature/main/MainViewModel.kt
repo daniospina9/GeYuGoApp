@@ -26,18 +26,22 @@ class MainViewModel @Inject constructor(
     private val _userName = MutableStateFlow<String?>("")
     val userName = _userName.asStateFlow()
 
-    val userId = savedStateHandle.get<Long?>("userId")
+    val userId = savedStateHandle.get<Long>("userId")
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _events.send(Event.ShowMessage("Welcome ${getUserById(userId)?.name.orEmpty()}"))
+            if (userId != null) {
+                _events.send(Event.ShowMessage("Welcome ${getUserById(userId).name}"))
+                refreshUser(userId)
+            } else {
+                _events.send(Event.ShowMessage("Error: userId not fount"))
+            }
         }
-        refreshUser()
     }
 
-    fun refreshUser() {
+    fun refreshUser(userId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            _userName.update { getUserById(userId)?.name }
+            _userName.update { getUserById(userId).name }
         }
     }
 
