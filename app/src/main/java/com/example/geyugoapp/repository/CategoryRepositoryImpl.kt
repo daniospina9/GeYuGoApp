@@ -21,4 +21,8 @@ class CategoryRepositoryImpl(
     override suspend fun delete(category: Category) {
         categoryDataSource.delete(category)
     }
+
+    override suspend fun update(category: Category) {
+        categoryDataSource.update(category)
+    }
 }

@@ -4,9 +4,11 @@ import com.example.geyugoapp.database.AppDatabase
 import com.example.geyugoapp.database.CategoryDao
 import com.example.geyugoapp.datasource.CategoryDataSource
 import com.example.geyugoapp.datasource.CategoryDataSourceImpl
+import com.example.geyugoapp.domain.categories.usecases.DeleteCategory
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.categories.usecases.ObserveAllCategories
+import com.example.geyugoapp.domain.categories.usecases.UpdateCategory
 import com.example.geyugoapp.repository.CategoryRepository
 import com.example.geyugoapp.repository.CategoryRepositoryImpl
 import dagger.Module
@@ -59,9 +61,25 @@ object CategoryUseCaseModule {
 
     @Singleton
     @Provides
+    fun provideDeleteCategory(
+        repository: CategoryRepository
+    ): DeleteCategory = DeleteCategory(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
     fun provideGetCategoriesByUserId(
         repository: CategoryRepository
     ): GetCategoriesByUserId = GetCategoriesByUserId(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideUpdateCategory(
+        repository: CategoryRepository
+    ): UpdateCategory = UpdateCategory(
         repository = repository
     )
 }

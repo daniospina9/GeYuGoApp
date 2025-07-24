@@ -4,8 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geyugoapp.domain.categories.models.Category
+import com.example.geyugoapp.domain.categories.usecases.DeleteCategory
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
+import com.example.geyugoapp.domain.categories.usecases.UpdateCategory
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +28,9 @@ data class NewCategoryState(
 class CategoriesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val insertCategory: InsertCategory,
-    private val getCategoriesByUserId: GetCategoriesByUserId
+    private val getCategoriesByUserId: GetCategoriesByUserId,
+    private val updateCategory: UpdateCategory,
+    private val deleteCategory: DeleteCategory
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NewCategoryState())
@@ -64,6 +68,41 @@ class CategoriesViewModel @Inject constructor(
     fun insertCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             insertCategory.invoke(category)
+            _events.send(Event.ShowMessage("Category Added :)"))
+            refreshCategories()
+        }
+    }
+
+    fun deleteCategory(category: Category) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteCategory.invoke(category)
+            _events.send(Event.ShowMessage("Category Deleted!!"))
+            refreshCategories()
+        }
+    }
+
+    fun updateExistCategory(
+        category: Category,
+        name: String,
+        color: Long
+    ) {
+        val myNewCategory = _state.value.newCategory
+        val newColor = _state.value.color
+        viewModelScope.launch(Dispatchers.IO) {
+            if (myNewCategory.isNullOrBlank() && color == newColor) {
+                _events.send(Event.ShowMessage("Nothing changed"))
+                return@launch
+            } else if (myNewCategory.isNullOrBlank() && color != newColor) {
+                val updateCategoryDbDto = category.copy(name = name, color = newColor)
+                updateCategory(updateCategoryDbDto)
+                _events.send(Event.ShowMessage("Category Modified"))
+                refreshCategories()
+                return@launch
+            }
+            val updateCategoryDbDto = category.copy(name = myNewCategory, color = newColor)
+            updateCategory(updateCategoryDbDto)
+            _state.update { it.copy(newCategory = "") }
+            _events.send(Event.ShowMessage("Category Modified"))
             refreshCategories()
         }
     }

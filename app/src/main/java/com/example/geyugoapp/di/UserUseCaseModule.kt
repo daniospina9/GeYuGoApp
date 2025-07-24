@@ -3,6 +3,7 @@ package com.example.geyugoapp.di
 import com.example.geyugoapp.domain.users.usecases.GetUserById
 import com.example.geyugoapp.domain.users.usecases.InsertUser
 import com.example.geyugoapp.domain.users.usecases.ObserveAllUsers
+import com.example.geyugoapp.repository.CategoryRepository
 import com.example.geyugoapp.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -37,4 +38,5 @@ object UserUseCaseModule {
     ): GetUserById = GetUserById(
         repository = repository
     )
+
 }

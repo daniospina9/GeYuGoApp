@@ -26,4 +26,8 @@ class CategoryDataSourceImpl(
     override suspend fun delete(category: Category) {
         categoryDao.delete(category.toDbDto())
     }
+
+    override suspend fun update(category: Category) {
+        categoryDao.update(category.toDbDto())
+    }
 }

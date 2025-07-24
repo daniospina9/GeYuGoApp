@@ -33,7 +33,7 @@ val UnselectedMenuBackground = Color(0xFF8B90A6)
 
 val ModalBottomSeparator = Color(0xFFAB85A4)
 
-val CreateButtons = Color(0xFF9B06A6)
+val CreateButtons = 0xFF9B06A6
 
 val ColorCategory1 = 0xFF9B06A6
 

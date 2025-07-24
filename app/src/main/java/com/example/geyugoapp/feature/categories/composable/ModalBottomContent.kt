@@ -53,13 +53,17 @@ import com.example.geyugoapp.ui.theme.ColorCategory4
 import com.example.geyugoapp.ui.theme.ColorCategory5
 import com.example.geyugoapp.ui.theme.ColorCategory6
 import com.example.geyugoapp.ui.theme.ColorCategory7
-import com.example.geyugoapp.ui.theme.ColorCategoryOthers
+import com.example.geyugoapp.ui.theme.CreateButtons
 
 @Composable
 fun ModalBottomContent(
     modifier: Modifier = Modifier,
     viewModel: CategoriesViewModel = hiltViewModel(),
-    onDismissRequest: () -> Unit
+    label: String,
+    textColorButton: String,
+    initialColor: Long,
+    addingButtonText: String,
+    onClickAdding: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -67,7 +71,7 @@ fun ModalBottomContent(
 
     var expanded by remember { mutableStateOf(false) }
 
-    var selection by remember { mutableLongStateOf(ColorCategoryOthers) }
+    var selection by remember { mutableLongStateOf(initialColor) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -90,7 +94,7 @@ fun ModalBottomContent(
             },
             label = {
                 Text(
-                    text = "Name Category",
+                    text = label,
                     color = Color.White
                 )
             },
@@ -128,7 +132,7 @@ fun ModalBottomContent(
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                     Text(
-                        text = "Choice Color",
+                        text = textColorButton,
                         color = Color.White,
                         fontSize = 16.sp,
                     )
@@ -231,15 +235,14 @@ fun ModalBottomContent(
         Button(
             onClick = {
                 viewModel.setColor(selection)
-                viewModel.addCategory()
-                onDismissRequest()
+                onClickAdding()
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF9B06A6),
+                containerColor = Color(CreateButtons),
             )
         ) {
             Text(
-                text = "Add Category",
+                text = addingButtonText,
                 color = Color.White
             )
         }
