@@ -116,7 +116,7 @@ fun CategoriesScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(BackgroundLevel3)
+                    .background(Color(BackgroundLevel3))
                     .padding(24.dp)
             ) {
                 Column(
@@ -125,12 +125,12 @@ fun CategoriesScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(BackgroundLevel3)
+                            .background(Color(BackgroundLevel3))
                     ) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(BackgroundLevel3),
+                                .background(Color(BackgroundLevel3)),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Image(
@@ -146,7 +146,7 @@ fun CategoriesScreen(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(BackgroundLevel3),
+                                .background(Color(BackgroundLevel3)),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Image(
@@ -307,7 +307,7 @@ fun CategoriesScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(BackgroundLevel3)
+                    .background(Color(BackgroundLevel3))
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -399,7 +399,7 @@ fun CategoriesScreen(
                             showDialog = false
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = FirstUserButton,
+                            containerColor = Color(FirstUserButton),
                         )
                     ) {
                         Text(
@@ -418,7 +418,7 @@ fun CategoriesScreen(
                     ) {
                         Text(
                             text = "Abort",
-                            color = FirstUserButton
+                            color = Color(FirstUserButton)
                         )
                     }
                 },

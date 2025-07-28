@@ -1,4 +1,4 @@
-package com.example.geyugoapp.domain.task
+package com.example.geyugoapp.domain.task.models
 
 data class Task(
     val id: Long = 0L,

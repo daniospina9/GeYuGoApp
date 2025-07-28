@@ -71,7 +71,7 @@ fun FirstUserScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(BackgroundLevel1)
+                .background(Color(BackgroundLevel1))
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -115,9 +115,9 @@ fun FirstUserScreen(
                     )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = BackgroundLevel1,
-                    unfocusedContainerColor = BackgroundLevel1,
-                    disabledContainerColor = BackgroundLevel1,
+                    focusedContainerColor = Color(BackgroundLevel1),
+                    unfocusedContainerColor = Color(BackgroundLevel1),
+                    disabledContainerColor = Color(BackgroundLevel1),
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
                     cursorColor = FirstUserLTF,
@@ -130,7 +130,7 @@ fun FirstUserScreen(
                 modifier = Modifier.size(width = 65.dp, height = 70.dp),
                 onClick = { viewModel.saveUser() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = FirstUserButton,
+                    containerColor = Color(FirstUserButton),
                 )
             ) {
                 Image(
