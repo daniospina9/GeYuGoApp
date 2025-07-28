@@ -33,12 +33,12 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(BackgroundLevel3)
+                .background(Color(BackgroundLevel3))
         ) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .background(BackgroundLevel3),
+                    .background(Color(BackgroundLevel3)),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Image(
@@ -54,7 +54,7 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .background(BackgroundLevel3),
+                    .background(Color(BackgroundLevel3)),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Image(

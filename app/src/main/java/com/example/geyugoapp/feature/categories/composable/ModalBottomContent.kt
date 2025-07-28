@@ -80,7 +80,7 @@ fun ModalBottomContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(BackgroundLevel1)
+            .background(Color(BackgroundLevel1))
             .focusRequester(focusRequester)
             .focusable(),
         verticalArrangement = Arrangement.Center,

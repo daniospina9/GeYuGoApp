@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.feature.main.composable.ModalDrawer
+import com.example.geyugoapp.navigation.tasks.TasksRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
@@ -116,7 +117,7 @@ fun MainScreen(
                             .padding(start = 10.dp)
                             .size(76.dp)
                             .background(
-                                color = BackgroundLevel1,
+                                color = Color(BackgroundLevel1),
                                 shape = CircleShape
                             )
                             .border(
@@ -151,7 +152,7 @@ fun MainScreen(
                         .weight(0.9f)
                         .fillMaxSize()
                         .background(
-                            color = BackgroundLevel1,
+                            color = Color(BackgroundLevel1),
                             shape = RoundedCornerShape(20.dp)
                         )
                 ) {
@@ -188,7 +189,7 @@ fun MainScreen(
                                 .padding(start = 24.dp)
                                 .size(130.dp)
                                 .background(
-                                    color = BackgroundLevel1,
+                                    color = Color(BackgroundLevel1),
                                     shape = CircleShape
                                 )
                                 .border(
@@ -211,9 +212,15 @@ fun MainScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 20.dp, end = 20.dp),
-                            onClick = {},
+                            onClick = {
+                                navController.navigate(
+                                    TasksRoute(
+                                        userId = userId
+                                    )
+                                )
+                            },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = BackgroundLevel3,
+                                containerColor = Color(BackgroundLevel3),
                             ),
                             shape = RoundedCornerShape(10.dp)
                         ) {
@@ -242,7 +249,7 @@ fun MainScreen(
                                 .padding(start = 20.dp, end = 20.dp, top = 7.dp, bottom = 20.dp),
                             onClick = {},
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = BackgroundLevel3,
+                                containerColor = Color(BackgroundLevel3),
                             ),
                             shape = RoundedCornerShape(10.dp)
                         ) {

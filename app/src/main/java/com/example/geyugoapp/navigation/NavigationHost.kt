@@ -7,9 +7,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.geyugoapp.feature.categories.CategoriesScreen
 import com.example.geyugoapp.feature.firstuser.FirstUserScreen
 import com.example.geyugoapp.feature.main.MainScreen
+import com.example.geyugoapp.feature.tasks.TasksScreen
 import com.example.geyugoapp.navigation.categories.CategoriesRoute
 import com.example.geyugoapp.navigation.firstuser.FirstUserRoute
 import com.example.geyugoapp.navigation.main.MainRoute
+import com.example.geyugoapp.navigation.tasks.TasksRoute
 
 @Composable
 fun NavigationHost() {
@@ -31,6 +33,9 @@ fun NavigationHost() {
         }
         composable<CategoriesRoute> {
             CategoriesScreen()
+        }
+        composable<TasksRoute> {
+            TasksScreen()
         }
     }
 }

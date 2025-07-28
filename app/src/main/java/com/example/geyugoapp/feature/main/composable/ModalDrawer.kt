@@ -59,14 +59,14 @@ fun ModalDrawer(
             ModalDrawerSheet(
                 modifier = Modifier
                     .width(navigationDrawerWidth),
-                drawerContainerColor = BackgroundLevel3
+                drawerContainerColor = Color(BackgroundLevel3)
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 15.dp, end = 15.dp)
                         .height(120.dp)
-                        .background(BackgroundLevel3),
+                        .background(Color(BackgroundLevel3)),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -114,7 +114,7 @@ fun ModalDrawer(
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BackgroundLevel1,
+                        containerColor = Color(BackgroundLevel1),
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -144,7 +144,7 @@ fun ModalDrawer(
                         .width((navigationDrawerWidth.value * 0.8).dp),
                     onClick = {},
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BackgroundLevel1,
+                        containerColor = Color(BackgroundLevel1),
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
