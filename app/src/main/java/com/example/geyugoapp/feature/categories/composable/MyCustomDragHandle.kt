@@ -18,11 +18,11 @@ fun MyCustomDragHandle(
     modifier: Modifier = Modifier,
     width: Dp,
     height: Dp = 6.dp,
-    shapeColor: Color = ModalBottomSeparator
+    shapeColor: Color = Color(ModalBottomSeparator)
 ) {
     Surface(
         modifier = modifier,
-        color = ModalBottomSeparator,
+        color = Color(ModalBottomSeparator),
     ) {
         Box(
             modifier = Modifier

@@ -109,7 +109,7 @@ fun FirstUserScreen(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Enter your name here",
-                        color = FirstUserTFT,
+                        color = Color(FirstUserTFT),
                         fontSize = 23.sp,
                         textAlign = TextAlign.Center
                     )
@@ -120,9 +120,9 @@ fun FirstUserScreen(
                     disabledContainerColor = Color(BackgroundLevel1),
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
-                    cursorColor = FirstUserLTF,
-                    focusedIndicatorColor = FirstUserLTF,
-                    unfocusedIndicatorColor = FirstUserLTF,
+                    cursorColor = Color(FirstUserLTF),
+                    focusedIndicatorColor = Color(FirstUserLTF),
+                    unfocusedIndicatorColor = Color(FirstUserLTF),
                 )
             )
             Spacer(modifier = Modifier.weight(0.4f))

@@ -99,14 +99,14 @@ fun ModalBottomContent(
                 )
             },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = BackgroundLevel2,
-                unfocusedContainerColor = BackgroundLevel2,
-                disabledContainerColor = BackgroundLevel2,
+                focusedContainerColor = Color(BackgroundLevel2),
+                unfocusedContainerColor = Color(BackgroundLevel2),
+                disabledContainerColor = Color(BackgroundLevel2),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 cursorColor = Color.White,
-                focusedIndicatorColor = BackgroundLevel2,
-                unfocusedIndicatorColor = BackgroundLevel2,
+                focusedIndicatorColor = Color(BackgroundLevel2),
+                unfocusedIndicatorColor = Color(BackgroundLevel2),
             )
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -116,7 +116,7 @@ fun ModalBottomContent(
                     expanded = true
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = BackgroundLevel2,
+                    containerColor = Color(BackgroundLevel2),
                 )
             ) {
                 Row(

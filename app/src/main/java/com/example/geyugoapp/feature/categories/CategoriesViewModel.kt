@@ -88,10 +88,10 @@ class CategoriesViewModel @Inject constructor(
         val myNewCategory = _state.value.newCategory
         val newColor = _state.value.color
         viewModelScope.launch(Dispatchers.IO) {
-            if (myNewCategory.isNullOrBlank() && color == newColor) {
+            if (myNewCategory.isBlank() && color == newColor) {
                 _events.send(Event.ShowMessage("Nothing changed"))
                 return@launch
-            } else if (myNewCategory.isNullOrBlank() && color != newColor) {
+            } else if (myNewCategory.isBlank() && color != newColor) {
                 val updateCategoryDbDto = category.copy(name = name, color = newColor)
                 updateCategory(updateCategoryDbDto)
                 _events.send(Event.ShowMessage("Category Modified"))
@@ -110,7 +110,7 @@ class CategoriesViewModel @Inject constructor(
         val myNewCategory = _state.value.newCategory
         val newColor = _state.value.color
         viewModelScope.launch(Dispatchers.IO) {
-            if (myNewCategory.isNullOrBlank()) {
+            if (myNewCategory.isBlank()) {
                 _events.send(Event.ShowMessage("Category is empty"))
                 return@launch
             } else if (currentUserId != null) {

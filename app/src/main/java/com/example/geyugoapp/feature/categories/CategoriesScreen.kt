@@ -48,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -119,190 +120,189 @@ fun CategoriesScreen(
                     .background(Color(BackgroundLevel3))
                     .padding(24.dp)
             ) {
-                Column(
-                    modifier = Modifier.weight(0.9f)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(BackgroundLevel3))
                 ) {
-                    Row(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(BackgroundLevel3))
+                            .weight(1f)
+                            .background(Color(BackgroundLevel3)),
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        Box(
+                        Image(
+                            painter = painterResource(R.drawable.back),
                             modifier = Modifier
-                                .weight(1f)
-                                .background(Color(BackgroundLevel3)),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.back),
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {},
-                                contentDescription = "A back logo to come back to previous screen",
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color.White)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(Color(BackgroundLevel3)),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.notification),
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {},
-                                contentDescription = "A notification logo to activate/deactivate notifications",
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color.White)
-                            )
-                        }
+                                .size(30.dp)
+                                .clickable {},
+                            contentDescription = "A back logo to come back to previous screen",
+                            contentScale = ContentScale.Inside,
+                            colorFilter = ColorFilter.tint(Color.White)
+                        )
                     }
-                    Spacer(modifier = Modifier.height(17.dp))
-                    Text(
-                        modifier = Modifier.padding(bottom = 20.dp),
-                        text = "YOUR CATEGORIES",
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(Color(BackgroundLevel3)),
+                        contentAlignment = Alignment.CenterEnd
                     ) {
-                        items(
-                            count = categoriesByUser.size
-                        ) { index ->
-                            val categoryItem = categoriesByUser[index]
-                            Box(
+                        Image(
+                            painter = painterResource(R.drawable.notification),
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {},
+                            contentDescription = "A notification logo to activate/deactivate notifications",
+                            contentScale = ContentScale.Inside,
+                            colorFilter = ColorFilter.tint(Color.White)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(17.dp))
+                Text(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    text = "YOUR CATEGORIES",
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        count = categoriesByUser.size
+                    ) { index ->
+                        val categoryItem = categoriesByUser[index]
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = Color(BackgroundLevel2),
+                                    shape = RoundedCornerShape(15.dp)
+                                )
+                        ) {
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(
-                                        color = BackgroundLevel2,
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                            ) {
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .pointerInput(Unit) {
-                                            detectTapGestures(
-                                                onLongPress = {
-                                                    dropdownMenuVisibleForItem = index
-                                                },
-                                                onTap = {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Tap",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            )
-                                        }
-                                        .padding(15.dp)
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(start = 6.dp),
-                                        text = "40 tasks",
-                                        fontSize = 10.sp,
-                                        color = Color.White
-                                    )
-                                    Text(
-                                        modifier = Modifier.padding(start = 6.dp),
-                                        text = categoryItem.name,
-                                        color = Color.White
-                                    )
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Image(
-                                            painter = painterResource(R.drawable.horizontal_line),
-                                            modifier = Modifier
-                                                .height(25.dp)
-                                                .weight(1f),
-                                            contentDescription = "A line with category color",
-                                            contentScale = ContentScale.FillWidth,
-                                            colorFilter = ColorFilter.tint(Color(categoryItem.color))
-                                        )
-                                        Image(
-                                            painter = painterResource(R.drawable.horizontal_line),
-                                            modifier = Modifier
-                                                .height(25.dp)
-                                                .weight(1f),
-                                            contentDescription = "A line with category color",
-                                            contentScale = ContentScale.FillWidth,
-                                            colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                    .pointerInput(Unit) {
+                                        detectTapGestures(
+                                            onLongPress = {
+                                                dropdownMenuVisibleForItem = index
+                                            },
+                                            onTap = {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Tap",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                         )
                                     }
-                                    if (dropdownMenuVisibleForItem == index) {
-                                        DropdownMenu(
-                                            expanded = (dropdownMenuVisibleForItem == index),
-                                            onDismissRequest = {
-                                                dropdownMenuVisibleForItem = null
+                                    .padding(15.dp)
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(start = 6.dp),
+                                    text = "40 tasks",
+                                    fontSize = 10.sp,
+                                    color = Color.White
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 6.dp),
+                                    text = categoryItem.name,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.horizontal_line),
+                                        modifier = Modifier
+                                            .height(25.dp)
+                                            .weight(1f),
+                                        contentDescription = "A line with category color",
+                                        contentScale = ContentScale.FillWidth,
+                                        colorFilter = ColorFilter.tint(Color(categoryItem.color))
+                                    )
+                                    Image(
+                                        painter = painterResource(R.drawable.horizontal_line),
+                                        modifier = Modifier
+                                            .height(25.dp)
+                                            .weight(1f),
+                                        contentDescription = "A line with category color",
+                                        contentScale = ContentScale.FillWidth,
+                                        colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                    )
+                                }
+                                if (dropdownMenuVisibleForItem == index) {
+                                    DropdownMenu(
+                                        expanded = (dropdownMenuVisibleForItem == index),
+                                        onDismissRequest = {
+                                            dropdownMenuVisibleForItem = null
+                                        },
+                                        offset = DpOffset(3.dp, 0.dp)
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(
+                                                    text = "Edit"
+                                                )
                                             },
-                                            offset = DpOffset(3.dp, 0.dp)
-                                        ) {
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = "Edit"
-                                                    )
-                                                },
-                                                onClick = {
-                                                    dropdownMenuVisibleForItem = null
-                                                    showBottomSheetByOption = 2
-                                                    categoryByEdit = categoryItem
-                                                    currentCategoryName = categoryItem.name
-                                                    currentCategoryColor = categoryItem.color
-                                                }
-                                            )
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = "Delete"
-                                                    )
-                                                },
-                                                onClick = {
-                                                    dropdownMenuVisibleForItem = null
-                                                    categoryByEdit = categoryItem
-                                                    showDialog = true
-                                                }
-                                            )
-                                        }
+                                            onClick = {
+                                                dropdownMenuVisibleForItem = null
+                                                showBottomSheetByOption = 2
+                                                categoryByEdit = categoryItem
+                                                currentCategoryName = categoryItem.name
+                                                currentCategoryColor = categoryItem.color
+                                            }
+                                        )
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(
+                                                    text = "Delete"
+                                                )
+                                            },
+                                            onClick = {
+                                                dropdownMenuVisibleForItem = null
+                                                categoryByEdit = categoryItem
+                                                showDialog = true
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
                     }
                 }
-                Row(
+            }
+            Row(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(24.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Button(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.1f),
-                    horizontalArrangement = Arrangement.Center
+                        .height(55.dp)
+                        .width(175.dp),
+                    onClick = {
+                        showBottomSheetByOption = 1
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(CreateButtons),
+                    )
                 ) {
-                    Button(
-                        modifier = Modifier
-                            .height(55.dp)
-                            .width(175.dp),
-                        onClick = {
-                            showBottomSheetByOption = 1
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(CreateButtons),
-                        )
-                    ) {
-                        Text(
-                            text = "New Category",
-                            fontSize = 17.sp
-                        )
-                    }
+                    Text(
+                        text = "New Category",
+                        fontSize = 17.sp
+                    )
                 }
             }
-        } else {
+        }
+        else {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)

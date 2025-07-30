@@ -1,7 +1,6 @@
 package com.example.geyugoapp.feature.tasks.composable
 
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -116,10 +115,6 @@ fun ModalDrawerTasks(
 
     var year by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.YEAR)) }
 
-    val TAG = "AddTimeButton"
-
-    val hour = remember { mutableIntStateOf(timePickerState.hour) }
-
     var timeMessage by remember { mutableStateOf("Add Time") }
 
 
@@ -168,14 +163,14 @@ fun ModalDrawerTasks(
                                     )
                                 },
                                 colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = BackgroundLevel2,
-                                    unfocusedContainerColor = BackgroundLevel2,
-                                    disabledContainerColor = BackgroundLevel2,
+                                    focusedContainerColor = Color(BackgroundLevel2),
+                                    unfocusedContainerColor = Color(BackgroundLevel2),
+                                    disabledContainerColor = Color(BackgroundLevel2),
                                     focusedTextColor = Color.White,
                                     unfocusedTextColor = Color.White,
                                     cursorColor = Color.White,
-                                    focusedIndicatorColor = BackgroundLevel2,
-                                    unfocusedIndicatorColor = BackgroundLevel2,
+                                    focusedIndicatorColor = Color(BackgroundLevel2),
+                                    unfocusedIndicatorColor = Color(BackgroundLevel2),
                                 )
                             )
                             Spacer(modifier = Modifier.weight(0.23f))
@@ -308,8 +303,31 @@ fun ModalDrawerTasks(
                                     .height(65.dp)
                                     .width(200.dp),
                                 onClick = {
-//                            showBottomSheetByOption = 1
                                     scope.launch { drawerState.close() }
+                                    val hourToUse: Int
+                                    val minuteToUse: Int
+                                    val name: String
+                                    if (timeMessage == "Add Time") {
+                                        hourToUse = 23
+                                        minuteToUse = 59
+                                    } else {
+                                        hourToUse = timePickerState.hour
+                                        minuteToUse = timePickerState.minute
+                                    }
+                                    if (selection == "Category") {
+                                        viewModel.createOtherCategory()
+                                        name = "Others"
+                                    } else {
+                                        name = selection
+                                    }
+                                    viewModel.addTask(
+                                        selectedDateMillis = datePickerState.selectedDateMillis,
+                                        hour = hourToUse,
+                                        minute = minuteToUse,
+                                        name = name
+                                    )
+                                    timeMessage = "Add Time"
+                                    selection = "Category"
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(CreateButtons),
@@ -324,7 +342,7 @@ fun ModalDrawerTasks(
                     }
                 }
             },
-            scrimColor = UnselectedMenuBackground.copy(alpha = 0.8f)
+            scrimColor = Color(UnselectedMenuBackground).copy(alpha = 0.8f)
         )
         {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
