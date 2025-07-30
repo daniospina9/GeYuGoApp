@@ -14,6 +14,10 @@ class CategoryRepositoryImpl(
         return categoryDataSource.getCategoriesByUserId(userId)
     }
 
+    override suspend fun getCategoryIdByName(name: String): Category {
+        return categoryDataSource.getCategoryIdByName(name)
+    }
+
     override suspend fun insert(category: Category) {
         categoryDataSource.insert(category)
     }

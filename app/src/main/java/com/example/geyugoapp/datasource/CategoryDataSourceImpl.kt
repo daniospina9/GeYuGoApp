@@ -19,6 +19,10 @@ class CategoryDataSourceImpl(
         return categoryDao.getCategoriesByUserId(userId).map { it.toCategory() }
     }
 
+    override suspend fun getCategoryIdByName(name: String): Category {
+        return categoryDao.getCategoryIdByName(name).toCategory()
+    }
+
     override suspend fun insert(category: Category) {
         categoryDao.insert(category.toDbDto())
     }

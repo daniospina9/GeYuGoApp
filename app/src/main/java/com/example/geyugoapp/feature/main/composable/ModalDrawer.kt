@@ -100,7 +100,7 @@ fun ModalDrawer(
                 }
                 HorizontalDivider(
                     modifier = Modifier.height(6.dp),
-                    color = MenuSeparator
+                    color = Color(MenuSeparator)
                 )
                 Button(
                     modifier = Modifier
@@ -170,7 +170,7 @@ fun ModalDrawer(
                 }
             }
         },
-        scrimColor = UnselectedMenuBackground.copy(alpha = 0.8f)
+        scrimColor = Color(UnselectedMenuBackground).copy(alpha = 0.8f)
     ) {
         content()
     }

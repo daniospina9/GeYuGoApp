@@ -38,7 +38,7 @@ class FirstUserViewModel @Inject constructor(
     fun saveUser() {
         val userName = _state.value.name
         viewModelScope.launch(Dispatchers.IO) {
-            if (userName.isNullOrBlank()) {
+            if (userName.isBlank()) {
                 _events.send(Event.ShowMessage("Name is empty"))
                 return@launch
             }

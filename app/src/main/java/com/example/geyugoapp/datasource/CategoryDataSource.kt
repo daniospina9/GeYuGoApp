@@ -9,6 +9,8 @@ interface CategoryDataSource {
 
     suspend fun getCategoriesByUserId(userId: Long): List<Category>
 
+    suspend fun getCategoryIdByName(name: String): Category
+
     suspend fun insert(category: Category)
 
     suspend fun delete(category: Category)

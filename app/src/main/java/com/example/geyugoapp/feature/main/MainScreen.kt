@@ -91,7 +91,7 @@ fun MainScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(BackgroundLevel2)
+                    .background(Color(BackgroundLevel2))
                     .padding(24.dp)
             ) {
                 Image(
@@ -122,7 +122,7 @@ fun MainScreen(
                             )
                             .border(
                                 width = 3.dp,
-                                color = FramePhotoProfile,
+                                color = Color(FramePhotoProfile),
                                 shape = CircleShape
                             )
                     ) {}
@@ -170,7 +170,7 @@ fun MainScreen(
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "Logo with a trend up arrow",
                                 contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(LogosMainScreen)
+                                colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                             )
                         }
                         Text(
@@ -194,7 +194,7 @@ fun MainScreen(
                                 )
                                 .border(
                                     width = 7.dp,
-                                    color = FramePhotoProfile,
+                                    color = Color(FramePhotoProfile),
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
@@ -204,7 +204,7 @@ fun MainScreen(
                                 modifier = Modifier.size(60.dp),
                                 contentDescription = "Logo with a person getting goals",
                                 contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(LogosMainScreen)
+                                colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                             )
                         }
                         Spacer(modifier = Modifier.weight(0.7f))
