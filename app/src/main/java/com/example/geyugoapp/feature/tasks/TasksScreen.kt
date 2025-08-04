@@ -3,7 +3,6 @@ package com.example.geyugoapp.feature.tasks
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,42 +15,66 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.R
+import com.example.geyugoapp.feature.tasks.composable.LazyColumnTasksContent
+import com.example.geyugoapp.feature.tasks.composable.ModalBottomCategoryContent
+import com.example.geyugoapp.feature.tasks.composable.ModalBottomDateContent
 import com.example.geyugoapp.feature.tasks.composable.ModalDrawerTasks
+import com.example.geyugoapp.feature.tasks.composable.MyCustomCategoryDragHandle
+import com.example.geyugoapp.feature.tasks.composable.MyCustomDateDragHandle
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
-import com.example.geyugoapp.ui.theme.FramePhotoProfile
 import com.example.geyugoapp.ui.theme.LinesCategories
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(
     viewModel: TasksViewModel = hiltViewModel()
@@ -70,6 +93,79 @@ fun TasksScreen(
 
     val scope = rememberCoroutineScope()
 
+    var showDateDialog by remember { mutableStateOf(false) }
+
+    val calendar = Calendar.getInstance()
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = calendar.timeInMillis,
+        initialDisplayMode = DisplayMode.Input
+    )
+
+    var showDateBottomSheet by remember { mutableStateOf(false) }
+
+    var showCategoryBottomSheet by remember { mutableStateOf(false) }
+
+    var allowSheetClose by remember { mutableStateOf(false) }
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { targetValue ->
+            if (targetValue == SheetValue.Hidden) {
+                val canClose = allowSheetClose
+                if (canClose) {
+                    allowSheetClose = false
+                }
+                canClose
+            } else {
+                true
+            }
+        }
+    )
+
+    var titlePositionY by remember { mutableStateOf<Float?>(null) }
+
+    val density = LocalDensity.current
+
+    val startOfDayMillis = remember {
+        Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    val endOfDayMillis = remember {
+        Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -1)
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.timeInMillis
+    }
+
+    val tasksForDay =
+        remember(tasksByUserId, startOfDayMillis, endOfDayMillis) {
+            tasksByUserId.filter { task ->
+                task.dateTime >= startOfDayMillis && task.dateTime <= endOfDayMillis
+            }.sortedBy { task -> task.dateTime }
+        }
+
+    var day by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.DAY_OF_MONTH)) }
+
+    var month by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.MONTH) + 1) }
+
+    var year by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.YEAR)) }
+
+    var categorySelected by rememberSaveable { mutableStateOf("") }
+
+    var categorySelectedId by remember { mutableStateOf<Long?>(null) }
+
+    val currentCategoryId = categorySelectedId
+
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
             when (event) {
@@ -85,7 +181,7 @@ fun TasksScreen(
             modifier = Modifier.padding(innerPadding),
             drawerState = drawerState
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(BackgroundLevel3))
@@ -118,15 +214,39 @@ fun TasksScreen(
                             .background(Color(BackgroundLevel3)),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.notification),
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {},
-                            contentDescription = "A notification logo to activate/deactivate notifications",
-                            contentScale = ContentScale.Inside,
-                            colorFilter = ColorFilter.tint(Color.White)
-                        )
+                        Row {
+                            Image(
+                                painter = painterResource(R.drawable.calendar_search),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        showDateDialog = true
+                                    },
+                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                            Spacer(modifier = Modifier.width(15.dp))
+                            Image(
+                                painter = painterResource(R.drawable.search),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {},
+                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                            Spacer(modifier = Modifier.width(15.dp))
+                            Image(
+                                painter = painterResource(R.drawable.notification),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {},
+                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(17.dp))
@@ -146,12 +266,17 @@ fun TasksScreen(
                         val categoryItem = categoriesByUser[index]
                         Box(
                             modifier = Modifier
-                                .width(((screenWidth.value - 60) / 2).dp)
+                                .width((((screenWidth.value - 60) / 2) - 15).dp)
                                 .background(
 
                                     color = Color(BackgroundLevel2),
                                     shape = RoundedCornerShape(15.dp)
                                 )
+                                .clickable {
+                                    categorySelected = categoryItem.name
+                                    categorySelectedId = categoryItem.id
+                                    showCategoryBottomSheet = true
+                                }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -168,7 +293,9 @@ fun TasksScreen(
                                     modifier = Modifier.padding(start = 6.dp),
                                     text = categoryItem.name,
                                     color = Color.White,
-                                    fontWeight = FontWeight.ExtraBold
+                                    fontWeight = FontWeight.ExtraBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Row(
                                     modifier = Modifier.fillMaxWidth()
@@ -198,74 +325,24 @@ fun TasksScreen(
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 Text(
-                    modifier = Modifier.padding(bottom = 20.dp),
+                    modifier = Modifier
+                        .padding(bottom = 20.dp)
+                        .onGloballyPositioned { coordinates: LayoutCoordinates ->
+                            val positionInRoot = coordinates.positionInRoot()
+                            titlePositionY = positionInRoot.y
+                        },
                     text = "TODAY'S TASKS",
                     color = Color.White,
                     fontSize = 17.sp
                 )
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(
-                        count = tasksByUserId.size
-                    ) {
-                        val matchingCategory = categoriesByUser.find { category ->
-                            category.id == tasksByUserId[it].categoryId
-                        }
-                        val colorBox = matchingCategory?.color ?: FramePhotoProfile
-                        val taskDateTimeMillis = tasksByUserId[it].dateTime
-                        val calendar = Calendar.getInstance()
-                        calendar.timeInMillis = taskDateTimeMillis
-                        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                        val minute = calendar.get(Calendar.MINUTE)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = Color(BackgroundLevel2),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(15.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(23.dp)
-                                        .background(
-                                            color = Color(BackgroundLevel2),
-                                            shape = CircleShape
-                                        )
-                                        .border(
-                                            width = 2.dp,
-                                            color = Color(colorBox),
-                                            shape = CircleShape
-                                        )
-                                )
-                                Spacer(modifier = Modifier.width(15.dp))
-                                Text(
-                                    modifier = Modifier.weight(0.7f),
-                                    text = tasksByUserId[it].name,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = Color.White,
-                                    fontSize = 15.sp
-                                )
-                                Text(
-                                    modifier = Modifier.weight(0.1f),
-                                    text = "$hour:$minute",
-                                    color = Color.White,
-                                    fontSize = 10.sp
-                                )
-                            }
-                        }
-
-                    }
-                }
+                LazyColumnTasksContent(
+                    tasksForDay = tasksForDay,
+                    categoriesByUser = categoriesByUser,
+                    startPadding = 0.dp,
+                    endPadding = 0.dp,
+                    bottomPadding = 0.dp,
+                    backgroundColor = BackgroundLevel3
+                )
             }
             Row(
                 modifier = Modifier
@@ -298,6 +375,130 @@ fun TasksScreen(
                 }
             }
         }
-
+        if (showDateDialog) {
+            DatePickerDialog(
+                onDismissRequest = {
+                    showDateDialog = false
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDateDialog = false
+                            val result = datePickerState.selectedDateMillis
+                            if (result != null) {
+                                val newCalendar = android.icu.util.Calendar.getInstance()
+                                    .apply { timeInMillis = result }
+                                day = newCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH) + 1
+                                month = newCalendar.get(android.icu.util.Calendar.MONTH) + 1
+                                year = newCalendar.get(android.icu.util.Calendar.YEAR)
+                            }
+                            showDateBottomSheet = true
+                        }
+                    ) {
+                        Text(text = "Confirm")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showDateDialog = false
+                        }
+                    ) {
+                        Text(text = "Cancel")
+                    }
+                },
+                colors = DatePickerDefaults.colors()
+            ) {
+                DatePicker(datePickerState)
+            }
+        }
+        if (showDateBottomSheet) {
+            val screenHeightPx = with(density) {
+                LocalContext.current.resources.displayMetrics.heightPixels.toFloat()
+            }
+            val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
+                val availableHeightPx = screenHeightPx - titleYPx
+                if (availableHeightPx > 0) {
+                    with(density) { availableHeightPx.toDp() - 35.dp }
+                } else {
+                    400.dp
+                }
+            }
+            ModalBottomSheet(
+                onDismissRequest = { showDateBottomSheet = false },
+                sheetState = sheetState,
+                scrimColor = Color.Transparent,
+                dragHandle = {
+                    MyCustomDateDragHandle(
+                        day = day,
+                        month = month,
+                        year = year,
+                        onClickClosing = {
+                            showDateBottomSheet = false
+                        }
+                    )
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(BackgroundLevel3))
+                        .then(
+                            if (calculatedMaxHeightDp != null) {
+                                Modifier.height(calculatedMaxHeightDp)
+                            } else {
+                                Modifier.height(400.dp)
+                            }
+                        )
+                ) {
+                    ModalBottomDateContent(
+                        date = datePickerState.selectedDateMillis
+                    )
+                }
+            }
+        }
+        if (showCategoryBottomSheet && currentCategoryId != null) {
+            val screenHeightPx = with(density) {
+                LocalContext.current.resources.displayMetrics.heightPixels.toFloat()
+            }
+            val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
+                val availableHeightPx = screenHeightPx - titleYPx
+                if (availableHeightPx > 0) {
+                    with(density) { availableHeightPx.toDp() - 35.dp }
+                } else {
+                    400.dp
+                }
+            }
+            ModalBottomSheet(
+                onDismissRequest = { showCategoryBottomSheet = false },
+                sheetState = sheetState,
+                scrimColor = Color.Transparent,
+                dragHandle = {
+                    MyCustomCategoryDragHandle(
+                        categoryName = categorySelected,
+                        onClickClosing = {
+                            showCategoryBottomSheet = false
+                        }
+                    )
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(BackgroundLevel3))
+                        .then(
+                            if (calculatedMaxHeightDp != null) {
+                                Modifier.height(calculatedMaxHeightDp)
+                            } else {
+                                Modifier.height(400.dp)
+                            }
+                        )
+                ) {
+                    ModalBottomCategoryContent(
+                        idCategory = currentCategoryId
+                    )
+                }
+            }
+        }
     }
 }

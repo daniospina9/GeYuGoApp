@@ -4,9 +4,11 @@ import com.example.geyugoapp.database.AppDatabase
 import com.example.geyugoapp.database.TaskDao
 import com.example.geyugoapp.datasource.TaskDataSource
 import com.example.geyugoapp.datasource.TaskDataSourceImpl
+import com.example.geyugoapp.domain.task.usecases.DeleteTask
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.ObserveAll
+import com.example.geyugoapp.domain.task.usecases.UpdateTask
 import com.example.geyugoapp.repository.TaskRepository
 import com.example.geyugoapp.repository.TaskRepositoryImpl
 import dagger.Module
@@ -62,6 +64,22 @@ object TaskUseCaseModule {
     fun provideGetTasksByUserId(
         repository: TaskRepository
     ): GetTasksByUserId = GetTasksByUserId(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideDeleteTask(
+        repository: TaskRepository
+    ): DeleteTask = DeleteTask(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideUpdateTask(
+        repository: TaskRepository
+    ): UpdateTask = UpdateTask(
         repository = repository
     )
 }

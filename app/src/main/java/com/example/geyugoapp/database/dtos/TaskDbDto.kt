@@ -21,5 +21,6 @@ data class TaskDbDto(
     val dateTime: Long,
     val isTimeSet: Boolean,
     val userId: Long,
-    val categoryId: Long
+    val categoryId: Long,
+    val isClicked: Boolean
 )

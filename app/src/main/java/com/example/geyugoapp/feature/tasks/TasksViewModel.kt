@@ -7,9 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.GetCategoryIdByName
+import com.example.geyugoapp.domain.categories.usecases.GetCountCategoriesByName
+import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.task.models.Task
+import com.example.geyugoapp.domain.task.usecases.DeleteTask
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
+import com.example.geyugoapp.domain.task.usecases.UpdateTask
+import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -31,7 +36,11 @@ class TasksViewModel @Inject constructor(
     private val insertTask: InsertTask,
     private val getCategoryIdByName: GetCategoryIdByName,
     private val getTasksByUserId: GetTasksByUserId,
-): ViewModel() {
+    private val insertCategory: InsertCategory,
+    private val getCountCategoriesByName: GetCountCategoriesByName,
+    private val deleteTask: DeleteTask,
+    private val updateTask: UpdateTask
+) : ViewModel() {
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
     val categoriesByUser = _categoriesByUser.asStateFlow()
@@ -76,6 +85,21 @@ class TasksViewModel @Inject constructor(
         _state.update { it.copy(name = name) }
     }
 
+    fun removeTask(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteTask(task)
+            refreshTasks()
+        }
+    }
+
+    fun updateCurrentTask(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val updateTaskDbDto = task.copy(isClicked = !task.isClicked)
+            updateTask(updateTaskDbDto)
+            refreshTasks()
+        }
+    }
+
     fun getCombinedDateTimeMillis(
         selectedDateMillis: Long?,
         hour: Int,
@@ -108,7 +132,7 @@ class TasksViewModel @Inject constructor(
                 _events.send(Event.ShowMessage("Task is empty"))
                 return@launch
             } else if (userId != null) {
-                val categoryId = getCategoryIdByName(name = name).id
+                val categoryId = getCategoryIdByName(name = name, userId = userId).id
                 insertTask.invoke(
                     Task(
                         name = myNewTask,
@@ -127,11 +151,51 @@ class TasksViewModel @Inject constructor(
         }
     }
 
-    fun createOtherCategory() {
-
+    fun createOthersCategory(selectedDateMillis: Long?, hour: Int, minute: Int) {
+        val dateTimeByUI = getCombinedDateTimeMillis(
+            selectedDateMillis = selectedDateMillis,
+            hour = hour,
+            minute = minute
+        )
+        val dateTime = dateTimeByUI ?: 0L
+        viewModelScope.launch(Dispatchers.IO) {
+            val myNewTask = _state.value.name
+            if (myNewTask.isBlank()) {
+                _events.send(Event.ShowMessage("Task is empty"))
+                return@launch
+            } else if (userId == null) {
+                _events.send(Event.ShowMessage("It's no possible create one category"))
+            } else if (getCountCategoriesByName(name = "Others", userId = userId) == 0) {
+                insertCategory(Category(name = "Others", color = ColorCategoryOthers, userId = userId))
+                val categoryId = getCategoryIdByName(name = "Others", userId = userId).id
+                insertTask.invoke(
+                    Task(
+                        name = myNewTask,
+                        dateTime = dateTime,
+                        userId = userId,
+                        categoryId = categoryId
+                    )
+                )
+                refreshCategories()
+                refreshTasks()
+                _state.update { it.copy(name = "") }
+            } else {
+                val categoryId = getCategoryIdByName(name = "Others", userId = userId).id
+                insertTask.invoke(
+                    Task(
+                        name = myNewTask,
+                        dateTime = dateTime,
+                        userId = userId,
+                        categoryId = categoryId
+                    )
+                )
+                refreshTasks()
+                _state.update { it.copy(name = "") }
+            }
+        }
     }
 
-    sealed class Event{
-        data class ShowMessage(val message: String): Event()
+    sealed class Event {
+        data class ShowMessage(val message: String) : Event()
     }
 }

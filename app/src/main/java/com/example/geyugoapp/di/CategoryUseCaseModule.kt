@@ -7,6 +7,7 @@ import com.example.geyugoapp.datasource.CategoryDataSourceImpl
 import com.example.geyugoapp.domain.categories.usecases.DeleteCategory
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.GetCategoryIdByName
+import com.example.geyugoapp.domain.categories.usecases.GetCountCategoriesByName
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.categories.usecases.ObserveAllCategories
 import com.example.geyugoapp.domain.categories.usecases.UpdateCategory
@@ -89,6 +90,14 @@ object CategoryUseCaseModule {
     fun provideGetCategoryIdByName(
         repository: CategoryRepository
     ): GetCategoryIdByName = GetCategoryIdByName(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetCountCategoryByName(
+        repository: CategoryRepository
+    ): GetCountCategoriesByName = GetCountCategoriesByName(
         repository = repository
     )
 }

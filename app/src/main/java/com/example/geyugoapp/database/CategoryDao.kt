@@ -17,8 +17,11 @@ interface CategoryDao {
     @Query("SELECT * FROM categories WHERE userId = :userId")
     suspend fun getCategoriesByUserId(userId: Long): List<CategoryDbDto>
 
-    @Query("SELECT * FROM categories WHERE name = :name")
-    suspend fun getCategoryIdByName(name: String): CategoryDbDto
+    @Query("SELECT * FROM categories WHERE name = :name AND userId = :userId")
+    suspend fun getCategoryIdByName(name: String, userId: Long): CategoryDbDto
+
+    @Query("SELECT COUNT(*) FROM categories WHERE name = :name AND userId = :userId")
+    suspend fun getCountCategoriesByName(name: String, userId: Long): Int
 
     @Insert
     suspend fun insert(category: CategoryDbDto)
