@@ -9,7 +9,9 @@ interface CategoryDataSource {
 
     suspend fun getCategoriesByUserId(userId: Long): List<Category>
 
-    suspend fun getCategoryIdByName(name: String): Category
+    suspend fun getCategoryIdByName(name: String, userId: Long): Category
+
+    suspend fun getCountCategoriesByName(name: String, userId: Long): Int
 
     suspend fun insert(category: Category)
 

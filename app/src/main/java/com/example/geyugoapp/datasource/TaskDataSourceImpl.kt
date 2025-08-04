@@ -15,11 +15,19 @@ class TaskDataSourceImpl(
         taskDao.insert(task.toDbDto())
     }
 
+    override suspend fun deleteTask(task: Task) {
+        taskDao.deleteTask(task.toDbDto())
+    }
+
     override fun observeAll(): Flow<List<Task>> = taskDao.observeAll().map { listFlow ->
         listFlow.map { it.toTask() }
     }
 
     override suspend fun getTasksByUserId(userId: Long): List<Task> {
         return taskDao.getTasksByUserId(userId).map { it.toTask() }
+    }
+
+    override suspend fun updateTask(task: Task) {
+        taskDao.updateTask(task.toDbDto())
     }
 }

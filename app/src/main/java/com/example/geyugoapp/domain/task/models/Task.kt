@@ -6,5 +6,6 @@ data class Task(
     val dateTime: Long,
     val isTimeSet: Boolean = true,
     val userId: Long,
-    val categoryId: Long
+    val categoryId: Long,
+    val isClicked: Boolean = false
 )

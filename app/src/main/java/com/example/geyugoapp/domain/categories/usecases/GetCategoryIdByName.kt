@@ -6,7 +6,7 @@ import com.example.geyugoapp.repository.CategoryRepository
 class GetCategoryIdByName(
     private val repository: CategoryRepository
 ) {
-    suspend operator fun invoke(name: String): Category  {
-        return repository.getCategoryIdByName(name)
+    suspend operator fun invoke(name: String, userId: Long): Category  {
+        return repository.getCategoryIdByName(name, userId)
     }
 }

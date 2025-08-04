@@ -12,9 +12,17 @@ class TaskRepositoryImpl(
         taskDataSource.insert(task)
     }
 
+    override suspend fun deleteTask(task: Task) {
+        taskDataSource.deleteTask(task)
+    }
+
     override fun observeAll(): Flow<List<Task>> = taskDataSource.observeAll()
 
     override suspend fun getTasksByUserId(userId: Long): List<Task> {
         return taskDataSource.getTasksByUserId(userId)
+    }
+
+    override suspend fun updateTask(task: Task) {
+        taskDataSource.updateTask(task)
     }
 }

@@ -111,7 +111,7 @@ fun ModalDrawerTasks(
 
     var day by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.DAY_OF_MONTH)) }
 
-    var month by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.MONTH)) }
+    var month by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.MONTH) +1) }
 
     var year by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.YEAR)) }
 
@@ -211,7 +211,7 @@ fun ModalDrawerTasks(
                                 DropdownMenu(
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false },
-                                    offset = DpOffset(45.dp, 0.dp)
+                                    offset = DpOffset(21.dp, 0.dp)
                                 ) {
                                     if (categoriesByUser.isEmpty()) {
                                         Text(
@@ -315,17 +315,20 @@ fun ModalDrawerTasks(
                                         minuteToUse = timePickerState.minute
                                     }
                                     if (selection == "Category") {
-                                        viewModel.createOtherCategory()
-                                        name = "Others"
+                                        viewModel.createOthersCategory(
+                                            selectedDateMillis = datePickerState.selectedDateMillis,
+                                            hour = hourToUse,
+                                            minute = minuteToUse
+                                        )
                                     } else {
                                         name = selection
+                                        viewModel.addTask(
+                                            selectedDateMillis = datePickerState.selectedDateMillis,
+                                            hour = hourToUse,
+                                            minute = minuteToUse,
+                                            name = name
+                                        )
                                     }
-                                    viewModel.addTask(
-                                        selectedDateMillis = datePickerState.selectedDateMillis,
-                                        hour = hourToUse,
-                                        minute = minuteToUse,
-                                        name = name
-                                    )
                                     timeMessage = "Add Time"
                                     selection = "Category"
                                 },
