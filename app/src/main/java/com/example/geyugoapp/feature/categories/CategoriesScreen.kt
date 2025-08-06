@@ -48,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
@@ -74,6 +75,9 @@ fun CategoriesScreen(
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
@@ -92,12 +96,6 @@ fun CategoriesScreen(
     )
 
     var showBottomSheetByOption by remember { mutableStateOf<Int?>(null) }
-
-    val configuration = LocalConfiguration.current
-
-    val screenHeight = configuration.screenHeightDp.dp
-
-    val screenWidth = configuration.screenWidthDp.dp
 
     var dropdownMenuVisibleForItem by remember { mutableStateOf<Int?>(null) }
 
@@ -136,7 +134,7 @@ fun CategoriesScreen(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {},
-                            contentDescription = "A back logo to come back to previous screen",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
@@ -152,7 +150,7 @@ fun CategoriesScreen(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {},
-                            contentDescription = "A notification logo to activate/deactivate notifications",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
@@ -161,7 +159,7 @@ fun CategoriesScreen(
                 Spacer(modifier = Modifier.height(17.dp))
                 Text(
                     modifier = Modifier.padding(bottom = 20.dp),
-                    text = "YOUR CATEGORIES",
+                    text = stringResource(R.string.your_categories),
                     color = Color.White,
                     fontSize = 20.sp
                 )
@@ -221,7 +219,7 @@ fun CategoriesScreen(
                                         modifier = Modifier
                                             .height(25.dp)
                                             .weight(1f),
-                                        contentDescription = "A line with category color",
+                                        contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
                                         colorFilter = ColorFilter.tint(Color(categoryItem.color))
                                     )
@@ -230,7 +228,7 @@ fun CategoriesScreen(
                                         modifier = Modifier
                                             .height(25.dp)
                                             .weight(1f),
-                                        contentDescription = "A line with category color",
+                                        contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
                                         colorFilter = ColorFilter.tint(Color(LinesCategories))
                                     )
@@ -246,7 +244,7 @@ fun CategoriesScreen(
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
-                                                    text = "Edit"
+                                                    text = stringResource(R.string.edit)
                                                 )
                                             },
                                             onClick = {
@@ -260,7 +258,7 @@ fun CategoriesScreen(
                                         DropdownMenuItem(
                                             text = {
                                                 Text(
-                                                    text = "Delete"
+                                                    text = stringResource(R.string.delete)
                                                 )
                                             },
                                             onClick = {
@@ -296,7 +294,7 @@ fun CategoriesScreen(
                     )
                 ) {
                     Text(
-                        text = "New Category",
+                        text = stringResource(R.string.new_category),
                         fontSize = 17.sp
                     )
                 }
@@ -327,7 +325,7 @@ fun CategoriesScreen(
                     )
                 ) {
                     Text(
-                        text = "New Category",
+                        text = stringResource(R.string.new_category),
                         fontSize = 17.sp
                     )
                 }
@@ -349,9 +347,9 @@ fun CategoriesScreen(
                     modifier = Modifier.heightIn(max = screenHeight / 2),
                     viewModel = viewModel,
                     label = "Name Category",
-                    textColorButton = "Choice Color",
+                    textColorButton = stringResource(R.string.choose_color),
                     initialColor = ColorCategoryOthers,
-                    addingButtonText = "Add Category",
+                    addingButtonText = stringResource(R.string.add_category),
                     onClickAdding = {
                         viewModel.addCategory()
                         showBottomSheetByOption = null
@@ -375,9 +373,9 @@ fun CategoriesScreen(
                     modifier = Modifier.heightIn(max = screenHeight / 2),
                     viewModel = viewModel,
                     label = "New Name Category",
-                    textColorButton = "Change Color",
+                    textColorButton = stringResource(R.string.change_color),
                     initialColor = currentCategoryColor,
-                    addingButtonText = "Change Category",
+                    addingButtonText = stringResource(R.string.change_category),
                     onClickAdding = {
                         viewModel.updateExistCategory(
                             category = currentCategoryByEdit,
@@ -403,7 +401,7 @@ fun CategoriesScreen(
                         )
                     ) {
                         Text(
-                            text = "Confirm"
+                            text = stringResource(R.string.confirm)
                         )
                     }
                 },
@@ -417,20 +415,20 @@ fun CategoriesScreen(
                         )
                     ) {
                         Text(
-                            text = "Abort",
+                            text = stringResource(R.string.abort),
                             color = Color(FirstUserButton)
                         )
                     }
                 },
                 text = {
                     Text(
-                        text = "The category selected still have some tasks, if you delete it, it's tasks will delete too. Do you want to continue?",
+                        text = stringResource(R.string.the_category_selected_still_have_some_tasks_if_you_delete_it_it_s_tasks_will_delete_too_do_you_want_to_continue),
                         textAlign = TextAlign.Left
                     )
                 },
                 title = {
                     Text(
-                        text = "Alert of elimination",
+                        text = stringResource(R.string.alert_of_elimination),
                     )
                 },
                 shape = RoundedCornerShape(15.dp),

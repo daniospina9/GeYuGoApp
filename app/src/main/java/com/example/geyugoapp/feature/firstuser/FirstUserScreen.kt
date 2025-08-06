@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -77,21 +78,21 @@ fun FirstUserScreen(
         ) {
             Spacer(modifier = Modifier.weight(0.45f))
             Text(
-                text = "GeYuGo",
+                text = stringResource(R.string.geyugo),
                 color = Color.White,
                 fontSize = 70.sp,
                 fontWeight = FontWeight.ExtraBold
             )
             Text(
                 modifier = Modifier.padding(top = 3.dp),
-                text = "Your Personal To-Do App",
+                text = stringResource(R.string.your_personal_to_do_app),
                 color = Color.White,
                 fontSize = 19.sp
             )
             Spacer(modifier = Modifier.weight(0.2f))
             Text(
                 modifier = Modifier.padding(bottom = 6.dp),
-                text = "What's your name?",
+                text = stringResource(R.string.what_s_your_name),
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.ExtraBold
@@ -108,7 +109,7 @@ fun FirstUserScreen(
                 placeholder = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Enter your name here",
+                        text = stringResource(R.string.enter_your_name_here),
                         color = Color(FirstUserTFT),
                         fontSize = 23.sp,
                         textAlign = TextAlign.Center
@@ -136,7 +137,7 @@ fun FirstUserScreen(
                 Image(
                     painter = painterResource(R.drawable.arrow_right),
                     modifier = Modifier.size(40.dp),
-                    contentDescription = "A right arrow to continue",
+                    contentDescription = null,
                     contentScale = ContentScale.Inside,
                     colorFilter = ColorFilter.tint(Color.White)
                 )

@@ -31,10 +31,10 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             if (userId != null) {
-                _events.send(Event.ShowMessage("Welcome ${getUserById(userId).name}"))
+                _events.send(Event.ShowMessage("Welcome, ${getUserById(userId).name}!"))
                 refreshUser(userId)
             } else {
-                _events.send(Event.ShowMessage("Error: userId not fount"))
+                _events.send(Event.ShowMessage("Error: User ID not found"))
             }
         }
     }

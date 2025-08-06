@@ -67,7 +67,7 @@ class CategoriesViewModel @Inject constructor(
     fun insertCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             insertCategory.invoke(category)
-            _events.send(Event.ShowMessage("Category Added :)"))
+            _events.send(Event.ShowMessage("Category added successfully"))
             refreshCategories()
         }
     }
@@ -75,7 +75,7 @@ class CategoriesViewModel @Inject constructor(
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteCategory.invoke(category)
-            _events.send(Event.ShowMessage("Category Deleted!!"))
+            _events.send(Event.ShowMessage("Category deleted successfully"))
             refreshCategories()
         }
     }
@@ -94,14 +94,14 @@ class CategoriesViewModel @Inject constructor(
             } else if (myNewCategory.isBlank() && color != newColor) {
                 val updateCategoryDbDto = category.copy(name = name, color = newColor)
                 updateCategory(updateCategoryDbDto)
-                _events.send(Event.ShowMessage("Category Modified"))
+                _events.send(Event.ShowMessage("Category modified successfully"))
                 refreshCategories()
                 return@launch
             }
             val updateCategoryDbDto = category.copy(name = myNewCategory, color = newColor)
             updateCategory(updateCategoryDbDto)
             _state.update { it.copy(newCategory = "") }
-            _events.send(Event.ShowMessage("Category Modified"))
+            _events.send(Event.ShowMessage("Category modified successfully"))
             refreshCategories()
         }
     }
@@ -111,7 +111,7 @@ class CategoriesViewModel @Inject constructor(
         val newColor = _state.value.color
         viewModelScope.launch(Dispatchers.IO) {
             if (myNewCategory.isBlank()) {
-                _events.send(Event.ShowMessage("Category is empty"))
+                _events.send(Event.ShowMessage("Category name cannot be empty"))
                 return@launch
             } else if (currentUserId != null) {
                 insertCategory(
@@ -123,7 +123,7 @@ class CategoriesViewModel @Inject constructor(
                 )
                 _state.update { it.copy(newCategory = "") }
             } else {
-                _events.send(Event.ShowMessage("Error: Impossible to save categories without userId"))
+                _events.send(Event.ShowMessage("Error: Cannot save category. User ID is missing"))
                 _state.update { it.copy(newCategory = "") }
             }
 

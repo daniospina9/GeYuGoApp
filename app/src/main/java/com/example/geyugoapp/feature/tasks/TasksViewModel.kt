@@ -1,6 +1,5 @@
 package com.example.geyugoapp.feature.tasks
 
-import android.icu.util.Calendar
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +14,7 @@ import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.UpdateTask
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
+import com.example.geyugoapp.ui.util.tasks.getCombinedDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -66,7 +66,7 @@ class TasksViewModel @Inject constructor(
             if (userId != null) {
                 _categoriesByUser.update { getCategoriesByUserId(userId) }
             } else {
-                _events.send(Event.ShowMessage("Categories from userId not fount"))
+                _events.send(Event.ShowMessage("Error: Could not load categories. User ID is missing or invalid"))
             }
         }
     }
@@ -76,7 +76,7 @@ class TasksViewModel @Inject constructor(
             if (userId != null) {
                 _tasksByUserId.update { getTasksByUserId(userId = userId) }
             } else {
-                _events.send(Event.ShowMessage("Tasks not available"))
+                _events.send(Event.ShowMessage("Could not load tasks"))
             }
         }
     }
@@ -100,25 +100,6 @@ class TasksViewModel @Inject constructor(
         }
     }
 
-    fun getCombinedDateTimeMillis(
-        selectedDateMillis: Long?,
-        hour: Int,
-        minute: Int,
-    ): Long? {
-        selectedDateMillis ?: return null
-
-        val combinedCalendar = Calendar.getInstance()
-        combinedCalendar.timeInMillis = selectedDateMillis
-
-        combinedCalendar.set(Calendar.HOUR_OF_DAY, hour)
-        combinedCalendar.set(Calendar.MINUTE, minute)
-        combinedCalendar.set(Calendar.SECOND, 0)
-        combinedCalendar.set(Calendar.MILLISECOND, 0)
-
-        return combinedCalendar.timeInMillis
-
-    }
-
     fun addTask(selectedDateMillis: Long?, hour: Int, minute: Int, name: String) {
         val myNewTask = _state.value.name
         val dateTimeByUI = getCombinedDateTimeMillis(
@@ -129,7 +110,7 @@ class TasksViewModel @Inject constructor(
         val dateTime = dateTimeByUI ?: 0L
         viewModelScope.launch(Dispatchers.IO) {
             if (myNewTask.isBlank()) {
-                _events.send(Event.ShowMessage("Task is empty"))
+                _events.send(Event.ShowMessage("Task name cannot be empty"))
                 return@launch
             } else if (userId != null) {
                 val categoryId = getCategoryIdByName(name = name, userId = userId).id
@@ -144,7 +125,7 @@ class TasksViewModel @Inject constructor(
                 refreshTasks()
                 _state.update { it.copy(name = "") }
             } else {
-                _events.send(Event.ShowMessage("Error: Impossible to save tasks without userId"))
+                _events.send(Event.ShowMessage("Error: Cannot save task. User ID is missing"))
                 _state.update { it.copy(name = "") }
             }
 
@@ -161,10 +142,10 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val myNewTask = _state.value.name
             if (myNewTask.isBlank()) {
-                _events.send(Event.ShowMessage("Task is empty"))
+                _events.send(Event.ShowMessage("Task name cannot be empty"))
                 return@launch
             } else if (userId == null) {
-                _events.send(Event.ShowMessage("It's no possible create one category"))
+                _events.send(Event.ShowMessage("Error: Cannot create category. User ID is missing"))
             } else if (getCountCategoriesByName(name = "Others", userId = userId) == 0) {
                 insertCategory(Category(name = "Others", color = ColorCategoryOthers, userId = userId))
                 val categoryId = getCategoryIdByName(name = "Others", userId = userId).id

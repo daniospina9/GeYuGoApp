@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -141,7 +142,7 @@ fun ModalBottomContent(
                         painter = painterResource(R.drawable.arrow_up),
                         modifier = Modifier
                             .size(35.dp),
-                        contentDescription = "A menu to deploy options",
+                        contentDescription = null,
                         contentScale = ContentScale.Inside,
                         colorFilter = ColorFilter.tint(Color.White)
                     )
@@ -156,7 +157,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory7,
-                            text = "Color 7"
+                            text = stringResource(R.string.color_7)
                         )
                     },
                     onClick = {
@@ -167,7 +168,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory6,
-                            text = "Color 6"
+                            text = stringResource(R.string.color_6)
                         )
                     },
                     onClick = {
@@ -178,7 +179,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory5,
-                            text = "Color 5"
+                            text = stringResource(R.string.color_5)
                         )
                     },
                     onClick = {
@@ -189,7 +190,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory4,
-                            text = "Color 4"
+                            text = stringResource(R.string.color_4)
                         )
                     },
                     onClick = {
@@ -200,7 +201,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory3,
-                            text = "Color 3"
+                            text = stringResource(R.string.color_3)
                         )
                     },
                     onClick = {
@@ -211,7 +212,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory2,
-                            text = "Color 2"
+                            text = stringResource(R.string.color_2)
                         )
                     },
                     onClick = {
@@ -222,7 +223,7 @@ fun ModalBottomContent(
                     text = {
                         DropdownMenuContent(
                             color = ColorCategory1,
-                            text = "Color 1"
+                            text = stringResource(R.string.color_1)
                         )
                     },
                     onClick = {
