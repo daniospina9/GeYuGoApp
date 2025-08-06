@@ -7,23 +7,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.feature.tasks.TasksViewModel
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
-import com.example.geyugoapp.ui.util.tasksutils.filterByDateCategory
+import com.example.geyugoapp.ui.util.tasks.filterByCategory
 
 @Composable
-fun ModalBottomDateContent(
+fun FilterByCategory(
     viewModel: TasksViewModel = hiltViewModel(),
-    date: Long?
+    idCategory: Long
 ) {
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
-    val tasksForDay = filterByDateCategory(
-        date = date,
-        tasksByUserId = tasksByUserId
+    val tasksForDay = filterByCategory(
+        tasksByUserId = tasksByUserId,
+        idCategory = idCategory
     )
 
-    LazyColumnTasksContent(
+    TasksList(
         tasksForDay = tasksForDay,
         categoriesByUser = categoriesByUser,
         startPadding = 24.dp,

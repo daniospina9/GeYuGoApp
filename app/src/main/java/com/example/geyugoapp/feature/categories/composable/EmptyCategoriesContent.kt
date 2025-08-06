@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.geyugoapp.R
@@ -46,7 +47,7 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {},
-                    contentDescription = "A back logo to come back to previous screen",
+                    contentDescription = null,
                     contentScale = ContentScale.Inside,
                     colorFilter = ColorFilter.tint(Color.White)
                 )
@@ -62,7 +63,7 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .size(30.dp)
                         .clickable {},
-                    contentDescription = "A notification logo to activate/deactivate notifications",
+                    contentDescription = null,
                     contentScale = ContentScale.Inside,
                     colorFilter = ColorFilter.tint(Color.White)
                 )
@@ -73,18 +74,18 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
             painter = painterResource(R.drawable.bed_hostel_hotel_svgrepo_com),
             modifier = Modifier
                 .size(200.dp),
-            contentDescription = "A notification logo to activate/deactivate notifications",
+            contentDescription = null,
             contentScale = ContentScale.Inside,
             colorFilter = ColorFilter.tint(Color.White)
         )
         Text(
-            text = "Don't any categories yet?",
+            text = stringResource(R.string.don_t_any_categories_yet),
             color = Color.White,
             fontSize = 25.sp
         )
         Spacer(modifier = Modifier.height(60.dp))
         Text(
-            text = "Create your first category",
+            text = stringResource(R.string.create_your_first_category),
             color = Color.White,
             fontSize = 25.sp
         )
@@ -92,7 +93,7 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
             painter = painterResource(R.drawable.curve_arrow_down_svgrepo_com),
             modifier = Modifier
                 .size(60.dp),
-            contentDescription = "A back logo to come back to previous screen",
+            contentDescription = null,
             contentScale = ContentScale.Inside,
             colorFilter = ColorFilter.tint(Color.White)
         )

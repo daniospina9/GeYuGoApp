@@ -54,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -78,15 +79,13 @@ fun ModalDrawerTasks(
     viewModel: TasksViewModel = hiltViewModel(),
     content: @Composable () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val navigationDrawerWidth = screenWidth.value * 0.85
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
-
-    val configuration = LocalConfiguration.current
-
-    val screenWidth = configuration.screenWidthDp.dp
-
-    val navigationDrawerWidth = screenWidth.value * 0.85
 
     val scope = rememberCoroutineScope()
 
@@ -148,7 +147,7 @@ fun ModalDrawerTasks(
                                         .clickable {
                                             scope.launch { drawerState.close() }
                                         },
-                                    contentDescription = "A back logo to come back to previous screen",
+                                    contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(Color.White)
                                 )
@@ -162,7 +161,7 @@ fun ModalDrawerTasks(
                                 },
                                 label = {
                                     Text(
-                                        text = "Add your task",
+                                        text = stringResource(R.string.add_your_task),
                                         color = Color.White
                                     )
                                 },
@@ -206,7 +205,7 @@ fun ModalDrawerTasks(
                                             painter = painterResource(R.drawable.arrow_down),
                                             modifier = Modifier
                                                 .size(45.dp),
-                                            contentDescription = "A menu to deploy options",
+                                            contentDescription = null,
                                             contentScale = ContentScale.Inside,
                                             colorFilter = ColorFilter.tint(Color.White)
                                         )
@@ -224,7 +223,7 @@ fun ModalDrawerTasks(
                                                 .clickable {
                                                     expanded = false
                                                 },
-                                            text = "There are no categories",
+                                            text = stringResource(R.string.there_are_no_categories),
                                         )
                                     } else {
                                         categoriesByUser.forEach { category ->
@@ -261,7 +260,7 @@ fun ModalDrawerTasks(
                                             painter = painterResource(R.drawable.calendar_search),
                                             modifier = Modifier
                                                 .size(30.dp),
-                                            contentDescription = "A menu to deploy options",
+                                            contentDescription = null,
                                             contentScale = ContentScale.Inside,
                                             colorFilter = ColorFilter.tint(Color.White)
                                         )
@@ -341,7 +340,7 @@ fun ModalDrawerTasks(
                                 )
                             ) {
                                 Text(
-                                    text = "Create Task",
+                                    text = stringResource(R.string.create_task),
                                     fontSize = 22.sp
                                 )
                             }
@@ -375,7 +374,7 @@ fun ModalDrawerTasks(
                         }
                     }
                 ) {
-                    Text(text = "Confirm")
+                    Text(text = stringResource(R.string.confirm))
                 }
             },
             colors = DatePickerDefaults.colors()
@@ -401,7 +400,7 @@ fun ModalDrawerTasks(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "   Select time",
+                        text = stringResource(R.string.select_time),
                         color = Color(BackgroundLevel3),
                         fontSize = 12.sp
                     )
@@ -440,7 +439,7 @@ fun ModalDrawerTasks(
                         )
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             color = Color(BackgroundLevel3)
                         )
                     }
@@ -463,7 +462,7 @@ fun ModalDrawerTasks(
                         )
                     ) {
                         Text(
-                            text = "Ok",
+                            text = stringResource(R.string.ok),
                             color = Color(BackgroundLevel3)
                         )
                     }

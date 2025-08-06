@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -92,7 +93,7 @@ fun ModalDrawer(
                                 .weight(1f)
                                 .size(50.dp)
                                 .clickable {},
-                            contentDescription = "A menu to deploy options",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
@@ -123,7 +124,7 @@ fun ModalDrawer(
                     ) {
                         Text(
                             modifier = Modifier.weight(0.7f),
-                            text = "Your Categories",
+                            text = stringResource(R.string.your_categories_),
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.width(5.dp))
@@ -132,7 +133,7 @@ fun ModalDrawer(
                             modifier = Modifier
                                 .weight(0.3f)
                                 .size(40.dp),
-                            contentDescription = "A menu to deploy options",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
@@ -153,7 +154,7 @@ fun ModalDrawer(
                     ) {
                         Text(
                             modifier = Modifier.weight(0.7f),
-                            text = "Settings",
+                            text = stringResource(R.string.settings),
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.width(5.dp))
@@ -162,7 +163,7 @@ fun ModalDrawer(
                             modifier = Modifier
                                 .weight(0.3f)
                                 .size(40.dp),
-                            contentDescription = "A menu to deploy options",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )

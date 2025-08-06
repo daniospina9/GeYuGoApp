@@ -24,11 +24,9 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
 
 @Composable
-fun MyCustomDateDragHandle(
+fun CategoryDragHandle(
     modifier: Modifier = Modifier,
-    day: Int,
-    month: Int,
-    year: Int,
+    categoryName: String,
     onClickClosing: () -> Unit
 ) {
     Surface(
@@ -42,7 +40,7 @@ fun MyCustomDateDragHandle(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Date: $day/$month/$year",
+                text = "$categoryName Tasks",
                 color = Color(UnselectedMenuBackground),
                 style = TextStyle (
                     fontStyle = FontStyle.Italic
@@ -56,7 +54,7 @@ fun MyCustomDateDragHandle(
                     .clickable {
                         onClickClosing()
                     },
-                contentDescription = "A back logo to come back to previous screen",
+                contentDescription = null,
                 contentScale = ContentScale.Inside,
                 colorFilter = ColorFilter.tint(Color(UnselectedMenuBackground))
             )

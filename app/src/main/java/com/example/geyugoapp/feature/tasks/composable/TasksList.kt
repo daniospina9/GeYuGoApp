@@ -33,10 +33,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration.Companion.LineThrough
-import androidx.compose.ui.text.style.TextDecoration.Companion.None
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -49,14 +48,12 @@ import com.example.geyugoapp.R
 import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.domain.task.models.Task
 import com.example.geyugoapp.feature.tasks.TasksViewModel
-import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.FirstUserButton
-import com.example.geyugoapp.ui.theme.FramePhotoProfile
-import java.util.Calendar
+import com.example.geyugoapp.ui.util.tasks.tasksListDetails
 
 @Composable
-fun LazyColumnTasksContent(
+fun TasksList(
     viewModel: TasksViewModel = hiltViewModel(),
     tasksForDay: List<Task>,
     categoriesByUser: List<Category>,
@@ -82,29 +79,17 @@ fun LazyColumnTasksContent(
             count = tasksForDay.size
         ) { index ->
             val taskItem = tasksForDay[index]
-            val matchingCategory = categoriesByUser.find { category ->
-                category.id == taskItem.categoryId
-            }
-            val colorBox = matchingCategory?.color ?: FramePhotoProfile
-            val taskDateTimeMillis = taskItem.dateTime
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = taskDateTimeMillis
-            val hour24 = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-            val hour12 = when {
-                hour24 == 0 -> 12
-                hour24 > 12 -> hour24 - 12
-                else -> hour24
-            }
-            val amPm = if (hour24 < 12) "AM" else "PM"
-            val formattedTime = String.format("%02d:%02d", hour12, minute)
-            val timeTaskColor =
-                if ("$formattedTime $amPm" == "11:59 PM") Color(BackgroundLevel2)
-                else Color.White
-            val backgroundCircleTask =
-                if (taskItem.isClicked) BackgroundLevel1 else BackgroundLevel2
-            val borderCircleTaskWidth = if (taskItem.isClicked) 0.dp else 2.dp
-            val lineThroughTask = if (taskItem.isClicked) LineThrough else None
+            val details = tasksListDetails(
+                taskItem = taskItem,
+                categoriesByUser = categoriesByUser
+            )
+            val backgroundCircleTask = details.backgroundCircleTask
+            val borderCircleTaskWidth = details.borderCircleTaskWidth
+            val colorBox = details.colorBox
+            val lineThroughTask = details.lineThroughTask
+            val formattedTime = details.formattedTime
+            val amPm = details.amPm
+            val timeTaskColor = details.timeTaskColor
             var expanded by remember { mutableStateOf(false) }
             Box(
                 modifier = Modifier
@@ -148,7 +133,7 @@ fun LazyColumnTasksContent(
                                 painter = painterResource(R.drawable.check),
                                 modifier = Modifier
                                     .size(25.dp),
-                                contentDescription = "A check logo to indicate the task state",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color.White)
                             )
@@ -189,7 +174,7 @@ fun LazyColumnTasksContent(
                                 showDialog = true
                                 expanded = false
                             },
-                        text = "Delete task",
+                        text = stringResource(R.string.delete_task),
                     )
                 }
             }
@@ -209,7 +194,7 @@ fun LazyColumnTasksContent(
                     )
                 ) {
                     Text(
-                        text = "Confirm"
+                        text = stringResource(R.string.confirm)
                     )
                 }
             },
@@ -223,20 +208,20 @@ fun LazyColumnTasksContent(
                     )
                 ) {
                     Text(
-                        text = "Abort",
+                        text = stringResource(R.string.abort),
                         color = Color(FirstUserButton)
                     )
                 }
             },
             text = {
                 Text(
-                    text = "If you delete this task, you won't be able to recover it. Do you want to continue?",
+                    text = stringResource(R.string.if_you_delete_this_task_you_won_t_be_able_to_recover_it_do_you_want_to_continue),
                     textAlign = TextAlign.Left
                 )
             },
             title = {
                 Text(
-                    text = "Are you sure?",
+                    text = stringResource(R.string.are_you_sure),
                 )
             },
             shape = RoundedCornerShape(15.dp),

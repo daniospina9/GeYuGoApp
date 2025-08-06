@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -61,17 +62,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.R
-import com.example.geyugoapp.feature.tasks.composable.LazyColumnTasksContent
-import com.example.geyugoapp.feature.tasks.composable.ModalBottomCategoryContent
-import com.example.geyugoapp.feature.tasks.composable.ModalBottomDateContent
+import com.example.geyugoapp.feature.tasks.composable.CategoryDragHandle
+import com.example.geyugoapp.feature.tasks.composable.DateDragHandle
+import com.example.geyugoapp.feature.tasks.composable.FilterByCategory
+import com.example.geyugoapp.feature.tasks.composable.FilterByDate
 import com.example.geyugoapp.feature.tasks.composable.ModalDrawerTasks
-import com.example.geyugoapp.feature.tasks.composable.MyCustomCategoryDragHandle
-import com.example.geyugoapp.feature.tasks.composable.MyCustomDateDragHandle
+import com.example.geyugoapp.feature.tasks.composable.TasksList
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.LinesCategories
-import com.example.geyugoapp.ui.util.tasksutils.filterByDateCategory
+import com.example.geyugoapp.ui.util.tasks.filterByDateCategory
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -81,14 +82,13 @@ fun TasksScreen(
     viewModel: TasksViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val density = LocalDensity.current
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
-
-    val configuration = LocalConfiguration.current
-
-    val screenWidth = configuration.screenWidthDp.dp
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -129,8 +129,6 @@ fun TasksScreen(
     )
 
     var titlePositionY by remember { mutableStateOf<Float?>(null) }
-
-    val density = LocalDensity.current
 
     val tasksForDay = filterByDateCategory(
         date = datePickerState.selectedDateMillis,
@@ -186,7 +184,7 @@ fun TasksScreen(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {},
-                            contentDescription = "A back logo to come back to previous screen",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
@@ -205,7 +203,7 @@ fun TasksScreen(
                                     .clickable {
                                         showDateDialog = true
                                     },
-                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color.White)
                             )
@@ -215,7 +213,7 @@ fun TasksScreen(
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {},
-                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color.White)
                             )
@@ -225,7 +223,7 @@ fun TasksScreen(
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {},
-                                contentDescription = "A notification logo to activate/deactivate notifications",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color.White)
                             )
@@ -235,7 +233,7 @@ fun TasksScreen(
                 Spacer(modifier = Modifier.height(17.dp))
                 Text(
                     modifier = Modifier.padding(bottom = 20.dp),
-                    text = "CATEGORIES",
+                    text = stringResource(R.string.categories),
                     color = Color.White,
                     fontSize = 20.sp
                 )
@@ -288,7 +286,7 @@ fun TasksScreen(
                                         modifier = Modifier
                                             .height(25.dp)
                                             .weight(1f),
-                                        contentDescription = "A line with category color",
+                                        contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
                                         colorFilter = ColorFilter.tint(Color(categoryItem.color))
                                     )
@@ -297,7 +295,7 @@ fun TasksScreen(
                                         modifier = Modifier
                                             .height(25.dp)
                                             .weight(1f),
-                                        contentDescription = "A line with category color",
+                                        contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
                                         colorFilter = ColorFilter.tint(Color(LinesCategories))
                                     )
@@ -314,11 +312,11 @@ fun TasksScreen(
                             val positionInRoot = coordinates.positionInRoot()
                             titlePositionY = positionInRoot.y
                         },
-                    text = "TODAY'S TASKS",
+                    text = stringResource(R.string.today_s_tasks),
                     color = Color.White,
                     fontSize = 17.sp
                 )
-                LazyColumnTasksContent(
+                TasksList(
                     tasksForDay = tasksForDay,
                     categoriesByUser = categoriesByUser,
                     startPadding = 0.dp,
@@ -351,7 +349,7 @@ fun TasksScreen(
                     Image(
                         modifier = Modifier.size(45.dp),
                         painter = painterResource(R.drawable.add),
-                        contentDescription = "A add circle image",
+                        contentDescription = null,
                         contentScale = ContentScale.Inside,
                         colorFilter = ColorFilter.tint(Color.White)
                     )
@@ -378,7 +376,7 @@ fun TasksScreen(
                             showDateBottomSheet = true
                         }
                     ) {
-                        Text(text = "Confirm")
+                        Text(text = stringResource(R.string.confirm))
                     }
                 },
                 dismissButton = {
@@ -387,7 +385,7 @@ fun TasksScreen(
                             showDateDialog = false
                         }
                     ) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(R.string.cancel))
                     }
                 },
                 colors = DatePickerDefaults.colors()
@@ -412,7 +410,7 @@ fun TasksScreen(
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {
-                    MyCustomDateDragHandle(
+                    DateDragHandle(
                         day = day,
                         month = month,
                         year = year,
@@ -434,7 +432,7 @@ fun TasksScreen(
                             }
                         )
                 ) {
-                    ModalBottomDateContent(
+                    FilterByDate(
                         date = datePickerState.selectedDateMillis
                     )
                 }
@@ -457,7 +455,7 @@ fun TasksScreen(
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {
-                    MyCustomCategoryDragHandle(
+                    CategoryDragHandle(
                         categoryName = categorySelected,
                         onClickClosing = {
                             showCategoryBottomSheet = false
@@ -477,7 +475,7 @@ fun TasksScreen(
                             }
                         )
                 ) {
-                    ModalBottomCategoryContent(
+                    FilterByCategory(
                         idCategory = currentCategoryId
                     )
                 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ fun MainScreen(
                                 drawerState.open()
                             }
                         },
-                    contentDescription = "A menu to deploy options",
+                    contentDescription = null,
                     contentScale = ContentScale.Inside,
                     colorFilter = ColorFilter.tint(Color.White)
                 )
@@ -130,7 +131,7 @@ fun MainScreen(
                     Column {
                         Text(
                             modifier = Modifier.padding(start = 24.dp),
-                            text = "Hello",
+                            text = stringResource(R.string.hello),
                             color = Color.White,
                             fontSize = 27.sp,
                             fontWeight = FontWeight.ExtraBold
@@ -168,18 +169,18 @@ fun MainScreen(
                             Image(
                                 painter = painterResource(R.drawable.arrow_trend_up),
                                 modifier = Modifier.size(40.dp),
-                                contentDescription = "Logo with a trend up arrow",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                             )
                         }
                         Text(
-                            text = "Today is a nice day to reach",
+                            text = stringResource(R.string.today_is_a_nice_day_to_reach),
                             color = Color.White,
                             fontSize = 23.sp
                         )
                         Text(
-                            text = "your goals",
+                            text = stringResource(R.string.your_goals),
                             color = Color.White,
                             fontSize = 23.sp
                         )
@@ -202,7 +203,7 @@ fun MainScreen(
                             Image(
                                 painter = painterResource(R.drawable.achievement),
                                 modifier = Modifier.size(60.dp),
-                                contentDescription = "Logo with a person getting goals",
+                                contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                             )
@@ -231,13 +232,13 @@ fun MainScreen(
                                 Image(
                                     painter = painterResource(R.drawable.todo_list),
                                     modifier = Modifier.size(20.dp),
-                                    contentDescription = "Logo about ToDo list",
+                                    contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(Color.White)
                                 )
                                 Spacer(modifier = Modifier.width(7.dp))
                                 Text(
-                                    text = "Your ToDo's",
+                                    text = stringResource(R.string.your_todo_s),
                                     color = Color.White,
                                     fontSize = 16.sp,
                                 )
@@ -260,13 +261,13 @@ fun MainScreen(
                                 Image(
                                     painter = painterResource(R.drawable.note_edit),
                                     modifier = Modifier.size(20.dp),
-                                    contentDescription = "Logo about Add a new task",
+                                    contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(Color.White)
                                 )
                                 Spacer(modifier = Modifier.width(7.dp))
                                 Text(
-                                    text = "Add Task",
+                                    text = stringResource(R.string.add_task),
                                     color = Color.White,
                                     fontSize = 16.sp,
                                 )

@@ -5,9 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.geyugoapp.database.dtos.CategoryDbDto
 import com.example.geyugoapp.database.dtos.TaskDbDto
-import com.example.geyugoapp.domain.task.models.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao

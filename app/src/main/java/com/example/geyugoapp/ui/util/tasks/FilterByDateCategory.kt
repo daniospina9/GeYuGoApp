@@ -1,4 +1,4 @@
-package com.example.geyugoapp.ui.util.tasksutils
+package com.example.geyugoapp.ui.util.tasks
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
