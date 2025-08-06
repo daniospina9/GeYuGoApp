@@ -71,6 +71,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.LinesCategories
+import com.example.geyugoapp.ui.util.tasksutils.filterByDateCategory
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -96,6 +97,10 @@ fun TasksScreen(
     var showDateDialog by remember { mutableStateOf(false) }
 
     val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = calendar.timeInMillis,
@@ -127,32 +132,10 @@ fun TasksScreen(
 
     val density = LocalDensity.current
 
-    val startOfDayMillis = remember {
-        Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, -1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
-    }
-
-    val endOfDayMillis = remember {
-        Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, -1)
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.timeInMillis
-    }
-
-    val tasksForDay =
-        remember(tasksByUserId, startOfDayMillis, endOfDayMillis) {
-            tasksByUserId.filter { task ->
-                task.dateTime >= startOfDayMillis && task.dateTime <= endOfDayMillis
-            }.sortedBy { task -> task.dateTime }
-        }
+    val tasksForDay = filterByDateCategory(
+        date = datePickerState.selectedDateMillis,
+        tasksByUserId = tasksByUserId
+    )
 
     var day by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.DAY_OF_MONTH)) }
 
