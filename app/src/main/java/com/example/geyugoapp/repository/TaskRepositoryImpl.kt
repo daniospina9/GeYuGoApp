@@ -25,4 +25,8 @@ class TaskRepositoryImpl(
     override suspend fun updateTask(task: Task) {
         taskDataSource.updateTask(task)
     }
+
+    override suspend fun getCountTasksByCategory(categoryId: Long): Int {
+        return taskDataSource.getCountTasksByCategory(categoryId)
+    }
 }

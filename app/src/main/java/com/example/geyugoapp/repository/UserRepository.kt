@@ -10,4 +10,6 @@ interface UserRepository {
     suspend fun insert(user: User): Long
 
     suspend fun getUserById(userId: Long): User
+
+    suspend fun getAllUsers(): List<User>
 }

@@ -10,9 +10,11 @@ import com.example.geyugoapp.domain.categories.usecases.GetCountCategoriesByName
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.task.models.Task
 import com.example.geyugoapp.domain.task.usecases.DeleteTask
+import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.UpdateTask
+import com.example.geyugoapp.feature.categories.CategoryWithTaskCount
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import com.example.geyugoapp.ui.util.tasks.getCombinedDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +31,11 @@ data class TasksState(
     val name: String = ""
 )
 
+data class CategoryWithTaskCount(
+    val category: Category,
+    val taskCount: Int
+)
+
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -39,11 +46,15 @@ class TasksViewModel @Inject constructor(
     private val insertCategory: InsertCategory,
     private val getCountCategoriesByName: GetCountCategoriesByName,
     private val deleteTask: DeleteTask,
-    private val updateTask: UpdateTask
+    private val updateTask: UpdateTask,
+    private val getCountTasksByCategory: GetCountTasksByCategory
 ) : ViewModel() {
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
     val categoriesByUser = _categoriesByUser.asStateFlow()
+
+    private val _categoriesWithCounts = MutableStateFlow<List<CategoryWithTaskCount>>(emptyList())
+    val categoriesWithCounts = _categoriesWithCounts.asStateFlow()
 
     private val _events = Channel<Event>()
     val events = _events.receiveAsFlow()
@@ -64,14 +75,20 @@ class TasksViewModel @Inject constructor(
     private fun refreshCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             if (userId != null) {
-                _categoriesByUser.update { getCategoriesByUserId(userId) }
+                _categoriesByUser.update { getCategoriesByUserId(userId = userId) }
+                val categories = _categoriesByUser.value
+                val categoriesWithCountsList = categories.map { category ->
+                    val count = getCountTasksByCategory.invoke(category.id)
+                    CategoryWithTaskCount(category = category, taskCount = count)
+                }
+                _categoriesWithCounts.update { categoriesWithCountsList }
             } else {
                 _events.send(Event.ShowMessage("Error: Could not load categories. User ID is missing or invalid"))
             }
         }
     }
 
-    private fun refreshTasks() {
+    fun refreshTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             if (userId != null) {
                 _tasksByUserId.update { getTasksByUserId(userId = userId) }
@@ -89,6 +106,7 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             deleteTask(task)
             refreshTasks()
+            refreshCategories()
         }
     }
 
@@ -123,6 +141,7 @@ class TasksViewModel @Inject constructor(
                     )
                 )
                 refreshTasks()
+                refreshCategories()
                 _state.update { it.copy(name = "") }
             } else {
                 _events.send(Event.ShowMessage("Error: Cannot save task. User ID is missing"))
@@ -171,6 +190,7 @@ class TasksViewModel @Inject constructor(
                     )
                 )
                 refreshTasks()
+                refreshCategories()
                 _state.update { it.copy(name = "") }
             }
         }

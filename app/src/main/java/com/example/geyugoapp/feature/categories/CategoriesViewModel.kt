@@ -8,6 +8,7 @@ import com.example.geyugoapp.domain.categories.usecases.DeleteCategory
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.categories.usecases.UpdateCategory
+import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,20 +25,28 @@ data class NewCategoryState(
     val color: Long = ColorCategoryOthers
 )
 
+data class CategoryWithTaskCount(
+    val category: Category,
+    val taskCount: Int
+)
+
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val insertCategory: InsertCategory,
     private val getCategoriesByUserId: GetCategoriesByUserId,
     private val updateCategory: UpdateCategory,
-    private val deleteCategory: DeleteCategory
+    private val deleteCategory: DeleteCategory,
+    private val getCountTasksByCategory: GetCountTasksByCategory
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NewCategoryState())
     val state = _state.asStateFlow()
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
-    val categoriesByUser = _categoriesByUser.asStateFlow()
+
+    private val _categoriesWithCounts = MutableStateFlow<List<CategoryWithTaskCount>>(emptyList())
+    val categoriesWithCounts = _categoriesWithCounts.asStateFlow()
 
     private val _events = Channel<Event>()
     val events = _events.receiveAsFlow()
@@ -52,6 +61,12 @@ class CategoriesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (currentUserId != null) {
                 _categoriesByUser.update{  getCategoriesByUserId(userId = currentUserId) }
+                val categories = _categoriesByUser.value
+                val categoriesWithCountsList = categories.map { category ->
+                    val count = getCountTasksByCategory.invoke(category.id)
+                    CategoryWithTaskCount(category = category, taskCount = count)
+                }
+                _categoriesWithCounts.update { categoriesWithCountsList }
             }
             return@launch
         }
@@ -62,6 +77,10 @@ class CategoriesViewModel @Inject constructor(
 
     fun setColor(color: Long) {
         _state.update { it.copy(color = color) }
+    }
+
+    fun setEditingCategory(newCategory: String) {
+        _state.update { it.copy(newCategory = newCategory) }
     }
 
     fun insertCategory(category: Category) {
@@ -88,7 +107,8 @@ class CategoriesViewModel @Inject constructor(
         val myNewCategory = _state.value.newCategory
         val newColor = _state.value.color
         viewModelScope.launch(Dispatchers.IO) {
-            if (myNewCategory.isBlank() && color == newColor) {
+            if ((myNewCategory.isBlank() && color == newColor)
+                || (myNewCategory == name && color == newColor)) {
                 _events.send(Event.ShowMessage("Nothing changed"))
                 return@launch
             } else if (myNewCategory.isBlank() && color != newColor) {

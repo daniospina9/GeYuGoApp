@@ -32,10 +32,14 @@ fun NavigationHost() {
             )
         }
         composable<CategoriesRoute> {
-            CategoriesScreen()
+            CategoriesScreen(
+                navController = navController
+            )
         }
         composable<TasksRoute> {
-            TasksScreen()
+            TasksScreen(
+                navController = navController
+            )
         }
     }
 }

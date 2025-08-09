@@ -51,6 +51,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.FramePhotoProfile
 import com.example.geyugoapp.ui.theme.LogosMainScreen
 import com.example.geyugoapp.ui.util.getFirstWord
+import com.example.geyugoapp.ui.utils.capitalizeFirstLetter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,9 +64,13 @@ fun MainScreen(
 
     val userName by viewModel.userName.collectAsStateWithLifecycle()
 
+    val userNameCap = capitalizeFirstLetter(userName)
+
     val userId = viewModel.userId
 
     val simpleUserName = getFirstWord(userName)
+
+    val userNameUi = capitalizeFirstLetter(simpleUserName)
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -85,9 +90,14 @@ fun MainScreen(
         ModalDrawer(
             modifier = Modifier.padding(innerPadding),
             drawerState = drawerState,
-            userName = userName,
+            userName = userNameCap,
             userId = userId,
-            navController = navController
+            navController = navController,
+            closeDrawer = {
+                scope.launch {
+                    drawerState.close()
+                }
+            }
         ) {
             Column(
                 modifier = Modifier
@@ -138,7 +148,7 @@ fun MainScreen(
                         )
                         Text(
                             modifier = Modifier.padding(start = 24.dp),
-                            text = "$simpleUserName",
+                            text = userNameUi,
                             color = Color.White,
                             fontSize = 27.sp,
                             fontWeight = FontWeight.ExtraBold,

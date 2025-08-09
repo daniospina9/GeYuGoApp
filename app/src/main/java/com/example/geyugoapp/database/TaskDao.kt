@@ -26,4 +26,6 @@ interface TaskDao {
     @Update
     suspend fun updateTask(task: TaskDbDto)
 
+    @Query("SELECT COUNT(*) FROM tasks WHERE categoryId = :categoryId")
+    suspend fun getCountTasksByCategory(categoryId: Long): Int
 }

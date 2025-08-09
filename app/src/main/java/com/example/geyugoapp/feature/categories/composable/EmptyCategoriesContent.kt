@@ -26,7 +26,10 @@ import com.example.geyugoapp.R
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 
 @Composable
-fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
+fun EmptyCategoriesContent(
+    modifier: Modifier = Modifier,
+    backClick: () -> Unit
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -46,7 +49,9 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
                     painter = painterResource(R.drawable.back),
                     modifier = Modifier
                         .size(30.dp)
-                        .clickable {},
+                        .clickable {
+                            backClick()
+                        },
                     contentDescription = null,
                     contentScale = ContentScale.Inside,
                     colorFilter = ColorFilter.tint(Color.White)
@@ -90,7 +95,7 @@ fun EmptyCategoriesContent(modifier: Modifier = Modifier) {
             fontSize = 25.sp
         )
         Image(
-            painter = painterResource(R.drawable.curve_arrow_down_svgrepo_com),
+            painter = painterResource(R.drawable.curve_arrow_down),
             modifier = Modifier
                 .size(60.dp),
             contentDescription = null,

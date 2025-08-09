@@ -5,6 +5,7 @@ import com.example.geyugoapp.database.TaskDao
 import com.example.geyugoapp.datasource.TaskDataSource
 import com.example.geyugoapp.datasource.TaskDataSourceImpl
 import com.example.geyugoapp.domain.task.usecases.DeleteTask
+import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.ObserveAll
@@ -80,6 +81,14 @@ object TaskUseCaseModule {
     fun provideUpdateTask(
         repository: TaskRepository
     ): UpdateTask = UpdateTask(
+        repository = repository
+    )
+
+    @Singleton
+    @Provides
+    fun provideGetCountTasksByCategory(
+        repository: TaskRepository
+    ): GetCountTasksByCategory = GetCountTasksByCategory(
         repository = repository
     )
 }

@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.feature.tasks.TasksViewModel
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
-import com.example.geyugoapp.ui.util.tasks.filterByDateCategory
+import com.example.geyugoapp.ui.util.tasks.filterTasksByDate
 
 @Composable
 fun FilterByDate(
@@ -18,7 +18,7 @@ fun FilterByDate(
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
-    val tasksForDay = filterByDateCategory(
+    val tasksForDay = filterTasksByDate(
         date = date,
         tasksByUserId = tasksByUserId
     )
