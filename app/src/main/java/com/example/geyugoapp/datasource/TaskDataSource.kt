@@ -14,4 +14,6 @@ interface TaskDataSource {
     suspend fun getTasksByUserId(userId: Long): List<Task>
 
     suspend fun updateTask(task: Task)
+
+    suspend fun getCountTasksByCategory(categoryId: Long): Int
 }

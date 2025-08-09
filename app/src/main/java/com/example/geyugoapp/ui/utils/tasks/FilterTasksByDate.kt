@@ -1,16 +1,15 @@
 package com.example.geyugoapp.ui.util.tasks
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.example.geyugoapp.domain.task.models.Task
 import java.util.Calendar
 
 @Composable
-fun filterByDateCategory(
+fun filterTasksByDate(
     date: Long?,
     tasksByUserId: List<Task>
 ): List<Task> {
-    val (filterStartOfDayMillis, filterEndOfDayMillis) = remember(date) {
+    val (filterStartOfDayMillis, filterEndOfDayMillis) =
         if (date != null) {
             val startCalendar = Calendar.getInstance()
             startCalendar.timeInMillis = date
@@ -32,13 +31,11 @@ fun filterByDateCategory(
         } else {
             Pair(null, null)
         }
-    }
+
+    val start = filterStartOfDayMillis
+    val end = filterEndOfDayMillis
 
     val tasksForDay =
-        remember(tasksByUserId, filterStartOfDayMillis, filterEndOfDayMillis) {
-            val start = filterStartOfDayMillis
-            val end = filterEndOfDayMillis
-
             if (start != null && end != null) {
                 tasksByUserId.filter { task ->
                     task.dateTime >= start && task.dateTime <= end
@@ -46,6 +43,6 @@ fun filterByDateCategory(
             } else {
                 emptyList()
             }
-        }
+
     return tasksForDay
 }

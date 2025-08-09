@@ -17,4 +17,8 @@ class UserRepositoryImpl(
     override suspend fun getUserById(userId: Long): User {
         return userDataSource.getUserById(userId)
     }
+
+    override suspend fun getAllUsers(): List<User> {
+        return userDataSource.getAllUsers()
+    }
 }

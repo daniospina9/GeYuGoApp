@@ -22,4 +22,8 @@ class UserDataSourceImpl(
     override suspend fun getUserById(userId: Long): User {
         return userDao.getUserById(userId).toUser()
     }
+
+    override suspend fun getAllUsers(): List<User> {
+        return userDao.getAllUsers().map { it.toUser() }
+    }
 }

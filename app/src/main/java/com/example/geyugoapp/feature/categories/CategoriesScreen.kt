@@ -2,6 +2,7 @@
 
 package com.example.geyugoapp.feature.categories
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,11 +59,13 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.feature.categories.composable.EmptyCategoriesContent
 import com.example.geyugoapp.feature.categories.composable.ModalBottomContent
 import com.example.geyugoapp.feature.categories.composable.MyCustomDragHandle
+import com.example.geyugoapp.navigation.main.MainRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
@@ -72,14 +75,21 @@ import com.example.geyugoapp.ui.theme.LinesCategories
 
 @Composable
 fun CategoriesScreen(
-    viewModel: CategoriesViewModel = hiltViewModel()
+    viewModel: CategoriesViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
-    val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
+    val categoriesWithCounts by viewModel.categoriesWithCounts.collectAsStateWithLifecycle()
+
+    val TAG = "countCategories"
+
+    LaunchedEffect(categoriesWithCounts) {
+        Log.d(TAG, "Valor actual de userIdFlowUI: $categoriesWithCounts")
+    }
 
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
@@ -110,7 +120,7 @@ fun CategoriesScreen(
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold { innerPadding ->
-        if (categoriesByUser.isNotEmpty()) {
+        if (categoriesWithCounts.isNotEmpty()) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -133,7 +143,9 @@ fun CategoriesScreen(
                             painter = painterResource(R.drawable.back),
                             modifier = Modifier
                                 .size(30.dp)
-                                .clickable {},
+                                .clickable {
+                                    navController.navigateUp()
+                                },
                             contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
@@ -169,9 +181,9 @@ fun CategoriesScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(
-                        count = categoriesByUser.size
+                        count = categoriesWithCounts.size
                     ) { index ->
-                        val categoryItem = categoriesByUser[index]
+                        val categoryItem = categoriesWithCounts[index]
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -201,13 +213,13 @@ fun CategoriesScreen(
                             ) {
                                 Text(
                                     modifier = Modifier.padding(start = 6.dp),
-                                    text = "40 tasks",
+                                    text = "${categoryItem.taskCount} tasks",
                                     fontSize = 10.sp,
                                     color = Color.White
                                 )
                                 Text(
                                     modifier = Modifier.padding(start = 6.dp),
-                                    text = categoryItem.name,
+                                    text = categoryItem.category.name,
                                     color = Color.White,
                                     fontWeight = FontWeight.ExtraBold
                                 )
@@ -221,7 +233,7 @@ fun CategoriesScreen(
                                             .weight(1f),
                                         contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
-                                        colorFilter = ColorFilter.tint(Color(categoryItem.color))
+                                        colorFilter = ColorFilter.tint(Color(categoryItem.category.color))
                                     )
                                     Image(
                                         painter = painterResource(R.drawable.horizontal_line),
@@ -248,11 +260,14 @@ fun CategoriesScreen(
                                                 )
                                             },
                                             onClick = {
+                                                viewModel.setEditingCategory(
+                                                    newCategory = categoryItem.category.name
+                                                )
                                                 dropdownMenuVisibleForItem = null
                                                 showBottomSheetByOption = 2
-                                                categoryByEdit = categoryItem
-                                                currentCategoryName = categoryItem.name
-                                                currentCategoryColor = categoryItem.color
+                                                categoryByEdit = categoryItem.category
+                                                currentCategoryName = categoryItem.category.name
+                                                currentCategoryColor = categoryItem.category.color
                                             }
                                         )
                                         DropdownMenuItem(
@@ -263,7 +278,7 @@ fun CategoriesScreen(
                                             },
                                             onClick = {
                                                 dropdownMenuVisibleForItem = null
-                                                categoryByEdit = categoryItem
+                                                categoryByEdit = categoryItem.category
                                                 showDialog = true
                                             }
                                         )
@@ -310,7 +325,10 @@ fun CategoriesScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 EmptyCategoriesContent(
-                    modifier = Modifier.weight(0.93f)
+                    modifier = Modifier.weight(0.93f),
+                    backClick = {
+                        navController.navigateUp()
+                    }
                 )
                 Button(
                     modifier = Modifier
@@ -361,6 +379,9 @@ fun CategoriesScreen(
             ModalBottomSheet(
                 onDismissRequest = {
                     showBottomSheetByOption = null
+                    viewModel.setEditingCategory(
+                        newCategory = ""
+                    )
                 },
                 sheetState = sheetState,
                 dragHandle = {
@@ -369,6 +390,7 @@ fun CategoriesScreen(
                     )
                 }
             ) {
+
                 ModalBottomContent(
                     modifier = Modifier.heightIn(max = screenHeight / 2),
                     viewModel = viewModel,
@@ -383,6 +405,9 @@ fun CategoriesScreen(
                             color = currentCategoryColor
                         )
                         showBottomSheetByOption = null
+                        viewModel.setEditingCategory(
+                            newCategory = ""
+                        )
                     }
                 )
             }

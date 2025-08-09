@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +27,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -61,9 +61,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.feature.tasks.composable.CategoryDragHandle
 import com.example.geyugoapp.feature.tasks.composable.DateDragHandle
+import com.example.geyugoapp.feature.tasks.composable.EmptyTasksContent
 import com.example.geyugoapp.feature.tasks.composable.FilterByCategory
 import com.example.geyugoapp.feature.tasks.composable.FilterByDate
 import com.example.geyugoapp.feature.tasks.composable.ModalDrawerTasks
@@ -72,21 +74,22 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.LinesCategories
-import com.example.geyugoapp.ui.util.tasks.filterByDateCategory
+import com.example.geyugoapp.ui.util.tasks.filterTasksByDate
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(
-    viewModel: TasksViewModel = hiltViewModel()
+    viewModel: TasksViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val density = LocalDensity.current
 
-    val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
+    val categoriesWithCounts by viewModel.categoriesWithCounts.collectAsStateWithLifecycle()
 
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
 
@@ -111,27 +114,17 @@ fun TasksScreen(
 
     var showCategoryBottomSheet by remember { mutableStateOf(false) }
 
-    var allowSheetClose by remember { mutableStateOf(false) }
-
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = { targetValue ->
-            if (targetValue == SheetValue.Hidden) {
-                val canClose = allowSheetClose
-                if (canClose) {
-                    allowSheetClose = false
-                }
-                canClose
-            } else {
-                true
-            }
-        }
+        skipPartiallyExpanded = true
     )
 
     var titlePositionY by remember { mutableStateOf<Float?>(null) }
 
-    val tasksForDay = filterByDateCategory(
-        date = datePickerState.selectedDateMillis,
+    val calendarHoy = Calendar.getInstance()
+    calendarHoy.add(Calendar.DAY_OF_YEAR, -1)
+
+    val tasksForDay = filterTasksByDate(
+        date = calendarHoy.timeInMillis,
         tasksByUserId = tasksByUserId
     )
 
@@ -162,197 +155,440 @@ fun TasksScreen(
             modifier = Modifier.padding(innerPadding),
             drawerState = drawerState
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(BackgroundLevel3))
-                    .padding(24.dp)
-            ) {
-                Row(
+            if (categoriesWithCounts.isNotEmpty() && tasksForDay.isNotEmpty()) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .background(Color(BackgroundLevel3))
+                        .padding(24.dp)
                 ) {
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .background(Color(BackgroundLevel3)),
-                        contentAlignment = Alignment.CenterStart
+                            .fillMaxWidth()
+                            .background(Color(BackgroundLevel3))
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.back),
+                        Box(
                             modifier = Modifier
-                                .size(30.dp)
-                                .clickable {},
-                            contentDescription = null,
-                            contentScale = ContentScale.Inside,
-                            colorFilter = ColorFilter.tint(Color.White)
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(Color(BackgroundLevel3)),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Row {
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
                             Image(
-                                painter = painterResource(R.drawable.calendar_search),
+                                painter = painterResource(R.drawable.back),
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clickable {
-                                        showDateDialog = true
+                                        navController.navigateUp()
                                     },
                                 contentDescription = null,
                                 contentScale = ContentScale.Inside,
                                 colorFilter = ColorFilter.tint(Color.White)
                             )
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Image(
-                                painter = painterResource(R.drawable.search),
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {},
-                                contentDescription = null,
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color.White)
-                            )
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Image(
-                                painter = painterResource(R.drawable.notification),
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {},
-                                contentDescription = null,
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color.White)
-                            )
                         }
-                    }
-                }
-                Spacer(modifier = Modifier.height(17.dp))
-                Text(
-                    modifier = Modifier.padding(bottom = 20.dp),
-                    text = stringResource(R.string.categories),
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(
-                        count = categoriesByUser.size
-                    ) { index ->
-                        val categoryItem = categoriesByUser[index]
                         Box(
                             modifier = Modifier
-                                .width((((screenWidth.value - 60) / 2) - 15).dp)
-                                .background(
-
-                                    color = Color(BackgroundLevel2),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                                .clickable {
-                                    categorySelected = categoryItem.name
-                                    categorySelectedId = categoryItem.id
-                                    showCategoryBottomSheet = true
-                                }
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterEnd
                         ) {
-                            Column(
+                            Row {
+                                Image(
+                                    painter = painterResource(R.drawable.calendar_search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {
+                                            showDateDialog = true
+                                        },
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.notification),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(17.dp))
+                    Text(
+                        modifier = Modifier.padding(bottom = 20.dp),
+                        text = stringResource(R.string.categories),
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(
+                            count = categoriesWithCounts.size
+                        ) { index ->
+                            val categoryItem = categoriesWithCounts[index]
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(15.dp)
+                                    .width((((screenWidth.value - 60) / 2) - 15).dp)
+                                    .background(
+
+                                        color = Color(BackgroundLevel2),
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .clickable {
+                                        categorySelected = categoryItem.category.name
+                                        categorySelectedId = categoryItem.category.id
+                                        showCategoryBottomSheet = true
+                                    }
                             ) {
-                                Text(
-                                    modifier = Modifier.padding(start = 6.dp),
-                                    text = "40 tasks",
-                                    fontSize = 10.sp,
-                                    color = Color.White
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 6.dp),
-                                    text = categoryItem.name,
-                                    color = Color.White,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(15.dp)
                                 ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.horizontal_line),
-                                        modifier = Modifier
-                                            .height(25.dp)
-                                            .weight(1f),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.FillWidth,
-                                        colorFilter = ColorFilter.tint(Color(categoryItem.color))
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = "${categoryItem.taskCount} tasks",
+                                        fontSize = 10.sp,
+                                        color = Color.White
                                     )
-                                    Image(
-                                        painter = painterResource(R.drawable.horizontal_line),
-                                        modifier = Modifier
-                                            .height(25.dp)
-                                            .weight(1f),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.FillWidth,
-                                        colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = categoryItem.category.name,
+                                        color = Color.White,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.horizontal_line),
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                                .weight(1f),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillWidth,
+                                            colorFilter = ColorFilter.tint(Color(categoryItem.category.color))
+                                        )
+                                        Image(
+                                            painter = painterResource(R.drawable.horizontal_line),
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                                .weight(1f),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillWidth,
+                                            colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = 20.dp)
+                            .onGloballyPositioned { coordinates: LayoutCoordinates ->
+                                val positionInRoot = coordinates.positionInRoot()
+                                titlePositionY = positionInRoot.y
+                            },
+                        text = stringResource(R.string.today_s_tasks),
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
+                    TasksList(
+                        tasksForDay = tasksForDay,
+                        categoriesByUser = categoriesWithCounts.map { it.category },
+                        startPadding = 0.dp,
+                        endPadding = 0.dp,
+                        bottomPadding = 0.dp,
+                        backgroundColor = BackgroundLevel3
+                    )
                 }
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
+                Row(
                     modifier = Modifier
-                        .padding(bottom = 20.dp)
-                        .onGloballyPositioned { coordinates: LayoutCoordinates ->
-                            val positionInRoot = coordinates.positionInRoot()
-                            titlePositionY = positionInRoot.y
-                        },
-                    text = stringResource(R.string.today_s_tasks),
-                    color = Color.White,
-                    fontSize = 17.sp
-                )
-                TasksList(
-                    tasksForDay = tasksForDay,
-                    categoriesByUser = categoriesByUser,
-                    startPadding = 0.dp,
-                    endPadding = 0.dp,
-                    bottomPadding = 0.dp,
-                    backgroundColor = BackgroundLevel3
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .background(
-                            color = Color(CreateButtons),
-                            shape = CircleShape
+                        .fillMaxSize()
+                        .padding(24.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .background(
+                                color = Color(CreateButtons),
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                scope.launch {
+                                    drawerState.open()
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            modifier = Modifier.size(45.dp),
+                            painter = painterResource(R.drawable.add),
+                            contentDescription = null,
+                            contentScale = ContentScale.Inside,
+                            colorFilter = ColorFilter.tint(Color.White)
                         )
-                        .clickable {
+                    }
+                }
+            }
+            else if (categoriesWithCounts.isEmpty() && tasksForDay.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(BackgroundLevel3))
+                        .padding(24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(BackgroundLevel3))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.back),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        navController.navigateUp()
+                                    },
+                                contentDescription = null,
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Row {
+                                Image(
+                                    painter = painterResource(R.drawable.calendar_search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.notification),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    EmptyTasksContent(
+                        addingTaskClick = {
                             scope.launch {
                                 drawerState.open()
                             }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(45.dp),
-                        painter = painterResource(R.drawable.add),
-                        contentDescription = null,
-                        contentScale = ContentScale.Inside,
-                        colorFilter = ColorFilter.tint(Color.White)
+                        }
                     )
+                }
+            }
+            else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(BackgroundLevel3))
+                        .padding(24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(BackgroundLevel3))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.back),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        navController.navigateUp()
+                                    },
+                                contentDescription = null,
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(Color(BackgroundLevel3)),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Row {
+                                Image(
+                                    painter = painterResource(R.drawable.calendar_search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {
+                                            showDateDialog = true
+                                        },
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.search),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                                Spacer(modifier = Modifier.width(15.dp))
+                                Image(
+                                    painter = painterResource(R.drawable.notification),
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .clickable {},
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Inside,
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(17.dp))
+                    Text(
+                        modifier = Modifier.padding(bottom = 20.dp),
+                        text = stringResource(R.string.categories),
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(
+                            count = categoriesWithCounts.size
+                        ) { index ->
+                            val categoryItem = categoriesWithCounts[index]
+                            Box(
+                                modifier = Modifier
+                                    .width((((screenWidth.value - 60) / 2) - 15).dp)
+                                    .background(
+
+                                        color = Color(BackgroundLevel2),
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .clickable {
+                                        categorySelected = categoryItem.category.name
+                                        categorySelectedId = categoryItem.category.id
+                                        showCategoryBottomSheet = true
+                                    }
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(15.dp)
+                                ) {
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = "${categoryItem.taskCount} tasks",
+                                        fontSize = 10.sp,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = categoryItem.category.name,
+                                        color = Color.White,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.horizontal_line),
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                                .weight(1f),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillWidth,
+                                            colorFilter = ColorFilter.tint(Color(categoryItem.category.color))
+                                        )
+                                        Image(
+                                            painter = painterResource(R.drawable.horizontal_line),
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                                .weight(1f),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.FillWidth,
+                                            colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.weight(1f))
+                    LazyColumn {
+                        item {
+                            EmptyTasksContent(
+                                addingTaskClick = {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -400,13 +636,15 @@ fun TasksScreen(
             val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
                 val availableHeightPx = screenHeightPx - titleYPx
                 if (availableHeightPx > 0) {
-                    with(density) { availableHeightPx.toDp() - 35.dp }
+                    with(density) { availableHeightPx.toDp() }
                 } else {
                     400.dp
                 }
             }
             ModalBottomSheet(
-                onDismissRequest = { showDateBottomSheet = false },
+                onDismissRequest = {
+                    showDateBottomSheet = false
+                                   },
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {
@@ -445,13 +683,15 @@ fun TasksScreen(
             val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
                 val availableHeightPx = screenHeightPx - titleYPx
                 if (availableHeightPx > 0) {
-                    with(density) { availableHeightPx.toDp() - 35.dp }
+                    with(density) { availableHeightPx.toDp() }
                 } else {
                     400.dp
                 }
             }
             ModalBottomSheet(
-                onDismissRequest = { showCategoryBottomSheet = false },
+                onDismissRequest = {
+                    showCategoryBottomSheet = false
+                                   },
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {

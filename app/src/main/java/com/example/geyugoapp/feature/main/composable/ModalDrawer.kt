@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,11 +17,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,27 +35,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
+import com.example.geyugoapp.feature.main.MainViewModel
 import com.example.geyugoapp.navigation.categories.CategoriesRoute
+import com.example.geyugoapp.navigation.main.MainRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
+import com.example.geyugoapp.ui.theme.BackgroundUsersDropMenu
+import com.example.geyugoapp.ui.theme.ColorUsersDropMenu
 import com.example.geyugoapp.ui.theme.MenuSeparator
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
+import com.example.geyugoapp.ui.utils.capitalizeFirstLetter
 
 @Composable
 fun ModalDrawer(
     modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
     drawerState: DrawerState,
     userName: String?,
     navController: NavController,
+    closeDrawer: () -> Unit,
     userId: Long?,
     content: @Composable () -> Unit
 
 ) {
     val navigationDrawerWidth = 260.dp
+
+    val expanded by viewModel.expanded.collectAsStateWithLifecycle()
+
+    val users by viewModel.users.collectAsStateWithLifecycle()
 
     ModalNavigationDrawer(
         modifier = modifier,
@@ -92,11 +110,72 @@ fun ModalDrawer(
                             modifier = Modifier
                                 .weight(1f)
                                 .size(50.dp)
-                                .clickable {},
+                                .clickable {
+                                    viewModel.setExpanded(expanded = true)
+                                },
                             contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(Color.White)
                         )
+                    }
+                    DropdownMenu(
+                        modifier = Modifier.background(Color(BackgroundUsersDropMenu)),
+                        expanded = expanded.expanded,
+                        onDismissRequest = {
+                            viewModel.setExpanded(expanded = false)
+                        },
+                        offset = DpOffset(21.dp, 0.dp)
+                    ) {
+                        users.forEach { user ->
+                            DropdownMenuItem(
+                                contentPadding = PaddingValues(0.dp),
+                                text = {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 2.dp, top = 1.dp, bottom = 7.dp, end = 2.dp)
+                                            .background(
+                                                color = Color(ColorUsersDropMenu),
+                                                shape = RoundedCornerShape(10.dp)
+                                            )
+                                            .width(150.dp)
+                                            .height(40.dp),
+                                        contentAlignment = Alignment.CenterStart
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.padding(start = 15.dp),
+                                                text = capitalizeFirstLetter(user.name),
+                                                color = Color.White,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                            Spacer(modifier = Modifier.weight(1f))
+                                            Image(
+                                                painter = painterResource(R.drawable.user),
+                                                modifier = Modifier
+                                                    .weight(0.3f)
+                                                    .size(10.dp),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Inside,
+                                                colorFilter = ColorFilter.tint(Color.White)
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                        }
+                                    }
+                                },
+                                onClick = {
+                                    navController.navigate(
+                                        MainRoute(
+                                            userId = user.id
+                                        )
+                                    )
+                                    viewModel.setExpanded(expanded = false)
+                                }
+                            )
+                        }
                     }
                 }
                 HorizontalDivider(
@@ -108,6 +187,7 @@ fun ModalDrawer(
                         .padding(20.dp)
                         .width((navigationDrawerWidth.value * 0.8).dp),
                     onClick = {
+                        closeDrawer()
                         navController.navigate(
                             CategoriesRoute(
                                 userId = userId

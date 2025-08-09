@@ -54,3 +54,7 @@ val ColorCategory7 = 0xFF17FE7C
 val ColorCategoryOthers = 0xFF919094
 
 val LinesCategories = 0xFF8E90A0
+
+val BackgroundUsersDropMenu = 0xFF1E1B4B
+
+val ColorUsersDropMenu = 0xFF4338CA

@@ -30,4 +30,8 @@ class TaskDataSourceImpl(
     override suspend fun updateTask(task: Task) {
         taskDao.updateTask(task.toDbDto())
     }
+
+    override suspend fun getCountTasksByCategory(categoryId: Long): Int {
+        return taskDao.getCountTasksByCategory(categoryId)
+    }
 }
