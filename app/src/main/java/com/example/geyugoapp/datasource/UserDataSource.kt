@@ -12,4 +12,15 @@ interface UserDataSource {
     suspend fun getUserById(userId: Long): User
 
     suspend fun getAllUsers(): List<User>
+
+    suspend fun deleteUser(user: User)
+
+    suspend fun getUsersCount(): Int
+
+    suspend fun updateAllUsersOnlineStatus(online: Boolean)
+
+    suspend fun updateUserOnlineStatus(userId: Long, online: Boolean)
+
+    suspend fun getUserIdByOnlineStatus(isOnline: Boolean): Long
+
 }

@@ -8,7 +8,8 @@ fun User.toDbDto(): UserDbDto {
         id = id,
         name = name,
         notificationTime = notificationTime,
-        notificationsActive = notificationsActive
+        notificationsActive = notificationsActive,
+        online = online
     )
 }
 
@@ -17,6 +18,7 @@ fun UserDbDto.toUser(): User {
         id = id,
         name = name,
         notificationTime = notificationTime,
-        notificationsActive = notificationsActive
+        notificationsActive = notificationsActive,
+        online = online
     )
 }

@@ -76,7 +76,7 @@ fun EmptyCategoriesContent(
         }
         Spacer(modifier = Modifier.weight(0.4f))
         Image(
-            painter = painterResource(R.drawable.bed_hostel_hotel_svgrepo_com),
+            painter = painterResource(R.drawable.bed_hostel_hotel),
             modifier = Modifier
                 .size(200.dp),
             contentDescription = null,

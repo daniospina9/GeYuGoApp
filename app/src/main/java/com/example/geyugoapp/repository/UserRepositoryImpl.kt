@@ -21,4 +21,24 @@ class UserRepositoryImpl(
     override suspend fun getAllUsers(): List<User> {
         return userDataSource.getAllUsers()
     }
+
+    override suspend fun deleteUser(user: User) {
+        userDataSource.deleteUser(user)
+    }
+
+    override suspend fun getUsersCount(): Int {
+        return userDataSource.getUsersCount()
+    }
+
+    override suspend fun updateAllUsersOnlineStatus(online: Boolean) {
+        userDataSource.updateAllUsersOnlineStatus(online)
+    }
+
+    override suspend fun updateUserOnlineStatus(userId: Long, online: Boolean) {
+        userDataSource.updateUserOnlineStatus(userId, online)
+    }
+
+    override suspend fun getUserIdByOnlineStatus(isOnline: Boolean): Long {
+        return userDataSource.getUserIdByOnlineStatus(isOnline)
+    }
 }

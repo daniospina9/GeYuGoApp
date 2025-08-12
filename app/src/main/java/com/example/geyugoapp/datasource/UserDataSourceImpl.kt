@@ -26,4 +26,24 @@ class UserDataSourceImpl(
     override suspend fun getAllUsers(): List<User> {
         return userDao.getAllUsers().map { it.toUser() }
     }
+
+    override suspend fun deleteUser(user: User) {
+        userDao.deleteUser(user.toDbDto())
+    }
+
+    override suspend fun getUsersCount(): Int {
+        return userDao.getUsersCount()
+    }
+
+    override suspend fun updateAllUsersOnlineStatus(online: Boolean) {
+        userDao.updateAllUsersOnlineStatus(online)
+    }
+
+    override suspend fun updateUserOnlineStatus(userId: Long, online: Boolean) {
+        userDao.updateUserOnlineStatus(userId, online)
+    }
+
+    override suspend fun getUserIdByOnlineStatus(isOnline: Boolean): Long {
+        return userDao.getUserIdByOnlineStatus(isOnline)
+    }
 }

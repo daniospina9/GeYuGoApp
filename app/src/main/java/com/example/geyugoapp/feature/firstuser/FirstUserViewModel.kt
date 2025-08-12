@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.geyugoapp.domain.users.models.User
 import com.example.geyugoapp.domain.users.usecases.GetUserById
+import com.example.geyugoapp.domain.users.usecases.GetUserIdByOnlineStatus
+import com.example.geyugoapp.domain.users.usecases.GetUsersCount
 import com.example.geyugoapp.domain.users.usecases.InsertUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,8 @@ data class FirstUserState(
 class FirstUserViewModel @Inject constructor(
     private val insertUser: InsertUser,
     private val getUserById: GetUserById,
+    getUsersCount: GetUsersCount,
+    getUserIdByOnlineStatus: GetUserIdByOnlineStatus
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FirstUserState())
@@ -33,6 +37,16 @@ class FirstUserViewModel @Inject constructor(
 
     fun setName(name: String) {
         _state.update { it.copy(name = name) }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val findOutUsers = getUsersCount()
+            if (findOutUsers > 0) {
+                val lastUserIdOnline = getUserIdByOnlineStatus(isOnline = true)
+                _events.send(Event.NavigateToMain(userId = lastUserIdOnline))
+            } else return@launch
+        }
     }
 
     fun saveUser() {

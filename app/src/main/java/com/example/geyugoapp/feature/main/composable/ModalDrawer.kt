@@ -45,6 +45,7 @@ import com.example.geyugoapp.R
 import com.example.geyugoapp.feature.main.MainViewModel
 import com.example.geyugoapp.navigation.categories.CategoriesRoute
 import com.example.geyugoapp.navigation.main.MainRoute
+import com.example.geyugoapp.navigation.settings.SettingsRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.BackgroundUsersDropMenu
@@ -133,7 +134,12 @@ fun ModalDrawer(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 2.dp, top = 1.dp, bottom = 7.dp, end = 2.dp)
+                                            .padding(
+                                                start = 2.dp,
+                                                top = 1.dp,
+                                                bottom = 7.dp,
+                                                end = 2.dp
+                                            )
                                             .background(
                                                 color = Color(ColorUsersDropMenu),
                                                 shape = RoundedCornerShape(10.dp)
@@ -145,24 +151,22 @@ fun ModalDrawer(
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
+                                            Image(
+                                                painter = painterResource(R.drawable.user),
+                                                modifier = Modifier
+                                                    .padding(start = 15.dp)
+                                                    .size(18.dp),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Inside,
+                                                colorFilter = ColorFilter.tint(Color.White)
+                                            )
+                                            Spacer(modifier = Modifier.width(7.dp))
                                             Text(
-                                                modifier = Modifier.padding(start = 15.dp),
                                                 text = capitalizeFirstLetter(user.name),
                                                 color = Color.White,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
-                                            Spacer(modifier = Modifier.weight(1f))
-                                            Image(
-                                                painter = painterResource(R.drawable.user),
-                                                modifier = Modifier
-                                                    .weight(0.3f)
-                                                    .size(10.dp),
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Inside,
-                                                colorFilter = ColorFilter.tint(Color.White)
-                                            )
-                                            Spacer(modifier = Modifier.width(3.dp))
                                         }
                                     }
                                 },
@@ -223,7 +227,14 @@ fun ModalDrawer(
                     modifier = Modifier
                         .padding(start = 20.dp)
                         .width((navigationDrawerWidth.value * 0.8).dp),
-                    onClick = {},
+                    onClick = {
+                        closeDrawer()
+                        navController.navigate(
+                            SettingsRoute(
+                                userId = userId
+                            )
+                        )
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(BackgroundLevel1),
                     ),
