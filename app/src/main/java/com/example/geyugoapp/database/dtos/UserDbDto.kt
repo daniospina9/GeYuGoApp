@@ -8,5 +8,6 @@ data class UserDbDto(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val name: String,
     val notificationTime: Long,
-    val notificationsActive: Boolean
+    val notificationsActive: Boolean,
+    val online: Boolean
 )

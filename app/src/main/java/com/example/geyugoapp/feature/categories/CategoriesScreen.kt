@@ -65,7 +65,6 @@ import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.feature.categories.composable.EmptyCategoriesContent
 import com.example.geyugoapp.feature.categories.composable.ModalBottomContent
 import com.example.geyugoapp.feature.categories.composable.MyCustomDragHandle
-import com.example.geyugoapp.navigation.main.MainRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers

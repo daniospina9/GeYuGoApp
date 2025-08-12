@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.geyugoapp.domain.users.models.User
 import com.example.geyugoapp.domain.users.usecases.GetAllUsers
 import com.example.geyugoapp.domain.users.usecases.GetUserById
+import com.example.geyugoapp.domain.users.usecases.UpdateAllUsersOnlineStatus
+import com.example.geyugoapp.domain.users.usecases.UpdateUserOnlineStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +26,9 @@ data class ModalDrawerState(
 class MainViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getUserById: GetUserById,
-    private val getAllUsers: GetAllUsers
+    private val getAllUsers: GetAllUsers,
+    updateAllUsersOnlineStatus: UpdateAllUsersOnlineStatus,
+    updateUserOnlineStatus: UpdateUserOnlineStatus
 ) : ViewModel() {
 
     private val _events = Channel<Event>()
@@ -45,6 +49,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (userId != null) {
                 _events.send(Event.ShowMessage("Welcome, ${getUserById(userId).name}!"))
+                updateAllUsersOnlineStatus(online = false)
+                updateUserOnlineStatus(userId = userId, online = true)
                 refreshUser(userId)
                 _users.update { getAllUsers() }
             } else {
