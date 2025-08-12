@@ -8,7 +8,6 @@ import com.example.geyugoapp.domain.users.usecases.DeleteUser
 import com.example.geyugoapp.domain.users.usecases.GetAllUsers
 import com.example.geyugoapp.domain.users.usecases.GetUserById
 import com.example.geyugoapp.domain.users.usecases.InsertUser
-import com.example.geyugoapp.feature.firstuser.FirstUserViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

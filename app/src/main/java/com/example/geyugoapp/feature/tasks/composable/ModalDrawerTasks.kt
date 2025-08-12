@@ -40,12 +40,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,6 +64,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
+import com.example.geyugoapp.ui.utils.tasks.getFormattedTime
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,39 +83,20 @@ fun ModalDrawerTasks(
 
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
+    val drawerTaskState by viewModel.drawerTaskState.collectAsStateWithLifecycle()
+
+    val datesState by viewModel.datesState.collectAsStateWithLifecycle()
+
     val scope = rememberCoroutineScope()
 
-    var expanded by remember { mutableStateOf(false) }
-
-    var selection by remember { mutableStateOf("Category") }
-
-    var showDateDialog by remember { mutableStateOf(false) }
-
-    val calendar = Calendar.getInstance()
-    calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-    calendar.set(java.util.Calendar.MINUTE, 0)
-    calendar.set(java.util.Calendar.SECOND, 0)
-    calendar.set(java.util.Calendar.MILLISECOND, 0)
-
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = calendar.timeInMillis,
+        initialSelectedDateMillis = datesState.calendar.timeInMillis,
         initialDisplayMode = DisplayMode.Input
     )
-
-    var showTimePicker by remember { mutableStateOf(false) }
 
     val timePickerState = rememberTimePickerState(
         is24Hour = false
     )
-
-    var day by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.DAY_OF_MONTH)) }
-
-    var month by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.MONTH) +1) }
-
-    var year by rememberSaveable { mutableIntStateOf(calendar.get(Calendar.YEAR)) }
-
-    var timeMessage by remember { mutableStateOf("Add Time") }
-
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         ModalNavigationDrawer(
@@ -185,7 +162,7 @@ fun ModalDrawerTasks(
                                         .height(50.dp)
                                         .width(155.dp),
                                     onClick = {
-                                        expanded = true
+                                        viewModel.setExpandedTaskMenu(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color(BackgroundLevel1),
@@ -196,7 +173,7 @@ fun ModalDrawerTasks(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            text = selection,
+                                            text = drawerTaskState.categorySelection,
                                             color = Color.White,
                                             fontSize = 14.sp,
                                         )
@@ -212,8 +189,10 @@ fun ModalDrawerTasks(
                                     }
                                 }
                                 DropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false },
+                                    expanded = drawerTaskState.expandedTaskMenu,
+                                    onDismissRequest = {
+                                        viewModel.setExpandedTaskMenu(false)
+                                    },
                                     offset = DpOffset(21.dp, 0.dp)
                                 ) {
                                     if (categoriesByUser.isEmpty()) {
@@ -221,7 +200,7 @@ fun ModalDrawerTasks(
                                             modifier = Modifier
                                                 .padding(start = 6.dp, end = 6.dp)
                                                 .clickable {
-                                                    expanded = false
+                                                    viewModel.setExpandedTaskMenu(false)
                                                 },
                                             text = stringResource(R.string.there_are_no_categories),
                                         )
@@ -230,8 +209,8 @@ fun ModalDrawerTasks(
                                             DropdownMenuItem(
                                                 text = { Text(category.name) },
                                                 onClick = {
-                                                    expanded = false
-                                                    selection = category.name
+                                                    viewModel.setExpandedTaskMenu(false)
+                                                    viewModel.setCategorySelection(category.name)
                                                 }
                                             )
                                         }
@@ -246,7 +225,7 @@ fun ModalDrawerTasks(
                                         .height(50.dp)
                                         .width(155.dp),
                                     onClick = {
-                                        showDateDialog = true
+                                        viewModel.setShowDateTaskMenuDialog(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color(BackgroundLevel1),
@@ -266,7 +245,7 @@ fun ModalDrawerTasks(
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = "$day/$month/$year",
+                                            text = "${datesState.day}/${datesState.month}/${datesState.year}",
                                             color = Color.White,
                                             fontSize = 14.sp,
                                         )
@@ -281,7 +260,7 @@ fun ModalDrawerTasks(
                                         .height(50.dp)
                                         .width(155.dp),
                                     onClick = {
-                                        showTimePicker = true
+                                        viewModel.setShowTimePicker(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color(BackgroundLevel1),
@@ -292,7 +271,7 @@ fun ModalDrawerTasks(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            text = timeMessage,
+                                            text = drawerTaskState.timeTaskMessage,
                                             color = Color.White,
                                             fontSize = 14.sp,
                                         )
@@ -310,21 +289,21 @@ fun ModalDrawerTasks(
                                     val hourToUse: Int
                                     val minuteToUse: Int
                                     val name: String
-                                    if (timeMessage == "Add Time") {
+                                    if (drawerTaskState.timeTaskMessage == "Add Time") {
                                         hourToUse = 23
                                         minuteToUse = 59
                                     } else {
                                         hourToUse = timePickerState.hour
                                         minuteToUse = timePickerState.minute
                                     }
-                                    if (selection == "Category") {
+                                    if (drawerTaskState.categorySelection == "Category") {
                                         viewModel.createOthersCategory(
                                             selectedDateMillis = datePickerState.selectedDateMillis,
                                             hour = hourToUse,
                                             minute = minuteToUse
                                         )
                                     } else {
-                                        name = selection
+                                        name = drawerTaskState.categorySelection
                                         viewModel.addTask(
                                             selectedDateMillis = datePickerState.selectedDateMillis,
                                             hour = hourToUse,
@@ -332,8 +311,8 @@ fun ModalDrawerTasks(
                                             name = name
                                         )
                                     }
-                                    timeMessage = "Add Time"
-                                    selection = "Category"
+                                    viewModel.setTimeTaskMessage("Add Time")
+                                    viewModel.setCategorySelection("Category")
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(CreateButtons),
@@ -356,21 +335,23 @@ fun ModalDrawerTasks(
             }
         }
     }
-    if (showDateDialog) {
+    if (drawerTaskState.showDateTaskMenuDialog) {
         DatePickerDialog(
             onDismissRequest = {
-                showDateDialog = false
+                viewModel.setShowDateTaskMenuDialog(false)
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        showDateDialog = false
+                        viewModel.setShowDateTaskMenuDialog(false)
                         val result = datePickerState.selectedDateMillis
                         if (result != null) {
                             val newCalendar = Calendar.getInstance().apply { timeInMillis = result }
-                            day = newCalendar.get(Calendar.DAY_OF_MONTH) + 1
-                            month = newCalendar.get(Calendar.MONTH) + 1
-                            year = newCalendar.get(Calendar.YEAR)
+                            viewModel.setTaskDate(
+                                day = newCalendar.get(Calendar.DAY_OF_MONTH) + 1,
+                                month = newCalendar.get(Calendar.MONTH) + 1,
+                                year = newCalendar.get(Calendar.YEAR)
+                            )
                         }
                     }
                 ) {
@@ -382,9 +363,11 @@ fun ModalDrawerTasks(
             DatePicker(datePickerState)
         }
     }
-    if (showTimePicker) {
+    if (drawerTaskState.showTimePicker) {
         Dialog(
-            onDismissRequest = { showTimePicker = false }
+            onDismissRequest = {
+                viewModel.setShowTimePicker(false)
+            }
         ) {
             Column(
                 modifier = Modifier
@@ -432,7 +415,7 @@ fun ModalDrawerTasks(
                 ) {
                     Button(
                         onClick = {
-                            showTimePicker = false
+                            viewModel.setShowTimePicker(false)
                                   },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
@@ -445,17 +428,14 @@ fun ModalDrawerTasks(
                     }
                     Button(
                         onClick = {
-                            showTimePicker = false
-                            val hour24 = timePickerState.hour
-                            val minute = timePickerState.minute
-                            val hour12 = when {
-                                hour24 == 0 -> 12
-                                hour24 > 12 -> hour24 - 12
-                                else -> hour24
-                            }
-                            val amPm = if (hour24 < 12) "AM" else "PM"
-                            val formattedTime = String.format("%02d:%02d", hour12, minute)
-                            timeMessage = "$formattedTime $amPm"
+                            viewModel.setShowTimePicker(false)
+                            val transformedTime = getFormattedTime(
+                                hour24 = timePickerState.hour,
+                                minute = timePickerState.minute
+                            )
+                            val formattedTime = transformedTime.formattedTime
+                            val amPm = transformedTime.amPm
+                            viewModel.setTimeTaskMessage("$formattedTime $amPm")
                                   },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
@@ -467,7 +447,7 @@ fun ModalDrawerTasks(
                         )
                     }
                 }
-                }
             }
         }
     }
+}
