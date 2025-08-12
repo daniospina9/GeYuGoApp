@@ -1,5 +1,6 @@
 package com.example.geyugoapp.feature.tasks
 
+import android.icu.util.Calendar
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +37,21 @@ data class CategoryWithTaskCount(
     val taskCount: Int
 )
 
+data class DrawerTaskState(
+    val expandedTaskMenu: Boolean = false,
+    val categorySelection: String = "Category",
+    val showDateTaskMenuDialog: Boolean = false,
+    val showTimePicker: Boolean = false,
+    val timeTaskMessage: String = "Add Time"
+)
+
+data class TaskDate(
+    val day: Int = 0,
+    val month: Int = 0,
+    val year: Int = 0,
+    val calendar: Calendar = Calendar.getInstance()
+)
+
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -56,6 +72,9 @@ class TasksViewModel @Inject constructor(
     private val _categoriesWithCounts = MutableStateFlow<List<CategoryWithTaskCount>>(emptyList())
     val categoriesWithCounts = _categoriesWithCounts.asStateFlow()
 
+    private val _drawerTaskState = MutableStateFlow(DrawerTaskState())
+    val drawerTaskState = _drawerTaskState.asStateFlow()
+
     private val _events = Channel<Event>()
     val events = _events.receiveAsFlow()
 
@@ -65,11 +84,52 @@ class TasksViewModel @Inject constructor(
     private val _tasksByUserId = MutableStateFlow<List<Task>>(emptyList())
     val tasksByUserId = _tasksByUserId.asStateFlow()
 
+    private val _datesState = MutableStateFlow(TaskDate())
+    val datesState = _datesState.asStateFlow()
+
     val userId = savedStateHandle.get<Long?>("userId")
 
     init {
         refreshCategories()
         refreshTasks()
+        val calendar = Calendar.getInstance()
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+        calendar.set(java.util.Calendar.MINUTE, 0)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        calendar.set(java.util.Calendar.MILLISECOND, 0)
+        _datesState.update {
+            it.copy(
+                day = calendar.get(Calendar.DAY_OF_MONTH),
+                month = calendar.get(Calendar.MONTH) + 1,
+                year = calendar.get(Calendar.YEAR),
+                calendar = calendar
+            )
+        }
+
+    }
+
+    fun setExpandedTaskMenu(expandedTaskMenu: Boolean) {
+        _drawerTaskState.update { it.copy(expandedTaskMenu = expandedTaskMenu) }
+    }
+
+    fun setCategorySelection(categorySelection: String) {
+        _drawerTaskState.update { it.copy(categorySelection = categorySelection) }
+    }
+
+    fun setShowDateTaskMenuDialog(showDateTaskMenuDialog: Boolean) {
+        _drawerTaskState.update { it.copy(showDateTaskMenuDialog = showDateTaskMenuDialog) }
+    }
+
+    fun setShowTimePicker(showTimePicker: Boolean) {
+        _drawerTaskState.update { it.copy(showTimePicker = showTimePicker) }
+    }
+
+    fun setTaskDate(day: Int, month: Int, year: Int) {
+        _datesState.update { it.copy(day = day, month = month, year = year) }
+    }
+
+    fun setTimeTaskMessage(timeTaskMessage: String) {
+        _drawerTaskState.update { it.copy(timeTaskMessage = timeTaskMessage) }
     }
 
     private fun refreshCategories() {
