@@ -1,6 +1,7 @@
 package com.example.geyugoapp.feature.main
 
 import android.icu.util.Calendar
+import androidx.compose.material3.DrawerValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -152,6 +153,7 @@ class MainViewModel @Inject constructor(
                 )
                 refreshCategories()
                 _state.update { it.copy(name = "") }
+                _events.send(Event.ShowMessage("Task created successfully"))
             } else {
                 val categoryId = getCategoryIdByName(name = "Others", userId = userId).id
                 insertTask.invoke(
@@ -164,7 +166,41 @@ class MainViewModel @Inject constructor(
                 )
                 refreshCategories()
                 _state.update { it.copy(name = "") }
+                _events.send(Event.ShowMessage("Task created successfully"))
             }
+        }
+    }
+
+    fun addTask(selectedDateMillis: Long?, hour: Int, minute: Int, name: String) {
+        val myNewTask = _state.value.name
+        val dateTimeByUI = getCombinedDateTimeMillis(
+            selectedDateMillis = selectedDateMillis,
+            hour = hour,
+            minute = minute
+        )
+        val dateTime = dateTimeByUI ?: 0L
+        viewModelScope.launch(Dispatchers.IO) {
+            if (myNewTask.isBlank()) {
+                _events.send(Event.ShowMessage("Task name cannot be empty"))
+                return@launch
+            } else if (userId != null) {
+                val categoryId = getCategoryIdByName(name = name, userId = userId).id
+                insertTask.invoke(
+                    Task(
+                        name = myNewTask,
+                        dateTime = dateTime,
+                        userId = userId,
+                        categoryId = categoryId
+                    )
+                )
+                refreshCategories()
+                _state.update { it.copy(name = "") }
+                _events.send(Event.ShowMessage("Task created successfully"))
+            } else {
+                _events.send(Event.ShowMessage("Error: Cannot save task. User ID is missing"))
+                _state.update { it.copy(name = "") }
+            }
+
         }
     }
 

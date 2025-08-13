@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
+import com.example.geyugoapp.feature.main.composable.AddTaskModalDrawer
 import com.example.geyugoapp.feature.main.composable.ModalDrawer
 import com.example.geyugoapp.navigation.tasks.TasksRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
@@ -72,7 +73,9 @@ fun MainScreen(
 
     val userNameUi = capitalizeFirstLetter(simpleUserName)
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val menuDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    val taskDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val scope = rememberCoroutineScope()
 
@@ -87,200 +90,208 @@ fun MainScreen(
     }
 
     Scaffold { innerPadding ->
-        ModalDrawer(
+        AddTaskModalDrawer(
             modifier = Modifier.padding(innerPadding),
-            drawerState = drawerState,
-            userName = userNameCap,
-            userId = userId,
-            navController = navController,
-            closeDrawer = {
-                scope.launch {
-                    drawerState.close()
-                }
-            }
+            drawerState = taskDrawerState
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(BackgroundLevel2))
-                    .padding(24.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.menu_duo),
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable {
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        },
-                    contentDescription = null,
-                    contentScale = ContentScale.Inside,
-                    colorFilter = ColorFilter.tint(Color.White)
-                )
-                Spacer(modifier = Modifier.weight(0.065f))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .size(76.dp)
-                            .background(
-                                color = Color(BackgroundLevel1),
-                                shape = CircleShape
-                            )
-                            .border(
-                                width = 3.dp,
-                                color = Color(FramePhotoProfile),
-                                shape = CircleShape
-                            )
-                    ) {}
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Column {
-                        Text(
-                            modifier = Modifier.padding(start = 24.dp),
-                            text = stringResource(R.string.hello),
-                            color = Color.White,
-                            fontSize = 27.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = 24.dp),
-                            text = userNameUi,
-                            color = Color.White,
-                            fontSize = 27.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+            ModalDrawer(
+                drawerState = menuDrawerState,
+                userName = userNameCap,
+                userId = userId,
+                navController = navController,
+                closeDrawer = {
+                    scope.launch {
+                        menuDrawerState.close()
                     }
                 }
-                Spacer(modifier = Modifier.weight(0.035f))
-                Box(
+            ) {
+                Column(
                     modifier = Modifier
-                        .weight(0.9f)
                         .fillMaxSize()
-                        .background(
-                            color = Color(BackgroundLevel1),
-                            shape = RoundedCornerShape(20.dp)
-                        )
+                        .background(Color(BackgroundLevel2))
+                        .padding(24.dp)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Image(
+                        painter = painterResource(R.drawable.menu_duo),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable {
+                                scope.launch {
+                                    menuDrawerState.open()
+                                }
+                            },
+                        contentDescription = null,
+                        contentScale = ContentScale.Inside,
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                    Spacer(modifier = Modifier.weight(0.065f))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.arrow_trend_up),
-                                modifier = Modifier.size(40.dp),
-                                contentDescription = null,
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color(LogosMainScreen))
-                            )
-                        }
-                        Text(
-                            text = stringResource(R.string.today_is_a_nice_day_to_reach),
-                            color = Color.White,
-                            fontSize = 23.sp
-                        )
-                        Text(
-                            text = stringResource(R.string.your_goals),
-                            color = Color.White,
-                            fontSize = 23.sp
-                        )
-                        Spacer(modifier = Modifier.weight(0.3f))
                         Box(
                             modifier = Modifier
-                                .padding(start = 24.dp)
-                                .size(130.dp)
+                                .padding(start = 10.dp)
+                                .size(76.dp)
                                 .background(
                                     color = Color(BackgroundLevel1),
                                     shape = CircleShape
                                 )
                                 .border(
-                                    width = 7.dp,
+                                    width = 3.dp,
                                     color = Color(FramePhotoProfile),
                                     shape = CircleShape
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.achievement),
-                                modifier = Modifier.size(60.dp),
-                                contentDescription = null,
-                                contentScale = ContentScale.Inside,
-                                colorFilter = ColorFilter.tint(Color(LogosMainScreen))
+                                )
+                        ) {}
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Column {
+                            Text(
+                                modifier = Modifier.padding(start = 24.dp),
+                                text = stringResource(R.string.hello),
+                                color = Color.White,
+                                fontSize = 27.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 24.dp),
+                                text = userNameUi,
+                                color = Color.White,
+                                fontSize = 27.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
-                        Spacer(modifier = Modifier.weight(0.7f))
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp),
-                            onClick = {
-                                navController.navigate(
-                                    TasksRoute(
-                                        userId = userId
-                                    )
-                                )
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(BackgroundLevel3),
-                            ),
-                            shape = RoundedCornerShape(10.dp)
+                    }
+                    Spacer(modifier = Modifier.weight(0.035f))
+                    Box(
+                        modifier = Modifier
+                            .weight(0.9f)
+                            .fillMaxSize()
+                            .background(
+                                color = Color(BackgroundLevel1),
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
+                                horizontalArrangement = Arrangement.End
                             ) {
                                 Image(
-                                    painter = painterResource(R.drawable.todo_list),
-                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(R.drawable.arrow_trend_up),
+                                    modifier = Modifier.size(40.dp),
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
-                                Text(
-                                    text = stringResource(R.string.your_todo_s),
-                                    color = Color.White,
-                                    fontSize = 16.sp,
+                                    colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                                 )
                             }
-                        }
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 7.dp, bottom = 20.dp),
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(BackgroundLevel3),
-                            ),
-                            shape = RoundedCornerShape(10.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                            Text(
+                                text = stringResource(R.string.today_is_a_nice_day_to_reach),
+                                color = Color.White,
+                                fontSize = 23.sp
+                            )
+                            Text(
+                                text = stringResource(R.string.your_goals),
+                                color = Color.White,
+                                fontSize = 23.sp
+                            )
+                            Spacer(modifier = Modifier.weight(0.3f))
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 24.dp)
+                                    .size(130.dp)
+                                    .background(
+                                        color = Color(BackgroundLevel1),
+                                        shape = CircleShape
+                                    )
+                                    .border(
+                                        width = 7.dp,
+                                        color = Color(FramePhotoProfile),
+                                        shape = CircleShape
+                                    ),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Image(
-                                    painter = painterResource(R.drawable.note_edit),
-                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(R.drawable.achievement),
+                                    modifier = Modifier.size(60.dp),
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(Color(LogosMainScreen))
                                 )
-                                Spacer(modifier = Modifier.width(7.dp))
-                                Text(
-                                    text = stringResource(R.string.add_task),
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                )
+                            }
+                            Spacer(modifier = Modifier.weight(0.7f))
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp, end = 20.dp),
+                                onClick = {
+                                    navController.navigate(
+                                        TasksRoute(
+                                            userId = userId
+                                        )
+                                    )
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(BackgroundLevel3),
+                                ),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.todo_list),
+                                        modifier = Modifier.size(20.dp),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Inside,
+                                        colorFilter = ColorFilter.tint(Color.White)
+                                    )
+                                    Spacer(modifier = Modifier.width(7.dp))
+                                    Text(
+                                        text = stringResource(R.string.your_todo_s),
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                    )
+                                }
+                            }
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp, end = 20.dp, top = 7.dp, bottom = 20.dp),
+                                onClick = {
+                                    scope.launch {
+                                        taskDrawerState.open()
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(BackgroundLevel3),
+                                ),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.note_edit),
+                                        modifier = Modifier.size(20.dp),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Inside,
+                                        colorFilter = ColorFilter.tint(Color.White)
+                                    )
+                                    Spacer(modifier = Modifier.width(7.dp))
+                                    Text(
+                                        text = stringResource(R.string.add_task),
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                    )
+                                }
                             }
                         }
                     }
