@@ -51,7 +51,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.FramePhotoProfile
 import com.example.geyugoapp.ui.theme.LogosMainScreen
-import com.example.geyugoapp.ui.util.getFirstWord
+import com.example.geyugoapp.ui.utils.getFirstWord
 import com.example.geyugoapp.ui.utils.capitalizeFirstLetter
 import kotlinx.coroutines.launch
 
@@ -63,18 +63,15 @@ fun MainScreen(
 
     val context = LocalContext.current
 
+    val userId = viewModel.userId
     val userName by viewModel.userName.collectAsStateWithLifecycle()
 
-    val userNameCap = capitalizeFirstLetter(userName)
-
-    val userId = viewModel.userId
-
     val simpleUserName = getFirstWord(userName)
-
+    val userNameCap = capitalizeFirstLetter(userName)
     val userNameUi = capitalizeFirstLetter(simpleUserName)
 
-    val menuDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    val menuDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val taskDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val scope = rememberCoroutineScope()
@@ -108,7 +105,7 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(BackgroundLevel2))
+                        .background(BackgroundLevel2)
                         .padding(24.dp)
                 ) {
                     Image(
@@ -134,12 +131,12 @@ fun MainScreen(
                                 .padding(start = 10.dp)
                                 .size(76.dp)
                                 .background(
-                                    color = Color(BackgroundLevel1),
+                                    color = BackgroundLevel1,
                                     shape = CircleShape
                                 )
                                 .border(
                                     width = 3.dp,
-                                    color = Color(FramePhotoProfile),
+                                    color = FramePhotoProfile,
                                     shape = CircleShape
                                 )
                         ) {}
@@ -169,7 +166,7 @@ fun MainScreen(
                             .weight(0.9f)
                             .fillMaxSize()
                             .background(
-                                color = Color(BackgroundLevel1),
+                                color = BackgroundLevel1,
                                 shape = RoundedCornerShape(20.dp)
                             )
                     ) {
@@ -187,7 +184,7 @@ fun MainScreen(
                                     modifier = Modifier.size(40.dp),
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color(LogosMainScreen))
+                                    colorFilter = ColorFilter.tint(LogosMainScreen)
                                 )
                             }
                             Text(
@@ -206,12 +203,12 @@ fun MainScreen(
                                     .padding(start = 24.dp)
                                     .size(130.dp)
                                     .background(
-                                        color = Color(BackgroundLevel1),
+                                        color = BackgroundLevel1,
                                         shape = CircleShape
                                     )
                                     .border(
                                         width = 7.dp,
-                                        color = Color(FramePhotoProfile),
+                                        color = FramePhotoProfile,
                                         shape = CircleShape
                                     ),
                                 contentAlignment = Alignment.Center
@@ -221,7 +218,7 @@ fun MainScreen(
                                     modifier = Modifier.size(60.dp),
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color(LogosMainScreen))
+                                    colorFilter = ColorFilter.tint(LogosMainScreen)
                                 )
                             }
                             Spacer(modifier = Modifier.weight(0.7f))
@@ -237,7 +234,7 @@ fun MainScreen(
                                     )
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(BackgroundLevel3),
+                                    containerColor = BackgroundLevel3,
                                 ),
                                 shape = RoundedCornerShape(10.dp)
                             ) {
@@ -265,12 +262,13 @@ fun MainScreen(
                                     .fillMaxWidth()
                                     .padding(start = 20.dp, end = 20.dp, top = 7.dp, bottom = 20.dp),
                                 onClick = {
+                                    viewModel.refreshCategories()
                                     scope.launch {
                                         taskDrawerState.open()
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(BackgroundLevel3),
+                                    containerColor = BackgroundLevel3,
                                 ),
                                 shape = RoundedCornerShape(10.dp)
                             ) {

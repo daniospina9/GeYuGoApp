@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -78,13 +79,11 @@ fun AddTaskModalDrawer(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val navigationDrawerWidth = screenWidth.value * 0.85
+    val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
-
     val drawerTaskState by viewModel.drawerTaskState.collectAsStateWithLifecycle()
-
     val datesState by viewModel.datesState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
@@ -105,7 +104,7 @@ fun AddTaskModalDrawer(
             drawerContent = {
                 ModalDrawerSheet(
                     modifier = Modifier.width(navigationDrawerWidth.dp),
-                    drawerContainerColor = Color(BackgroundLevel3)
+                    drawerContainerColor = BackgroundLevel3
                 ) {
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                         Column(
@@ -143,14 +142,14 @@ fun AddTaskModalDrawer(
                                     )
                                 },
                                 colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = Color(BackgroundLevel2),
-                                    unfocusedContainerColor = Color(BackgroundLevel2),
-                                    disabledContainerColor = Color(BackgroundLevel2),
+                                    focusedContainerColor = BackgroundLevel2,
+                                    unfocusedContainerColor = BackgroundLevel2,
+                                    disabledContainerColor = BackgroundLevel2,
                                     focusedTextColor = Color.White,
                                     unfocusedTextColor = Color.White,
                                     cursorColor = Color.White,
-                                    focusedIndicatorColor = Color(BackgroundLevel2),
-                                    unfocusedIndicatorColor = Color(BackgroundLevel2),
+                                    focusedIndicatorColor = BackgroundLevel2,
+                                    unfocusedIndicatorColor = BackgroundLevel2,
                                 )
                             )
                             Spacer(modifier = Modifier.weight(0.23f))
@@ -165,7 +164,7 @@ fun AddTaskModalDrawer(
                                         viewModel.setExpandedTaskMenu(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(BackgroundLevel1),
+                                        containerColor = BackgroundLevel1,
                                     ),
                                     shape = RoundedCornerShape(16.dp)
                                 ) {
@@ -228,7 +227,7 @@ fun AddTaskModalDrawer(
                                         viewModel.setShowDateTaskMenuDialog(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(BackgroundLevel1),
+                                        containerColor = BackgroundLevel1,
                                     ),
                                     shape = RoundedCornerShape(16.dp)
                                 ) {
@@ -263,7 +262,7 @@ fun AddTaskModalDrawer(
                                         viewModel.setShowTimePicker(true)
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(BackgroundLevel1),
+                                        containerColor = BackgroundLevel1,
                                     ),
                                     shape = RoundedCornerShape(16.dp)
                                 ) {
@@ -289,14 +288,14 @@ fun AddTaskModalDrawer(
                                     val hourToUse: Int
                                     val minuteToUse: Int
                                     val name: String
-                                    if (drawerTaskState.timeTaskMessage == "Add Time") {
+                                    if (drawerTaskState.timeTaskMessage == context.getString(R.string.add_time)) {
                                         hourToUse = 23
                                         minuteToUse = 59
                                     } else {
                                         hourToUse = timePickerState.hour
                                         minuteToUse = timePickerState.minute
                                     }
-                                    if (drawerTaskState.categorySelection == "Category") {
+                                    if (drawerTaskState.categorySelection == context.getString(R.string.category)) {
                                         viewModel.createOthersCategory(
                                             selectedDateMillis = datePickerState.selectedDateMillis,
                                             hour = hourToUse,
@@ -311,11 +310,11 @@ fun AddTaskModalDrawer(
                                             name = name
                                         )
                                     }
-                                    viewModel.setTimeTaskMessage("Add Time")
-                                    viewModel.setCategorySelection("Category")
+                                    viewModel.setTimeTaskMessage(context.getString(R.string.add_time))
+                                    viewModel.setCategorySelection(context.getString(R.string.category))
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(CreateButtons),
+                                    containerColor = CreateButtons,
                                 )
                             ) {
                                 Text(
@@ -327,7 +326,7 @@ fun AddTaskModalDrawer(
                     }
                 }
             },
-            scrimColor = Color(UnselectedMenuBackground).copy(alpha = 0.8f)
+            scrimColor = UnselectedMenuBackground.copy(alpha = 0.8f)
         )
         {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
@@ -384,7 +383,7 @@ fun AddTaskModalDrawer(
                 ) {
                     Text(
                         text = stringResource(R.string.select_time),
-                        color = Color(BackgroundLevel3),
+                        color = BackgroundLevel3,
                         fontSize = 12.sp
                     )
                 }
@@ -393,19 +392,19 @@ fun AddTaskModalDrawer(
                     timePickerState,
                     layoutType = TimePickerLayoutType.Vertical,
                     colors = TimePickerDefaults.colors(
-                        clockDialColor = Color(BackgroundLevel3),
-                        clockDialSelectedContentColor = Color(BackgroundLevel3),
+                        clockDialColor = BackgroundLevel3,
+                        clockDialSelectedContentColor = BackgroundLevel3,
                         selectorColor = Color.White,
                         clockDialUnselectedContentColor = Color.White,
                         containerColor = Color.White,
-                        periodSelectorUnselectedContentColor = Color(BackgroundLevel3),
+                        periodSelectorUnselectedContentColor = BackgroundLevel3,
                         periodSelectorUnselectedContainerColor = Color.White,
                         periodSelectorSelectedContentColor = Color.White,
-                        periodSelectorSelectedContainerColor = Color(BackgroundLevel3),
-                        timeSelectorUnselectedContentColor = Color(BackgroundLevel3),
+                        periodSelectorSelectedContainerColor = BackgroundLevel3,
+                        timeSelectorUnselectedContentColor = BackgroundLevel3,
                         timeSelectorUnselectedContainerColor = Color.White,
                         timeSelectorSelectedContentColor = Color.White,
-                        timeSelectorSelectedContainerColor = Color(BackgroundLevel3)
+                        timeSelectorSelectedContainerColor = BackgroundLevel3
                     )
                 )
                 Row(
@@ -423,7 +422,7 @@ fun AddTaskModalDrawer(
                     ) {
                         Text(
                             text = stringResource(R.string.cancel),
-                            color = Color(BackgroundLevel3)
+                            color = BackgroundLevel3
                         )
                     }
                     Button(
@@ -443,7 +442,7 @@ fun AddTaskModalDrawer(
                     ) {
                         Text(
                             text = stringResource(R.string.ok),
-                            color = Color(BackgroundLevel3)
+                            color = BackgroundLevel3
                         )
                     }
                 }

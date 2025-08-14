@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ fun DateDragHandle(
 ) {
     Surface(
         modifier = modifier,
-        color = Color(BackgroundLevel3)
+        color = BackgroundLevel3
     ) {
         Row(
             modifier = Modifier
@@ -42,8 +43,8 @@ fun DateDragHandle(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Date: $day/$month/$year",
-                color = Color(UnselectedMenuBackground),
+                text = "${stringResource(R.string.date)} $day/$month/$year",
+                color = UnselectedMenuBackground,
                 style = TextStyle (
                     fontStyle = FontStyle.Italic
                 )
@@ -58,7 +59,7 @@ fun DateDragHandle(
                     },
                 contentDescription = null,
                 contentScale = ContentScale.Inside,
-                colorFilter = ColorFilter.tint(Color(UnselectedMenuBackground))
+                colorFilter = ColorFilter.tint(UnselectedMenuBackground)
             )
         }
 

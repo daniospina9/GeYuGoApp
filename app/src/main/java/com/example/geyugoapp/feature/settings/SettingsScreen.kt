@@ -71,9 +71,7 @@ fun SettingScreen(
     val screenWidth = configuration.screenWidthDp.dp
 
     val drawersState by viewModel.drawersState.collectAsStateWithLifecycle()
-
     val userName by viewModel.userName.collectAsStateWithLifecycle()
-
     val users by viewModel.users.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = context) {
@@ -103,7 +101,7 @@ fun SettingScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color(BackgroundLevel1))
+                .background(BackgroundLevel1)
                 .padding(24.dp)
         ) {
             Row(
@@ -132,7 +130,7 @@ fun SettingScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Settings",
+                        text = stringResource(R.string.settings),
                         color = Color.White,
                         fontSize = 27.sp,
                         fontWeight = FontWeight.ExtraBold
@@ -156,7 +154,7 @@ fun SettingScreen(
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(BackgroundLevel2),
+                        containerColor = BackgroundLevel2,
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -191,7 +189,7 @@ fun SettingScreen(
                     }
                 }
                 DropdownMenu(
-                    modifier = Modifier.background(Color(BackgroundUsersDropMenu)),
+                    modifier = Modifier.background(BackgroundUsersDropMenu),
                     expanded = drawersState.expanded,
                     onDismissRequest = {
                         viewModel.setExpanded(expanded = false)
@@ -212,7 +210,7 @@ fun SettingScreen(
                                             end = 2.dp
                                         )
                                         .background(
-                                            color = Color(ColorUsersDropMenu),
+                                            color = ColorUsersDropMenu,
                                             shape = RoundedCornerShape(10.dp)
                                         )
                                         .width(150.dp)
@@ -264,7 +262,7 @@ fun SettingScreen(
                                         end = 2.dp
                                     )
                                     .background(
-                                        color = Color(ColorUsersDropMenu),
+                                        color = ColorUsersDropMenu,
                                         shape = RoundedCornerShape(10.dp)
                                     )
                                     .width(150.dp)
@@ -286,7 +284,7 @@ fun SettingScreen(
                                     )
                                     Spacer(modifier = Modifier.width(7.dp))
                                     Text(
-                                        text = "Add User",
+                                        text = stringResource(R.string.add_user),
                                         color = Color.White,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
@@ -313,7 +311,7 @@ fun SettingScreen(
                         viewModel.setShowDialog(true)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(DeleteButtonColor),
+                        containerColor = DeleteButtonColor,
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -332,7 +330,7 @@ fun SettingScreen(
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         Text(
-                            text = "Delete My User",
+                            text = stringResource(R.string.delete_my_user),
                             color = Color.White,
                             fontSize = 20.sp
                         )
@@ -357,11 +355,11 @@ fun SettingScreen(
                             viewModel.setShowDialog(false)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(FirstUserButton),
+                            containerColor = FirstUserButton,
                         )
                     ) {
                         Text(
-                            text = "Delete"
+                            text = stringResource(R.string.delete)
                         )
                     }
                 },
@@ -376,13 +374,13 @@ fun SettingScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.abort),
-                            color = Color(FirstUserButton)
+                            color = FirstUserButton
                         )
                     }
                 },
                 text = {
                     Text(
-                        text = "If you decided eliminate your User, every categories and task associated with it will eliminate too, besides you won't be able to recover this user. Do you want to continue?",
+                        text = stringResource(R.string.if_you_decided_eliminate_your_user_every_categories_and_task_associated_with_it_will_eliminate_too_besides_you_won_t_be_able_to_recover_this_user_do_you_want_to_continue),
                         textAlign = TextAlign.Left
                     )
                 },
@@ -415,7 +413,7 @@ fun SettingScreen(
                 ){
                     TextField(
                         label = { Text(
-                            text = "Add your new user"
+                            text = stringResource(R.string.add_your_new_user)
                         ) },
                         value = drawersState.newUser,
                         onValueChange = {newUser ->
@@ -430,7 +428,7 @@ fun SettingScreen(
                             }
                         ) {
                             Text(
-                                text = "Come back"
+                                text = stringResource(R.string.come_back)
                             )
                         }
                         Spacer(modifier = Modifier.width(20.dp))
@@ -440,7 +438,7 @@ fun SettingScreen(
                             }
                         ) {
                             Text(
-                                text = "Create"
+                                text = stringResource(R.string.create)
                             )
                         }
                     }

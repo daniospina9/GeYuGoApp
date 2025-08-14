@@ -1,6 +1,7 @@
 package com.example.geyugoapp.feature.tasks
 
 import android.icu.util.Calendar
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,7 @@ import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.UpdateTask
 import com.example.geyugoapp.feature.categories.CategoryWithTaskCount
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
-import com.example.geyugoapp.ui.util.tasks.getCombinedDateTimeMillis
+import com.example.geyugoapp.ui.utils.tasks.getCombinedDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -93,10 +94,10 @@ class TasksViewModel @Inject constructor(
         refreshCategories()
         refreshTasks()
         val calendar = Calendar.getInstance()
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-        calendar.set(java.util.Calendar.MINUTE, 0)
-        calendar.set(java.util.Calendar.SECOND, 0)
-        calendar.set(java.util.Calendar.MILLISECOND, 0)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         _datesState.update {
             it.copy(
                 day = calendar.get(Calendar.DAY_OF_MONTH),
@@ -226,7 +227,7 @@ class TasksViewModel @Inject constructor(
             } else if (userId == null) {
                 _events.send(Event.ShowMessage("Error: Cannot create category. User ID is missing"))
             } else if (getCountCategoriesByName(name = "Others", userId = userId) == 0) {
-                insertCategory(Category(name = "Others", color = ColorCategoryOthers, userId = userId))
+                insertCategory(Category(name = "Others", color = ColorCategoryOthers.toArgb().toLong(), userId = userId))
                 val categoryId = getCategoryIdByName(name = "Others", userId = userId).id
                 insertTask.invoke(
                     Task(

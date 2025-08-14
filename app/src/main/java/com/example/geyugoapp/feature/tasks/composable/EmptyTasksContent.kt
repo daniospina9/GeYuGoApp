@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.geyugoapp.R
@@ -46,18 +47,18 @@ fun EmptyTasksContent(
             colorFilter = ColorFilter.tint(Color.White)
         )
         Text(
-            text = "Any task Today To Do?",
+            text = stringResource(R.string.any_task_today_to_do),
             color = Color.White,
             fontSize = 25.sp
         )
         Spacer(modifier = Modifier.height(100.dp))
         Text(
-            text = "Come On, Add",
+            text = stringResource(R.string.come_on_add),
             color = Color.White,
             fontSize = 25.sp
         )
         Text(
-            text = "your first task",
+            text = stringResource(R.string.your_first_task),
             color = Color.White,
             fontSize = 25.sp
         )
@@ -67,7 +68,7 @@ fun EmptyTasksContent(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .background(Color(BackgroundLevel3)),
+                    .background(BackgroundLevel3),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Row {
@@ -84,7 +85,7 @@ fun EmptyTasksContent(
                         modifier = Modifier
                             .size(60.dp)
                             .background(
-                                color = Color(CreateButtons),
+                                color = CreateButtons,
                                 shape = CircleShape
                             )
                             .clickable {

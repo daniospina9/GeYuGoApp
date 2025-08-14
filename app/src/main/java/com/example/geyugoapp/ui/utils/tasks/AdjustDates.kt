@@ -1,11 +1,9 @@
-package com.example.geyugoapp.ui.util.tasks
+package com.example.geyugoapp.ui.utils.tasks
 
-import androidx.compose.runtime.Composable
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-@Composable
 fun adjustDates(
     dateString: String
 ): String {

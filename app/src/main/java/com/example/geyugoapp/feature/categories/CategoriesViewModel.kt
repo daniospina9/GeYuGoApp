@@ -1,5 +1,6 @@
 package com.example.geyugoapp.feature.categories
 
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,12 +23,23 @@ import javax.inject.Inject
 
 data class NewCategoryState(
     val newCategory: String = "",
-    val color: Long = ColorCategoryOthers
+    val color: Long = ColorCategoryOthers.toArgb().toLong(),
+    val colorsExpanded: Boolean = false,
+    val selectionColor: Long = 0L
 )
 
 data class CategoryWithTaskCount(
     val category: Category,
     val taskCount: Int
+)
+
+data class CategoriesScreenStates(
+    val showBottomSheetByOption: Int = 0,
+    val dropdownMenuVisibleForItem: Int? = null,
+    val categoryByEdit: Category? = null,
+    val currentCategoryName: String = "",
+    val currentCategoryColor: Long = 0L,
+    val showDialog: Boolean = false
 )
 
 @HiltViewModel
@@ -40,13 +52,16 @@ class CategoriesViewModel @Inject constructor(
     private val getCountTasksByCategory: GetCountTasksByCategory
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(NewCategoryState())
-    val state = _state.asStateFlow()
+    private val _modalCategoriesBottomState = MutableStateFlow(NewCategoryState())
+    val modalCategoriesBottomState = _modalCategoriesBottomState.asStateFlow()
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
 
     private val _categoriesWithCounts = MutableStateFlow<List<CategoryWithTaskCount>>(emptyList())
     val categoriesWithCounts = _categoriesWithCounts.asStateFlow()
+
+    private val _categoriesScreenStates = MutableStateFlow(CategoriesScreenStates())
+    val categoriesScreenStates = _categoriesScreenStates.asStateFlow()
 
     private val _events = Channel<Event>()
     val events = _events.receiveAsFlow()
@@ -72,15 +87,47 @@ class CategoriesViewModel @Inject constructor(
         }
     }
     fun setNewCategory(newCategory: String) {
-        _state.update { it.copy(newCategory = newCategory) }
+        _modalCategoriesBottomState.update { it.copy(newCategory = newCategory) }
     }
 
     fun setColor(color: Long) {
-        _state.update { it.copy(color = color) }
+        _modalCategoriesBottomState.update { it.copy(color = color) }
     }
 
     fun setEditingCategory(newCategory: String) {
-        _state.update { it.copy(newCategory = newCategory) }
+        _modalCategoriesBottomState.update { it.copy(newCategory = newCategory) }
+    }
+
+    fun setShowBottomSheetByOption(showBottomSheetByOption: Int) {
+        _categoriesScreenStates.update { it.copy(showBottomSheetByOption = showBottomSheetByOption) }
+    }
+
+    fun setDropdownMenuVisibleForItem(dropdownMenuVisibleForItem: Int?) {
+        _categoriesScreenStates.update { it.copy(dropdownMenuVisibleForItem = dropdownMenuVisibleForItem) }
+    }
+
+    fun setCategoryByEdit(categoryByEdit: Category) {
+        _categoriesScreenStates.update { it.copy(categoryByEdit = categoryByEdit) }
+    }
+
+    fun setCurrentCategoryName(currentCategoryName: String) {
+        _categoriesScreenStates.update { it.copy(currentCategoryName = currentCategoryName) }
+    }
+
+    fun setCurrentCategoryColor(currentCategoryColor: Long) {
+        _categoriesScreenStates.update { it.copy(currentCategoryColor = currentCategoryColor) }
+    }
+
+    fun setShowDialog(showDialog: Boolean) {
+        _categoriesScreenStates.update { it.copy(showDialog = showDialog) }
+    }
+
+    fun setColorsExpanded(colorsExpanded: Boolean) {
+        _modalCategoriesBottomState.update { it.copy(colorsExpanded = colorsExpanded) }
+    }
+
+    fun setSelectionColor(selectionColor: Long) {
+        _modalCategoriesBottomState.update { it.copy(selectionColor = selectionColor) }
     }
 
     fun insertCategory(category: Category) {
@@ -104,8 +151,8 @@ class CategoriesViewModel @Inject constructor(
         name: String,
         color: Long
     ) {
-        val myNewCategory = _state.value.newCategory
-        val newColor = _state.value.color
+        val myNewCategory = _modalCategoriesBottomState.value.newCategory
+        val newColor = _modalCategoriesBottomState.value.color
         viewModelScope.launch(Dispatchers.IO) {
             if ((myNewCategory.isBlank() && color == newColor)
                 || (myNewCategory == name && color == newColor)) {
@@ -120,15 +167,15 @@ class CategoriesViewModel @Inject constructor(
             }
             val updateCategoryDbDto = category.copy(name = myNewCategory, color = newColor)
             updateCategory(updateCategoryDbDto)
-            _state.update { it.copy(newCategory = "") }
+            _modalCategoriesBottomState.update { it.copy(newCategory = "") }
             _events.send(Event.ShowMessage("Category modified successfully"))
             refreshCategories()
         }
     }
 
     fun addCategory() {
-        val myNewCategory = _state.value.newCategory
-        val newColor = _state.value.color
+        val myNewCategory = _modalCategoriesBottomState.value.newCategory
+        val newColor = _modalCategoriesBottomState.value.color
         viewModelScope.launch(Dispatchers.IO) {
             if (myNewCategory.isBlank()) {
                 _events.send(Event.ShowMessage("Category name cannot be empty"))
@@ -141,10 +188,10 @@ class CategoriesViewModel @Inject constructor(
                         color = newColor
                     )
                 )
-                _state.update { it.copy(newCategory = "") }
+                _modalCategoriesBottomState.update { it.copy(newCategory = "") }
             } else {
                 _events.send(Event.ShowMessage("Error: Cannot save category. User ID is missing"))
-                _state.update { it.copy(newCategory = "") }
+                _modalCategoriesBottomState.update { it.copy(newCategory = "") }
             }
 
         }

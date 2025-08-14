@@ -1,5 +1,22 @@
 <resources>
     <string name="app_name">GeYuGoApp</string>
+
+    <!-- FirstUser Screen -->
+    <string name="geyugo">GeYuGo</string>
+    <string name="your_personal_to_do_app">Your Personal To-Do App</string>
+    <string name="what_s_your_name">What\'s your name?</string>
+    <string name="enter_your_name_here">Enter your name here</string>
+
+    <!-- Main Screen -->
+    <string name="settings">Settings</string>
+    <string name="your_categories_">Your Categories</string>
+    <string name="today_is_a_nice_day_to_reach">Today is a nice day to reach</string>
+    <string name="your_goals">your goals</string>
+    <string name="your_todo_s"> Your To-Dos</string>
+    <string name="add_task">Add Task</string>
+    <string name="hello">Hello</string>
+
+    <!-- Categories Screen -->
     <string name="don_t_any_categories_yet">Don\'t have any categories yet?</string>
     <string name="create_your_first_category">Create your first category</string>
     <string name="color_7">Color 7</string>
@@ -21,17 +38,11 @@
     <string name="the_category_selected_still_have_some_tasks_if_you_delete_it_it_s_tasks_will_delete_too_do_you_want_to_continue">This category has associated tasks. If you delete the category, it\'s tasks will also be deleted. Do you want to continue?</string>
     <string name="alert_of_elimination">Deletion Alert</string>
     <string name="your_categories">YOUR CATEGORIES</string>
-    <string name="geyugo">GeYuGo</string>
-    <string name="your_personal_to_do_app">Your Personal To-Do App</string>
-    <string name="what_s_your_name">What\'s your name?</string>
-    <string name="enter_your_name_here">Enter your name here</string>
-    <string name="settings">Settings</string>
-    <string name="your_categories_">Your Categories</string>
-    <string name="today_is_a_nice_day_to_reach">Today is a nice day to reach</string>
-    <string name="your_goals">your goals</string>
-    <string name="your_todo_s"> Your To-Dos</string>
-    <string name="add_task">Add Task</string>
-    <string name="hello">Hello</string>
+    <string name="tasks">"tasks"</string>
+    <string name="name_category">Category Name</string>
+    <string name="new_name_category">New Category Name</string>
+
+    <!-- Tasks Screen -->
     <string name="delete_task">Delete Task</string>
     <string name="if_you_delete_this_task_you_won_t_be_able_to_recover_it_do_you_want_to_continue">Deleting this task is permanent and cannot be undone. Do you want to proceed?</string>
     <string name="are_you_sure">Are you sure?</string>
@@ -43,4 +54,20 @@
     <string name="ok">OK</string>
     <string name="today_s_tasks">TODAY\'S TASKS</string>
     <string name="categories">CATEGORIES</string>
+    <string name="tasks_">"Tasks"</string>
+    <string name="date">Date:</string>
+    <string name="category">Category</string>
+    <string name="add_time">Add Time</string>
+    <string name="any_task_today_to_do">Any tasks to do today?</string>
+    <string name="come_on_add">Come on, add</string>
+    <string name="your_first_task">your first task</string>
+
+    <!-- Settings Screen -->
+    <string name="add_user">Add User</string>
+    <string name="delete_my_user">Delete My User</string>
+    <string name="if_you_decided_eliminate_your_user_every_categories_and_task_associated_with_it_will_eliminate_too_besides_you_won_t_be_able_to_recover_this_user_do_you_want_to_continue">If you decide to delete your user, all associated categories and tasks will also be deleted. Additionally, you will not be able to recover this user. Do you want to continue?</string>
+    <string name="add_your_new_user">Add your new user</string>
+    <string name="come_back">Go Back</string>
+    <string name="create">Create</string>
+
 </resources>

@@ -10,6 +10,7 @@ import com.example.geyugoapp.domain.users.usecases.InsertUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class FirstUserState(
+    val isLoading: Boolean = true,
     val name: String = ""
 )
 
@@ -45,7 +47,8 @@ class FirstUserViewModel @Inject constructor(
             if (findOutUsers > 0) {
                 val lastUserIdOnline = getUserIdByOnlineStatus(isOnline = true)
                 _events.send(Event.NavigateToMain(userId = lastUserIdOnline))
-            } else return@launch
+            }
+            _state.update { it.copy(isLoading = false) }
         }
     }
 

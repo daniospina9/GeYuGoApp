@@ -50,7 +50,7 @@ import com.example.geyugoapp.domain.task.models.Task
 import com.example.geyugoapp.feature.tasks.TasksViewModel
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.FirstUserButton
-import com.example.geyugoapp.ui.util.tasks.tasksListDetails
+import com.example.geyugoapp.ui.utils.tasks.tasksListDetails
 
 @Composable
 fun TasksList(
@@ -95,7 +95,7 @@ fun TasksList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(BackgroundLevel2),
+                        color = BackgroundLevel2,
                         shape = RoundedCornerShape(15.dp)
                     )
             ) {
@@ -190,7 +190,7 @@ fun TasksList(
                         showDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(FirstUserButton),
+                        containerColor = FirstUserButton,
                     )
                 ) {
                     Text(
@@ -209,7 +209,7 @@ fun TasksList(
                 ) {
                     Text(
                         text = stringResource(R.string.abort),
-                        color = Color(FirstUserButton)
+                        color = FirstUserButton
                     )
                 }
             },

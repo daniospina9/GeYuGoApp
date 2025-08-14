@@ -25,16 +25,14 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,22 +64,19 @@ fun ModalBottomContent(
     addingButtonText: String,
     onClickAdding: () -> Unit
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val modalCategoriesBottomState by viewModel.modalCategoriesBottomState.collectAsStateWithLifecycle()
 
     val focusRequester = remember { FocusRequester() }
 
-    var expanded by remember { mutableStateOf(false) }
-
-    var selection by remember { mutableLongStateOf(initialColor) }
-
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        viewModel.setSelectionColor(initialColor)
     }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(BackgroundLevel1))
+            .background(BackgroundLevel1)
             .focusRequester(focusRequester)
             .focusable(),
         verticalArrangement = Arrangement.Center,
@@ -89,7 +84,7 @@ fun ModalBottomContent(
     ) {
         Spacer(modifier = Modifier.weight(1f))
         TextField(
-            value = state.newCategory,
+            value = modalCategoriesBottomState.newCategory,
             onValueChange = { newCategory ->
                 viewModel.setNewCategory(newCategory)
             },
@@ -100,24 +95,24 @@ fun ModalBottomContent(
                 )
             },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(BackgroundLevel2),
-                unfocusedContainerColor = Color(BackgroundLevel2),
-                disabledContainerColor = Color(BackgroundLevel2),
+                focusedContainerColor = BackgroundLevel2,
+                unfocusedContainerColor = BackgroundLevel2,
+                disabledContainerColor = BackgroundLevel2,
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 cursorColor = Color.White,
-                focusedIndicatorColor = Color(BackgroundLevel2),
-                unfocusedIndicatorColor = Color(BackgroundLevel2),
+                focusedIndicatorColor = BackgroundLevel2,
+                unfocusedIndicatorColor = BackgroundLevel2,
             )
         )
         Spacer(modifier = Modifier.weight(1f))
         Box {
             Button(
                 onClick = {
-                    expanded = true
+                    viewModel.setColorsExpanded(true)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(BackgroundLevel2),
+                    containerColor = BackgroundLevel2,
                 )
             ) {
                 Row(
@@ -127,7 +122,7 @@ fun ModalBottomContent(
                         modifier = Modifier
                             .size(15.dp)
                             .background(
-                                color = Color(selection),
+                                color = Color(modalCategoriesBottomState.selectionColor),
                                 shape = CircleShape
                             )
                     )
@@ -149,97 +144,99 @@ fun ModalBottomContent(
                 }
             }
             DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {expanded = false},
+                expanded = modalCategoriesBottomState.colorsExpanded,
+                onDismissRequest = {
+                    viewModel.setColorsExpanded(false)
+                },
                 offset = DpOffset(45.dp, 0.dp)
             ) {
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory7,
+                            color = ColorCategory7.toArgb().toLong(),
                             text = stringResource(R.string.color_7)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory7
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory7.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory6,
+                            color = ColorCategory6.toArgb().toLong(),
                             text = stringResource(R.string.color_6)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory6
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory6.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory5,
+                            color = ColorCategory5.toArgb().toLong(),
                             text = stringResource(R.string.color_5)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory5
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory5.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory4,
+                            color = ColorCategory4.toArgb().toLong(),
                             text = stringResource(R.string.color_4)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory4
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory4.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory3,
+                            color = ColorCategory3.toArgb().toLong(),
                             text = stringResource(R.string.color_3)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory3
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory3.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory2,
+                            color = ColorCategory2.toArgb().toLong(),
                             text = stringResource(R.string.color_2)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory2
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory2.toArgb().toLong())
                     })
                 DropdownMenuItem(
                     text = {
                         DropdownMenuContent(
-                            color = ColorCategory1,
+                            color = ColorCategory1.toArgb().toLong(),
                             text = stringResource(R.string.color_1)
                         )
                     },
                     onClick = {
-                        expanded = false
-                        selection = ColorCategory1
+                        viewModel.setColorsExpanded(false)
+                        viewModel.setSelectionColor(ColorCategory1.toArgb().toLong())
                     })
             }
         }
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
-                viewModel.setColor(selection)
+                viewModel.setColor(modalCategoriesBottomState.selectionColor)
                 onClickAdding()
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(CreateButtons),
+                containerColor = Color(CreateButtons.toArgb().toLong()),
             )
         ) {
             Text(

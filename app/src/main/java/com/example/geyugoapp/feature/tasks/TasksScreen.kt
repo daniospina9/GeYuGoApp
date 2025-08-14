@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -74,7 +75,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.LinesCategories
-import com.example.geyugoapp.ui.util.tasks.filterTasksByDate
+import com.example.geyugoapp.ui.utils.tasks.filterTasksByDate
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -159,18 +160,18 @@ fun TasksScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                         .padding(24.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(BackgroundLevel3))
+                            .background(BackgroundLevel3)
                     ) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Image(
@@ -188,7 +189,7 @@ fun TasksScreen(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Row {
@@ -246,7 +247,7 @@ fun TasksScreen(
                                     .width((((screenWidth.value - 60) / 2) - 15).dp)
                                     .background(
 
-                                        color = Color(BackgroundLevel2),
+                                        color = BackgroundLevel2,
                                         shape = RoundedCornerShape(15.dp)
                                     )
                                     .clickable {
@@ -262,7 +263,7 @@ fun TasksScreen(
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(start = 6.dp),
-                                        text = "${categoryItem.taskCount} tasks",
+                                        text = "${categoryItem.taskCount} ${stringResource(R.string.tasks)}",
                                         fontSize = 10.sp,
                                         color = Color.White
                                     )
@@ -293,7 +294,7 @@ fun TasksScreen(
                                                 .weight(1f),
                                             contentDescription = null,
                                             contentScale = ContentScale.FillWidth,
-                                            colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                            colorFilter = ColorFilter.tint(LinesCategories)
                                         )
                                     }
                                 }
@@ -318,7 +319,7 @@ fun TasksScreen(
                         startPadding = 0.dp,
                         endPadding = 0.dp,
                         bottomPadding = 0.dp,
-                        backgroundColor = BackgroundLevel3
+                        backgroundColor = BackgroundLevel3.toArgb().toLong()
                     )
                 }
                 Row(
@@ -332,7 +333,7 @@ fun TasksScreen(
                         modifier = Modifier
                             .size(60.dp)
                             .background(
-                                color = Color(CreateButtons),
+                                color = CreateButtons,
                                 shape = CircleShape
                             )
                             .clickable {
@@ -356,18 +357,18 @@ fun TasksScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                         .padding(24.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(BackgroundLevel3))
+                            .background(BackgroundLevel3)
                     ) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Image(
@@ -385,7 +386,7 @@ fun TasksScreen(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Row {
@@ -435,18 +436,18 @@ fun TasksScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                         .padding(24.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(BackgroundLevel3))
+                            .background(BackgroundLevel3)
                     ) {
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Image(
@@ -464,7 +465,7 @@ fun TasksScreen(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .background(Color(BackgroundLevel3)),
+                                .background(BackgroundLevel3),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Row {
@@ -522,7 +523,7 @@ fun TasksScreen(
                                     .width((((screenWidth.value - 60) / 2) - 15).dp)
                                     .background(
 
-                                        color = Color(BackgroundLevel2),
+                                        color = BackgroundLevel2,
                                         shape = RoundedCornerShape(15.dp)
                                     )
                                     .clickable {
@@ -538,7 +539,7 @@ fun TasksScreen(
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(start = 6.dp),
-                                        text = "${categoryItem.taskCount} tasks",
+                                        text = "${categoryItem.taskCount} ${stringResource(R.string.tasks)}",
                                         fontSize = 10.sp,
                                         color = Color.White
                                     )
@@ -569,7 +570,7 @@ fun TasksScreen(
                                                 .weight(1f),
                                             contentDescription = null,
                                             contentScale = ContentScale.FillWidth,
-                                            colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                            colorFilter = ColorFilter.tint(LinesCategories)
                                         )
                                     }
                                 }
@@ -661,7 +662,7 @@ fun TasksScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                         .then(
                             if (calculatedMaxHeightDp != null) {
                                 Modifier.height(calculatedMaxHeightDp)
@@ -706,7 +707,7 @@ fun TasksScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                         .then(
                             if (calculatedMaxHeightDp != null) {
                                 Modifier.height(calculatedMaxHeightDp)

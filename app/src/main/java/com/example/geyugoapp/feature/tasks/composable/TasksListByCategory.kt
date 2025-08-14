@@ -53,9 +53,9 @@ import com.example.geyugoapp.feature.tasks.TasksViewModel
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.FirstUserButton
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
-import com.example.geyugoapp.ui.util.tasks.adjustDates
-import com.example.geyugoapp.ui.util.tasks.getDateFromTask
-import com.example.geyugoapp.ui.util.tasks.tasksListDetails
+import com.example.geyugoapp.ui.utils.tasks.adjustDates
+import com.example.geyugoapp.ui.utils.tasks.getDateFromTask
+import com.example.geyugoapp.ui.utils.tasks.tasksListDetails
 
 @Composable
 fun TasksListByCategory(
@@ -89,7 +89,7 @@ fun TasksListByCategory(
             }
             Text(
                 text = adjustDates(datesList[dateIndex]),
-                color = Color(UnselectedMenuBackground),
+                color = UnselectedMenuBackground,
                 style = TextStyle (
                     fontStyle = FontStyle.Italic
                 ),
@@ -114,7 +114,7 @@ fun TasksListByCategory(
                             .padding(top = 12.dp)
                             .fillMaxWidth()
                             .background(
-                                color = Color(BackgroundLevel2),
+                                color = BackgroundLevel2,
                                 shape = RoundedCornerShape(15.dp)
                             )
                     ) {
@@ -211,7 +211,7 @@ fun TasksListByCategory(
                         showDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(FirstUserButton),
+                        containerColor = FirstUserButton,
                     )
                 ) {
                     Text(
@@ -230,7 +230,7 @@ fun TasksListByCategory(
                 ) {
                     Text(
                         text = stringResource(R.string.abort),
-                        color = Color(FirstUserButton)
+                        color = FirstUserButton
                     )
                 }
             },
