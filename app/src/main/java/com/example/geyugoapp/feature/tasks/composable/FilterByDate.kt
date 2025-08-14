@@ -16,7 +16,6 @@ fun FilterByDate(
     date: Long?
 ) {
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
-
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
 
     val tasksForDay = filterTasksByDate(

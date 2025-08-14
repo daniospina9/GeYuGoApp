@@ -262,6 +262,7 @@ fun MainScreen(
                                     .fillMaxWidth()
                                     .padding(start = 20.dp, end = 20.dp, top = 7.dp, bottom = 20.dp),
                                 onClick = {
+                                    viewModel.refreshCategories()
                                     scope.launch {
                                         taskDrawerState.open()
                                     }

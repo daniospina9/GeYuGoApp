@@ -116,7 +116,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun refreshCategories() {
+    fun refreshCategories() {
         viewModelScope.launch(Dispatchers.IO) {
             if (userId != null) {
                 _categoriesByUser.update { getCategoriesByUserId(userId = userId) }

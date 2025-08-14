@@ -35,11 +35,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
+import com.example.geyugoapp.navigation.firstuser.FirstUserRoute
 import com.example.geyugoapp.navigation.main.MainRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.FirstUserButton
 import com.example.geyugoapp.ui.theme.FirstUserLTF
 import com.example.geyugoapp.ui.theme.FirstUserTFT
+import com.example.geyugoapp.ui.composable.box.BoxLoadingIndicator
 
 @Composable
 fun FirstUserScreen(
@@ -61,7 +63,9 @@ fun FirstUserScreen(
                         MainRoute(
                             userId = event.userId,
                         )
-                    )
+                    ) {
+                        popUpTo(FirstUserRoute) { inclusive = true }
+                    }
                 }
             }
         }
@@ -143,5 +147,6 @@ fun FirstUserScreen(
                 )
             }
         }
+        BoxLoadingIndicator(isLoading = state.isLoading)
     }
 }

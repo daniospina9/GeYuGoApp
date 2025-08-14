@@ -249,7 +249,12 @@ fun CategoriesScreen(
                                             onClick = {
                                                 viewModel.setDropdownMenuVisibleForItem(null)
                                                 viewModel.setCategoryByEdit(categoryItem.category)
-                                                viewModel.setShowDialog(true)
+                                                if (categoryItem.taskCount == 0) {
+                                                    viewModel.deleteCategory(categoryItem.category)
+                                                    viewModel.setShowDialog(false)
+                                                } else {
+                                                    viewModel.setShowDialog(true)
+                                                }
                                             }
                                         )
                                     }
