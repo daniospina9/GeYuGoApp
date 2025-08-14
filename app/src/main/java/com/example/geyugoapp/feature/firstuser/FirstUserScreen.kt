@@ -72,7 +72,7 @@ fun FirstUserScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color(BackgroundLevel1))
+                .background(BackgroundLevel1)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -110,20 +110,20 @@ fun FirstUserScreen(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(R.string.enter_your_name_here),
-                        color = Color(FirstUserTFT),
+                        color = FirstUserTFT,
                         fontSize = 23.sp,
                         textAlign = TextAlign.Center
                     )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(BackgroundLevel1),
-                    unfocusedContainerColor = Color(BackgroundLevel1),
-                    disabledContainerColor = Color(BackgroundLevel1),
+                    focusedContainerColor = BackgroundLevel1,
+                    unfocusedContainerColor = BackgroundLevel1,
+                    disabledContainerColor = BackgroundLevel1,
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
-                    cursorColor = Color(FirstUserLTF),
-                    focusedIndicatorColor = Color(FirstUserLTF),
-                    unfocusedIndicatorColor = Color(FirstUserLTF),
+                    cursorColor = FirstUserLTF,
+                    focusedIndicatorColor = FirstUserLTF,
+                    unfocusedIndicatorColor = FirstUserLTF,
                 )
             )
             Spacer(modifier = Modifier.weight(0.4f))
@@ -131,7 +131,7 @@ fun FirstUserScreen(
                 modifier = Modifier.size(width = 65.dp, height = 70.dp),
                 onClick = { viewModel.saveUser() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(FirstUserButton),
+                    containerColor = FirstUserButton,
                 )
             ) {
                 Image(

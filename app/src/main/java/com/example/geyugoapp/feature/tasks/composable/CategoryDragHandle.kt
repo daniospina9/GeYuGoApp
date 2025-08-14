@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,7 @@ fun CategoryDragHandle(
 ) {
     Surface(
         modifier = modifier,
-        color = Color(BackgroundLevel3)
+        color = BackgroundLevel3
     ) {
         Row(
             modifier = Modifier
@@ -40,8 +41,8 @@ fun CategoryDragHandle(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$categoryName Tasks",
-                color = Color(UnselectedMenuBackground),
+                text = "$categoryName ${stringResource(R.string.tasks_)}",
+                color = UnselectedMenuBackground,
                 style = TextStyle (
                     fontStyle = FontStyle.Italic
                 )
@@ -56,7 +57,7 @@ fun CategoryDragHandle(
                     },
                 contentDescription = null,
                 contentScale = ContentScale.Inside,
-                colorFilter = ColorFilter.tint(Color(UnselectedMenuBackground))
+                colorFilter = ColorFilter.tint(UnselectedMenuBackground)
             )
         }
 

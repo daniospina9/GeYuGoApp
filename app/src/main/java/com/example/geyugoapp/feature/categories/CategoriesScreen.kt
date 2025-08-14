@@ -2,7 +2,6 @@
 
 package com.example.geyugoapp.feature.categories
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,14 +35,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -61,7 +57,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.geyugoapp.R
-import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.feature.categories.composable.EmptyCategoriesContent
 import com.example.geyugoapp.feature.categories.composable.ModalBottomContent
 import com.example.geyugoapp.feature.categories.composable.MyCustomDragHandle
@@ -83,12 +78,13 @@ fun CategoriesScreen(
     val screenWidth = configuration.screenWidthDp.dp
 
     val categoriesWithCounts by viewModel.categoriesWithCounts.collectAsStateWithLifecycle()
+    val categoriesScreenStates by viewModel.categoriesScreenStates.collectAsStateWithLifecycle()
 
-    val TAG = "countCategories"
+    val currentCategoryByEdit = categoriesScreenStates.categoryByEdit
 
-    LaunchedEffect(categoriesWithCounts) {
-        Log.d(TAG, "Valor actual de userIdFlowUI: $categoriesWithCounts")
-    }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
@@ -100,42 +96,24 @@ fun CategoriesScreen(
         }
     }
 
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
-    var showBottomSheetByOption by remember { mutableStateOf<Int?>(null) }
-
-    var dropdownMenuVisibleForItem by remember { mutableStateOf<Int?>(null) }
-
-    var categoryByEdit by remember { mutableStateOf<Category?>(null) }
-
-    val currentCategoryByEdit = categoryByEdit
-
-    var currentCategoryName by remember { mutableStateOf("") }
-
-    var currentCategoryColor by remember { mutableLongStateOf(0L) }
-
-    var showDialog by remember { mutableStateOf(false) }
-
     Scaffold { innerPadding ->
         if (categoriesWithCounts.isNotEmpty()) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(Color(BackgroundLevel3))
+                    .background(BackgroundLevel3)
                     .padding(24.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(BackgroundLevel3))
+                        .background(BackgroundLevel3)
                 ) {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .background(Color(BackgroundLevel3)),
+                            .background(BackgroundLevel3),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Image(
@@ -153,7 +131,7 @@ fun CategoriesScreen(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .background(Color(BackgroundLevel3)),
+                            .background(BackgroundLevel3),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Image(
@@ -187,7 +165,7 @@ fun CategoriesScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    color = Color(BackgroundLevel2),
+                                    color = BackgroundLevel2,
                                     shape = RoundedCornerShape(15.dp)
                                 )
                         ) {
@@ -197,14 +175,7 @@ fun CategoriesScreen(
                                     .pointerInput(Unit) {
                                         detectTapGestures(
                                             onLongPress = {
-                                                dropdownMenuVisibleForItem = index
-                                            },
-                                            onTap = {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Tap",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                viewModel.setDropdownMenuVisibleForItem(index)
                                             }
                                         )
                                     }
@@ -212,7 +183,7 @@ fun CategoriesScreen(
                             ) {
                                 Text(
                                     modifier = Modifier.padding(start = 6.dp),
-                                    text = "${categoryItem.taskCount} tasks",
+                                    text = "${categoryItem.taskCount} ${stringResource(R.string.tasks)}",
                                     fontSize = 10.sp,
                                     color = Color.White
                                 )
@@ -241,14 +212,14 @@ fun CategoriesScreen(
                                             .weight(1f),
                                         contentDescription = null,
                                         contentScale = ContentScale.FillWidth,
-                                        colorFilter = ColorFilter.tint(Color(LinesCategories))
+                                        colorFilter = ColorFilter.tint(LinesCategories)
                                     )
                                 }
-                                if (dropdownMenuVisibleForItem == index) {
+                                if (categoriesScreenStates.dropdownMenuVisibleForItem == index) {
                                     DropdownMenu(
-                                        expanded = (dropdownMenuVisibleForItem == index),
+                                        expanded = true,
                                         onDismissRequest = {
-                                            dropdownMenuVisibleForItem = null
+                                            viewModel.setDropdownMenuVisibleForItem(null)
                                         },
                                         offset = DpOffset(3.dp, 0.dp)
                                     ) {
@@ -262,11 +233,11 @@ fun CategoriesScreen(
                                                 viewModel.setEditingCategory(
                                                     newCategory = categoryItem.category.name
                                                 )
-                                                dropdownMenuVisibleForItem = null
-                                                showBottomSheetByOption = 2
-                                                categoryByEdit = categoryItem.category
-                                                currentCategoryName = categoryItem.category.name
-                                                currentCategoryColor = categoryItem.category.color
+                                                viewModel.setDropdownMenuVisibleForItem(null)
+                                                viewModel.setShowBottomSheetByOption(2)
+                                                viewModel.setCategoryByEdit(categoryItem.category)
+                                                viewModel.setCurrentCategoryName(categoryItem.category.name)
+                                                viewModel.setCurrentCategoryColor(categoryItem.category.color)
                                             }
                                         )
                                         DropdownMenuItem(
@@ -276,9 +247,9 @@ fun CategoriesScreen(
                                                 )
                                             },
                                             onClick = {
-                                                dropdownMenuVisibleForItem = null
-                                                categoryByEdit = categoryItem.category
-                                                showDialog = true
+                                                viewModel.setDropdownMenuVisibleForItem(null)
+                                                viewModel.setCategoryByEdit(categoryItem.category)
+                                                viewModel.setShowDialog(true)
                                             }
                                         )
                                     }
@@ -301,10 +272,10 @@ fun CategoriesScreen(
                         .height(55.dp)
                         .width(175.dp),
                     onClick = {
-                        showBottomSheetByOption = 1
+                        viewModel.setShowBottomSheetByOption(1)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(CreateButtons),
+                        containerColor = CreateButtons,
                     )
                 ) {
                     Text(
@@ -319,7 +290,7 @@ fun CategoriesScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
-                    .background(Color(BackgroundLevel3))
+                    .background(BackgroundLevel3)
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -335,10 +306,10 @@ fun CategoriesScreen(
                         .width(175.dp)
                         .weight(0.07f),
                     onClick = {
-                        showBottomSheetByOption = 1
+                        viewModel.setShowBottomSheetByOption(1)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(CreateButtons),
+                        containerColor = CreateButtons,
                     )
                 ) {
                     Text(
@@ -348,10 +319,10 @@ fun CategoriesScreen(
                 }
             }
         }
-        if (showBottomSheetByOption == 1) {
+        if (categoriesScreenStates.showBottomSheetByOption == 1) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showBottomSheetByOption = null
+                    viewModel.setShowBottomSheetByOption(0)
                 },
                 sheetState = sheetState,
                 dragHandle = {
@@ -363,21 +334,21 @@ fun CategoriesScreen(
                 ModalBottomContent(
                     modifier = Modifier.heightIn(max = screenHeight / 2),
                     viewModel = viewModel,
-                    label = "Name Category",
+                    label = stringResource(R.string.name_category),
                     textColorButton = stringResource(R.string.choose_color),
-                    initialColor = ColorCategoryOthers,
+                    initialColor = ColorCategoryOthers.toArgb().toLong(),
                     addingButtonText = stringResource(R.string.add_category),
                     onClickAdding = {
                         viewModel.addCategory()
-                        showBottomSheetByOption = null
+                        viewModel.setShowBottomSheetByOption(0)
                     }
                 )
             }
         }
-        if (showBottomSheetByOption == 2 && currentCategoryByEdit != null) {
+        if (categoriesScreenStates.showBottomSheetByOption == 2 && currentCategoryByEdit != null) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showBottomSheetByOption = null
+                    viewModel.setShowBottomSheetByOption(0)
                     viewModel.setEditingCategory(
                         newCategory = ""
                     )
@@ -393,17 +364,17 @@ fun CategoriesScreen(
                 ModalBottomContent(
                     modifier = Modifier.heightIn(max = screenHeight / 2),
                     viewModel = viewModel,
-                    label = "New Name Category",
+                    label = stringResource(R.string.new_name_category),
                     textColorButton = stringResource(R.string.change_color),
-                    initialColor = currentCategoryColor,
+                    initialColor = categoriesScreenStates.currentCategoryColor,
                     addingButtonText = stringResource(R.string.change_category),
                     onClickAdding = {
                         viewModel.updateExistCategory(
                             category = currentCategoryByEdit,
-                            name = currentCategoryName,
-                            color = currentCategoryColor
+                            name = categoriesScreenStates.currentCategoryName,
+                            color = categoriesScreenStates.currentCategoryColor
                         )
-                        showBottomSheetByOption = null
+                        viewModel.setShowBottomSheetByOption(0)
                         viewModel.setEditingCategory(
                             newCategory = ""
                         )
@@ -411,17 +382,19 @@ fun CategoriesScreen(
                 )
             }
         }
-        if (showDialog && currentCategoryByEdit != null) {
+        if (categoriesScreenStates.showDialog && currentCategoryByEdit != null) {
             AlertDialog(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = {
+                    viewModel.setShowDialog(false)
+                },
                 confirmButton = {
                     Button(
                         onClick = {
                             viewModel.deleteCategory(currentCategoryByEdit)
-                            showDialog = false
+                            viewModel.setShowDialog(false)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(FirstUserButton),
+                            containerColor = FirstUserButton,
                         )
                     ) {
                         Text(
@@ -432,7 +405,7 @@ fun CategoriesScreen(
                 dismissButton = {
                     Button(
                         onClick = {
-                            showDialog = false
+                            viewModel.setShowDialog(false)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
@@ -440,7 +413,7 @@ fun CategoriesScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.abort),
-                            color = Color(FirstUserButton)
+                            color = FirstUserButton
                         )
                     }
                 },

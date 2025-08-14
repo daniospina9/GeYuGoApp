@@ -69,7 +69,6 @@ fun ModalDrawer(
     val navigationDrawerWidth = 260.dp
 
     val expanded by viewModel.expanded.collectAsStateWithLifecycle()
-
     val users by viewModel.users.collectAsStateWithLifecycle()
 
     ModalNavigationDrawer(
@@ -79,14 +78,14 @@ fun ModalDrawer(
             ModalDrawerSheet(
                 modifier = Modifier
                     .width(navigationDrawerWidth),
-                drawerContainerColor = Color(BackgroundLevel3)
+                drawerContainerColor = BackgroundLevel3
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 15.dp, end = 15.dp)
                         .height(120.dp)
-                        .background(Color(BackgroundLevel3)),
+                        .background(BackgroundLevel3),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -120,7 +119,7 @@ fun ModalDrawer(
                         )
                     }
                     DropdownMenu(
-                        modifier = Modifier.background(Color(BackgroundUsersDropMenu)),
+                        modifier = Modifier.background(BackgroundUsersDropMenu),
                         expanded = expanded.expanded,
                         onDismissRequest = {
                             viewModel.setExpanded(expanded = false)
@@ -141,7 +140,7 @@ fun ModalDrawer(
                                                 end = 2.dp
                                             )
                                             .background(
-                                                color = Color(ColorUsersDropMenu),
+                                                color = ColorUsersDropMenu,
                                                 shape = RoundedCornerShape(10.dp)
                                             )
                                             .width(150.dp)
@@ -184,7 +183,7 @@ fun ModalDrawer(
                 }
                 HorizontalDivider(
                     modifier = Modifier.height(6.dp),
-                    color = Color(MenuSeparator)
+                    color = MenuSeparator
                 )
                 Button(
                     modifier = Modifier
@@ -199,7 +198,7 @@ fun ModalDrawer(
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(BackgroundLevel1),
+                        containerColor = BackgroundLevel1,
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -236,7 +235,7 @@ fun ModalDrawer(
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(BackgroundLevel1),
+                        containerColor = BackgroundLevel1,
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -262,7 +261,7 @@ fun ModalDrawer(
                 }
             }
         },
-        scrimColor = Color(UnselectedMenuBackground).copy(alpha = 0.8f)
+        scrimColor = UnselectedMenuBackground.copy(alpha = 0.8f)
     ) {
         content()
     }

@@ -1,7 +1,5 @@
 package com.example.geyugoapp.ui.utils.tasks
 
-import androidx.compose.runtime.Composable
-
 data class TimeFormats(
     val amPm: String,
     val formattedTime: String

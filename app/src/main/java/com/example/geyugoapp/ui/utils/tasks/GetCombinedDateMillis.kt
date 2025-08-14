@@ -1,4 +1,4 @@
-package com.example.geyugoapp.ui.util.tasks
+package com.example.geyugoapp.ui.utils.tasks
 
 import android.icu.util.Calendar
 

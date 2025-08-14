@@ -1,8 +1,5 @@
-package com.example.geyugoapp.ui.util
+package com.example.geyugoapp.ui.utils
 
-import androidx.compose.runtime.Composable
-
-@Composable
 fun getFirstWord(text: String?): String? {
     if (text.isNullOrBlank()) {
         return null

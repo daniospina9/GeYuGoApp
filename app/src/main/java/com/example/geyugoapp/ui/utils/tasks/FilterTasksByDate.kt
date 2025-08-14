@@ -1,10 +1,8 @@
-package com.example.geyugoapp.ui.util.tasks
+package com.example.geyugoapp.ui.utils.tasks
 
-import androidx.compose.runtime.Composable
 import com.example.geyugoapp.domain.task.models.Task
 import java.util.Calendar
 
-@Composable
 fun filterTasksByDate(
     date: Long?,
     tasksByUserId: List<Task>
