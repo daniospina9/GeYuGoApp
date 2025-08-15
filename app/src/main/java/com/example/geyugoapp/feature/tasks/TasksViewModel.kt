@@ -1,6 +1,7 @@
 package com.example.geyugoapp.feature.tasks
 
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import com.example.geyugoapp.domain.categories.usecases.GetCategoryIdByName
 import com.example.geyugoapp.domain.categories.usecases.GetCountCategoriesByName
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.task.models.Task
+import com.example.geyugoapp.domain.notifications.usecases.ObserveNotificationSettingsByUserIdUseCase
+import com.example.geyugoapp.domain.notifications.usecases.ToggleNotificationsUseCase
 import com.example.geyugoapp.domain.task.usecases.DeleteTask
 import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
@@ -64,7 +67,9 @@ class TasksViewModel @Inject constructor(
     private val getCountCategoriesByName: GetCountCategoriesByName,
     private val deleteTask: DeleteTask,
     private val updateTask: UpdateTask,
-    private val getCountTasksByCategory: GetCountTasksByCategory
+    private val getCountTasksByCategory: GetCountTasksByCategory,
+    private val toggleNotifications: ToggleNotificationsUseCase,
+    private val observeNotificationSettings: ObserveNotificationSettingsByUserIdUseCase
 ) : ViewModel() {
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
@@ -88,14 +93,17 @@ class TasksViewModel @Inject constructor(
     private val _datesState = MutableStateFlow(TaskDate())
     val datesState = _datesState.asStateFlow()
 
+    private val _areNotificationsEnabled = MutableStateFlow(false)
+    val areNotificationsEnabled = _areNotificationsEnabled.asStateFlow()
+
     val userId = savedStateHandle.get<Long?>("userId")
 
     init {
         refreshCategories()
         refreshTasks()
+        observeNotificationSettings()
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
+        // NO setear hora/minuto a 0 - mantener la hora actual para fechas por defecto
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         _datesState.update {
@@ -257,7 +265,68 @@ class TasksViewModel @Inject constructor(
         }
     }
 
+    private fun observeNotificationSettings() {
+        viewModelScope.launch {
+            userId?.let { userId ->
+                observeNotificationSettings(userId).collect { settings ->
+                    _areNotificationsEnabled.update { settings?.areNotificationsEnabled ?: false }
+                }
+            }
+        }
+    }
+
+    fun toggleNotifications(onPermissionNeeded: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userId?.let { userId ->
+                val currentState = _areNotificationsEnabled.value
+                Log.d("TasksViewModel", "🔄 Toggle notifications called. Current state: $currentState")
+                
+                // Si estamos activando las notificaciones, necesitamos verificar permisos
+                if (!currentState) {
+                    Log.d("TasksViewModel", "📋 Requesting notification permission...")
+                    _events.send(Event.RequestNotificationPermission)
+                    return@launch
+                }
+                
+                // Si estamos desactivando, proceder directamente
+                Log.d("TasksViewModel", "❌ Disabling notifications...")
+                val result = toggleNotifications.invoke(userId, false)
+                
+                result.onSuccess { settings ->
+                    _areNotificationsEnabled.update { settings.areNotificationsEnabled }
+                    _events.send(Event.ShowMessage("Notifications disabled for all tasks"))
+                    Log.d("TasksViewModel", "✅ Notifications disabled successfully")
+                }.onFailure { error ->
+                    _events.send(Event.ShowMessage("Error toggling notifications: ${error.message}"))
+                    Log.e("TasksViewModel", "❌ Error disabling notifications: ${error.message}")
+                }
+            } ?: run {
+                _events.send(Event.ShowMessage("Error: User ID not found"))
+                Log.e("TasksViewModel", "❌ User ID not found")
+            }
+        }
+    }
+    
+    fun enableNotificationsAfterPermission() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userId?.let { userId ->
+                Log.d("TasksViewModel", "✅ Enabling notifications after permission granted...")
+                val result = toggleNotifications.invoke(userId, true)
+                
+                result.onSuccess { settings ->
+                    _areNotificationsEnabled.update { settings.areNotificationsEnabled }
+                    _events.send(Event.ShowMessage("Notifications enabled for all tasks"))
+                    Log.d("TasksViewModel", "🎉 Notifications enabled successfully!")
+                }.onFailure { error ->
+                    _events.send(Event.ShowMessage("Error enabling notifications: ${error.message}"))
+                    Log.e("TasksViewModel", "❌ Error enabling notifications: ${error.message}")
+                }
+            }
+        }
+    }
+
     sealed class Event {
         data class ShowMessage(val message: String) : Event()
+        object RequestNotificationPermission : Event()
     }
 }

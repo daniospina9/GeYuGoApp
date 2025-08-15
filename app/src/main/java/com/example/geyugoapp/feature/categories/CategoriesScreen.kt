@@ -2,7 +2,13 @@
 
 package com.example.geyugoapp.feature.categories
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -79,8 +85,20 @@ fun CategoriesScreen(
 
     val categoriesWithCounts by viewModel.categoriesWithCounts.collectAsStateWithLifecycle()
     val categoriesScreenStates by viewModel.categoriesScreenStates.collectAsStateWithLifecycle()
+    val areNotificationsEnabled by viewModel.areNotificationsEnabled.collectAsStateWithLifecycle()
 
     val currentCategoryByEdit = categoriesScreenStates.categoryByEdit
+    
+    // Permission launcher for notifications
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.enableNotificationsAfterPermission()
+        } else {
+            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -91,6 +109,25 @@ fun CategoriesScreen(
             when (event) {
                 is CategoriesViewModel.Event.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is CategoriesViewModel.Event.RequestNotificationPermission -> {
+                    // Check if permission is already granted
+                    val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } else {
+                        true // Pre-Android 13 doesn't need runtime permission
+                    }
+                    
+                    if (hasPermission) {
+                        viewModel.enableNotificationsAfterPermission()
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
                 }
             }
         }
@@ -138,10 +175,14 @@ fun CategoriesScreen(
                             painter = painterResource(R.drawable.notification),
                             modifier = Modifier
                                 .size(30.dp)
-                                .clickable {},
+                                .clickable {
+                                    viewModel.toggleNotifications {}
+                                },
                             contentDescription = null,
                             contentScale = ContentScale.Inside,
-                            colorFilter = ColorFilter.tint(Color.White)
+                            colorFilter = ColorFilter.tint(
+                                if (areNotificationsEnabled) Color.Green else Color.White
+                            )
                         )
                     }
                 }

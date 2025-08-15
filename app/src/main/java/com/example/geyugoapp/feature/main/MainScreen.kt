@@ -89,7 +89,7 @@ fun MainScreen(
     Scaffold { innerPadding ->
         AddTaskModalDrawer(
             modifier = Modifier.padding(innerPadding),
-            drawerState = taskDrawerState
+            drawerState = taskDrawerState,
         ) {
             ModalDrawer(
                 drawerState = menuDrawerState,

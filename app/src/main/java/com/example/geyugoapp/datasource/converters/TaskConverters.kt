@@ -11,7 +11,8 @@ fun Task.toDbDto(): TaskDbDto {
         isTimeSet = isTimeSet,
         userId = userId,
         categoryId = categoryId,
-        isClicked = isClicked
+        isClicked = isClicked,
+        notificationId = notificationId
     )
 }
 
@@ -23,6 +24,7 @@ fun TaskDbDto.toTask(): Task {
         isTimeSet = isTimeSet,
         userId = userId,
         categoryId = categoryId,
-        isClicked = isClicked
+        isClicked = isClicked,
+        notificationId = notificationId
     )
 }

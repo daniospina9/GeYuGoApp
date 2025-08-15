@@ -9,6 +9,8 @@ import com.example.geyugoapp.domain.categories.usecases.DeleteCategory
 import com.example.geyugoapp.domain.categories.usecases.GetCategoriesByUserId
 import com.example.geyugoapp.domain.categories.usecases.InsertCategory
 import com.example.geyugoapp.domain.categories.usecases.UpdateCategory
+import com.example.geyugoapp.domain.notifications.usecases.ObserveNotificationSettingsByUserIdUseCase
+import com.example.geyugoapp.domain.notifications.usecases.ToggleNotificationsUseCase
 import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +51,9 @@ class CategoriesViewModel @Inject constructor(
     private val getCategoriesByUserId: GetCategoriesByUserId,
     private val updateCategory: UpdateCategory,
     private val deleteCategory: DeleteCategory,
-    private val getCountTasksByCategory: GetCountTasksByCategory
+    private val getCountTasksByCategory: GetCountTasksByCategory,
+    private val toggleNotifications: ToggleNotificationsUseCase,
+    private val observeNotificationSettings: ObserveNotificationSettingsByUserIdUseCase
 ) : ViewModel() {
 
     private val _modalCategoriesBottomState = MutableStateFlow(NewCategoryState())
@@ -65,11 +69,66 @@ class CategoriesViewModel @Inject constructor(
 
     private val _events = Channel<Event>()
     val events = _events.receiveAsFlow()
+    
+    private val _areNotificationsEnabled = MutableStateFlow(false)
+    val areNotificationsEnabled = _areNotificationsEnabled.asStateFlow()
 
     val currentUserId = savedStateHandle.get<Long?>("userId")
 
     init {
         refreshCategories()
+        observeNotificationSettings()
+    }
+    
+    private fun observeNotificationSettings() {
+        viewModelScope.launch {
+            currentUserId?.let { userId ->
+                observeNotificationSettings(userId).collect { settings ->
+                    _areNotificationsEnabled.update { settings?.areNotificationsEnabled ?: false }
+                }
+            }
+        }
+    }
+    
+    fun toggleNotifications(onPermissionNeeded: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            currentUserId?.let { userId ->
+                val currentState = _areNotificationsEnabled.value
+                
+                // Si estamos activando las notificaciones, necesitamos verificar permisos
+                if (!currentState) {
+                    _events.send(Event.RequestNotificationPermission)
+                    return@launch
+                }
+                
+                // Si estamos desactivando, proceder directamente
+                val result = toggleNotifications.invoke(userId, false)
+                
+                result.onSuccess { settings ->
+                    _areNotificationsEnabled.update { settings.areNotificationsEnabled }
+                    _events.send(Event.ShowMessage("Notifications disabled for all tasks"))
+                }.onFailure { error ->
+                    _events.send(Event.ShowMessage("Error toggling notifications: ${error.message}"))
+                }
+            } ?: run {
+                _events.send(Event.ShowMessage("Error: User ID not found"))
+            }
+        }
+    }
+    
+    fun enableNotificationsAfterPermission() {
+        viewModelScope.launch(Dispatchers.IO) {
+            currentUserId?.let { userId ->
+                val result = toggleNotifications.invoke(userId, true)
+                
+                result.onSuccess { settings ->
+                    _areNotificationsEnabled.update { settings.areNotificationsEnabled }
+                    _events.send(Event.ShowMessage("Notifications enabled for all tasks"))
+                }.onFailure { error ->
+                    _events.send(Event.ShowMessage("Error enabling notifications: ${error.message}"))
+                }
+            }
+        }
     }
 
     private fun refreshCategories() {
@@ -199,5 +258,6 @@ class CategoriesViewModel @Inject constructor(
 
     sealed class Event {
         data class ShowMessage(val message: String) : Event()
+        object RequestNotificationPermission : Event()
     }
 }

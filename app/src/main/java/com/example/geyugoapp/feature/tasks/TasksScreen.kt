@@ -1,6 +1,12 @@
 package com.example.geyugoapp.feature.tasks
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -94,15 +100,27 @@ fun TasksScreen(
 
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
 
+    val areNotificationsEnabled by viewModel.areNotificationsEnabled.collectAsStateWithLifecycle()
+
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    
+    // Permission launcher for notifications
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.enableNotificationsAfterPermission()
+        } else {
+            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val scope = rememberCoroutineScope()
 
     var showDateDialog by remember { mutableStateOf(false) }
 
     val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, 0)
-    calendar.set(Calendar.MINUTE, 0)
+    // NO setear hora/minuto a 0 para DatePicker - mantener hora actual
     calendar.set(Calendar.SECOND, 0)
     calendar.set(Calendar.MILLISECOND, 0)
 
@@ -122,7 +140,11 @@ fun TasksScreen(
     var titlePositionY by remember { mutableStateOf<Float?>(null) }
 
     val calendarHoy = Calendar.getInstance()
-    calendarHoy.add(Calendar.DAY_OF_YEAR, -1)
+    // NO restar día - queremos las tareas de HOY, no de ayer
+    calendarHoy.set(Calendar.HOUR_OF_DAY, 0)
+    calendarHoy.set(Calendar.MINUTE, 0)
+    calendarHoy.set(Calendar.SECOND, 0)
+    calendarHoy.set(Calendar.MILLISECOND, 0)
 
     val tasksForDay = filterTasksByDate(
         date = calendarHoy.timeInMillis,
@@ -146,6 +168,25 @@ fun TasksScreen(
             when (event) {
                 is TasksViewModel.Event.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is TasksViewModel.Event.RequestNotificationPermission -> {
+                    // Check if permission is already granted
+                    val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } else {
+                        true // Pre-Android 13 doesn't need runtime permission
+                    }
+                    
+                    if (hasPermission) {
+                        viewModel.enableNotificationsAfterPermission()
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
                 }
             }
         }
@@ -219,10 +260,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }
@@ -414,10 +459,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }
@@ -495,10 +544,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }

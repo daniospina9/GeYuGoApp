@@ -102,8 +102,7 @@ class MainViewModel @Inject constructor(
         }
         refreshCategories()
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
+        // NO setear hora/minuto a 0 - mantener la hora actual para fechas por defecto
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         _datesState.update {
