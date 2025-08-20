@@ -18,6 +18,7 @@ import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.UpdateTask
 import com.example.geyugoapp.feature.categories.CategoryWithTaskCount
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
+import com.example.geyugoapp.ui.utils.tasks.addOneDayToMillis
 import com.example.geyugoapp.ui.utils.tasks.getCombinedDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,11 +47,39 @@ data class DrawerTaskState(
     val timeTaskMessage: String = "Add Time"
 )
 
-data class TaskDate(
+data class TaskDateScreen(
     val day: Int = 0,
     val month: Int = 0,
     val year: Int = 0,
-    val calendar: Calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance(),
+    val calendar2: Calendar = Calendar.getInstance()
+)
+
+data class TaskDateModalDrawer(
+    val day: Int = 0,
+    val month: Int = 0,
+    val year: Int = 0,
+    val calendar: Calendar = Calendar.getInstance(),
+    val calendar2: Calendar = Calendar.getInstance()
+)
+
+data class TasksListByDate(
+    val taskListTaskByDelete: Task? = null,
+    val showListByDateDialog: Boolean = false
+)
+
+data class TasksListByCategory(
+    val taskListCategoryByDelete: Task? = null,
+    val showListByCategoryDialog: Boolean = false
+)
+
+data class DrawersTasksScreenState(
+    val showDateFilterDialog: Boolean = false,
+    val showDateBottomSheet: Boolean = false,
+    val showCategoryBottomSheet: Boolean = false,
+    val titlePositionY: Float? = null,
+    val categorySelectedTaskScreen: String = "",
+    val categorySelectedIdTaskScreen: Long? = null
 )
 
 @HiltViewModel
@@ -85,28 +114,27 @@ class TasksViewModel @Inject constructor(
     private val _tasksByUserId = MutableStateFlow<List<Task>>(emptyList())
     val tasksByUserId = _tasksByUserId.asStateFlow()
 
-    private val _datesState = MutableStateFlow(TaskDate())
+    private val _datesState = MutableStateFlow(TaskDateScreen())
     val datesState = _datesState.asStateFlow()
+
+    private val _datesDrawerState = MutableStateFlow(TaskDateModalDrawer())
+    val datesDrawerState = _datesDrawerState.asStateFlow()
+
+    private val _tasksListByDateState = MutableStateFlow(TasksListByDate())
+    val tasksListByDateState = _tasksListByDateState.asStateFlow()
+
+    private val _tasksListByCategory = MutableStateFlow(TasksListByCategory())
+    val tasksListByCategory = _tasksListByCategory.asStateFlow()
+
+    private val _drawersTasksScreenState = MutableStateFlow(DrawersTasksScreenState())
+    val drawersTasksScreenState = _drawersTasksScreenState.asStateFlow()
 
     val userId = savedStateHandle.get<Long?>("userId")
 
     init {
         refreshCategories()
         refreshTasks()
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        _datesState.update {
-            it.copy(
-                day = calendar.get(Calendar.DAY_OF_MONTH),
-                month = calendar.get(Calendar.MONTH) + 1,
-                year = calendar.get(Calendar.YEAR),
-                calendar = calendar
-            )
-        }
-
+        refreshDates()
     }
 
     fun setExpandedTaskMenu(expandedTaskMenu: Boolean) {
@@ -129,8 +157,74 @@ class TasksViewModel @Inject constructor(
         _datesState.update { it.copy(day = day, month = month, year = year) }
     }
 
+    fun setTaskDateModalDrawer(day: Int, month: Int, year: Int) {
+        _datesDrawerState.update { it.copy(day = day, month = month, year = year) }
+    }
     fun setTimeTaskMessage(timeTaskMessage: String) {
         _drawerTaskState.update { it.copy(timeTaskMessage = timeTaskMessage) }
+    }
+
+    fun setTaskByDelete(taskListTaskByDelete: Task) {
+        _tasksListByDateState.update { it.copy(taskListTaskByDelete = taskListTaskByDelete) }
+    }
+
+    fun setShowListByDateDialog(showListByDateDialog: Boolean) {
+        _tasksListByDateState.update { it.copy(showListByDateDialog = showListByDateDialog) }
+    }
+
+    fun setTaskListCategoryByDelete(taskListCategoryByDelete: Task) {
+        _tasksListByCategory.update { it.copy(taskListCategoryByDelete = taskListCategoryByDelete) }
+    }
+
+    fun setShowListByCategoryDialog(showListByCategoryDialog: Boolean) {
+        _tasksListByCategory.update { it.copy(showListByCategoryDialog = showListByCategoryDialog) }
+    }
+
+    fun setShowDateFilterDialog(showDateFilterDialog: Boolean) {
+        _drawersTasksScreenState.update { it.copy(showDateFilterDialog = showDateFilterDialog) }
+    }
+    fun setShowDateBottomSheet(showDateBottomSheet: Boolean) {
+        _drawersTasksScreenState.update { it.copy(showDateBottomSheet = showDateBottomSheet) }
+    }
+
+    fun setShowCategoryBottomSheet(showCategoryBottomSheet: Boolean) {
+        _drawersTasksScreenState.update { it.copy(showCategoryBottomSheet = showCategoryBottomSheet) }
+    }
+
+    fun setTitlePositionY(titlePositionY: Float) {
+        _drawersTasksScreenState.update { it.copy(titlePositionY = titlePositionY) }
+    }
+
+    fun setCategorySelectedTaskScreen(categorySelectedTaskScreen: String) {
+        _drawersTasksScreenState.update { it.copy(categorySelectedTaskScreen = categorySelectedTaskScreen) }
+    }
+
+    fun setCategorySelectedIdTaskScreen(categorySelectedIdTaskScreen: Long) {
+        _drawersTasksScreenState.update { it.copy(categorySelectedIdTaskScreen = categorySelectedIdTaskScreen) }
+    }
+
+    fun refreshDates() {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        _datesState.update {
+            it.copy(
+                day = calendar.get(Calendar.DAY_OF_MONTH),
+                month = calendar.get(Calendar.MONTH) + 1,
+                year = calendar.get(Calendar.YEAR),
+                calendar = calendar,
+            )
+        }
+        _datesDrawerState.update {
+            it.copy(
+                day = calendar.get(Calendar.DAY_OF_MONTH),
+                month = calendar.get(Calendar.MONTH) + 1,
+                year = calendar.get(Calendar.YEAR),
+                calendar = calendar,
+            )
+        }
     }
 
     private fun refreshCategories() {
@@ -182,7 +276,7 @@ class TasksViewModel @Inject constructor(
     fun addTask(selectedDateMillis: Long?, hour: Int, minute: Int, name: String) {
         val myNewTask = _state.value.name
         val dateTimeByUI = getCombinedDateTimeMillis(
-            selectedDateMillis = selectedDateMillis,
+            selectedDateMillis = addOneDayToMillis(selectedDateMillis),
             hour = hour,
             minute = minute
         )
@@ -214,7 +308,7 @@ class TasksViewModel @Inject constructor(
 
     fun createOthersCategory(selectedDateMillis: Long?, hour: Int, minute: Int) {
         val dateTimeByUI = getCombinedDateTimeMillis(
-            selectedDateMillis = selectedDateMillis,
+            selectedDateMillis = addOneDayToMillis(selectedDateMillis),
             hour = hour,
             minute = minute
         )

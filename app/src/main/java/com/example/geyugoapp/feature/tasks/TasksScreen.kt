@@ -35,12 +35,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -91,55 +86,31 @@ fun TasksScreen(
     val density = LocalDensity.current
 
     val categoriesWithCounts by viewModel.categoriesWithCounts.collectAsStateWithLifecycle()
-
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
+    val datesState by viewModel.datesState.collectAsStateWithLifecycle()
+    val drawersTasksScreenState by viewModel.drawersTasksScreenState.collectAsStateWithLifecycle()
+
+    val currentCategoryId = drawersTasksScreenState.categorySelectedIdTaskScreen
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = datesState.calendar.timeInMillis,
+        initialDisplayMode = DisplayMode.Input
+    )
+
+    val todayCalendar = datesState.calendar2
+
+    val tasksForDay = filterTasksByDate(
+        date = todayCalendar.timeInMillis,
+        tasksByUserId = tasksByUserId
+    )
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val scope = rememberCoroutineScope()
 
-    var showDateDialog by remember { mutableStateOf(false) }
-
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, 0)
-    calendar.set(Calendar.MINUTE, 0)
-    calendar.set(Calendar.SECOND, 0)
-    calendar.set(Calendar.MILLISECOND, 0)
-
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = calendar.timeInMillis,
-        initialDisplayMode = DisplayMode.Input
-    )
-
-    var showDateBottomSheet by remember { mutableStateOf(false) }
-
-    var showCategoryBottomSheet by remember { mutableStateOf(false) }
-
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-
-    var titlePositionY by remember { mutableStateOf<Float?>(null) }
-
-    val calendarHoy = Calendar.getInstance()
-    calendarHoy.add(Calendar.DAY_OF_YEAR, -1)
-
-    val tasksForDay = filterTasksByDate(
-        date = calendarHoy.timeInMillis,
-        tasksByUserId = tasksByUserId
-    )
-
-    var day by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.DAY_OF_MONTH)) }
-
-    var month by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.MONTH) + 1) }
-
-    var year by rememberSaveable { mutableIntStateOf(calendar.get(android.icu.util.Calendar.YEAR)) }
-
-    var categorySelected by rememberSaveable { mutableStateOf("") }
-
-    var categorySelectedId by remember { mutableStateOf<Long?>(null) }
-
-    val currentCategoryId = categorySelectedId
 
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
@@ -198,7 +169,7 @@ fun TasksScreen(
                                     modifier = Modifier
                                         .size(30.dp)
                                         .clickable {
-                                            showDateDialog = true
+                                            viewModel.setShowDateFilterDialog(true)
                                         },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
@@ -251,9 +222,9 @@ fun TasksScreen(
                                         shape = RoundedCornerShape(15.dp)
                                     )
                                     .clickable {
-                                        categorySelected = categoryItem.category.name
-                                        categorySelectedId = categoryItem.category.id
-                                        showCategoryBottomSheet = true
+                                        viewModel.setCategorySelectedTaskScreen(categoryItem.category.name)
+                                        viewModel.setCategorySelectedIdTaskScreen(categoryItem.category.id)
+                                        viewModel.setShowCategoryBottomSheet(true)
                                     }
                             ) {
                                 Column(
@@ -307,7 +278,7 @@ fun TasksScreen(
                             .padding(bottom = 20.dp)
                             .onGloballyPositioned { coordinates: LayoutCoordinates ->
                                 val positionInRoot = coordinates.positionInRoot()
-                                titlePositionY = positionInRoot.y
+                                viewModel.setTitlePositionY(positionInRoot.y)
                             },
                         text = stringResource(R.string.today_s_tasks),
                         color = Color.White,
@@ -474,7 +445,7 @@ fun TasksScreen(
                                     modifier = Modifier
                                         .size(30.dp)
                                         .clickable {
-                                            showDateDialog = true
+                                            viewModel.setShowDateFilterDialog(true)
                                         },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
@@ -527,9 +498,9 @@ fun TasksScreen(
                                         shape = RoundedCornerShape(15.dp)
                                     )
                                     .clickable {
-                                        categorySelected = categoryItem.category.name
-                                        categorySelectedId = categoryItem.category.id
-                                        showCategoryBottomSheet = true
+                                        viewModel.setCategorySelectedTaskScreen(categoryItem.category.name)
+                                        viewModel.setCategorySelectedIdTaskScreen(categoryItem.category.id)
+                                        viewModel.setShowCategoryBottomSheet(true)
                                     }
                             ) {
                                 Column(
@@ -593,24 +564,26 @@ fun TasksScreen(
                 }
             }
         }
-        if (showDateDialog) {
+        if (drawersTasksScreenState.showDateFilterDialog) {
             DatePickerDialog(
                 onDismissRequest = {
-                    showDateDialog = false
+                    viewModel.setShowDateFilterDialog(false)
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            showDateDialog = false
+                            viewModel.setShowDateFilterDialog(false)
                             val result = datePickerState.selectedDateMillis
                             if (result != null) {
-                                val newCalendar = android.icu.util.Calendar.getInstance()
+                                val newCalendar = Calendar.getInstance()
                                     .apply { timeInMillis = result }
-                                day = newCalendar.get(android.icu.util.Calendar.DAY_OF_MONTH) + 1
-                                month = newCalendar.get(android.icu.util.Calendar.MONTH) + 1
-                                year = newCalendar.get(android.icu.util.Calendar.YEAR)
+                                viewModel.setTaskDate(
+                                    day = newCalendar.get(Calendar.DAY_OF_MONTH) + 1,
+                                    month = newCalendar.get(Calendar.MONTH) + 1,
+                                    year = newCalendar.get(Calendar.YEAR)
+                                )
                             }
-                            showDateBottomSheet = true
+                            viewModel.setShowDateBottomSheet(true)
                         }
                     ) {
                         Text(text = stringResource(R.string.confirm))
@@ -619,7 +592,7 @@ fun TasksScreen(
                 dismissButton = {
                     TextButton(
                         onClick = {
-                            showDateDialog = false
+                            viewModel.setShowDateFilterDialog(false)
                         }
                     ) {
                         Text(text = stringResource(R.string.cancel))
@@ -630,11 +603,11 @@ fun TasksScreen(
                 DatePicker(datePickerState)
             }
         }
-        if (showDateBottomSheet) {
+        if (drawersTasksScreenState.showDateBottomSheet) {
             val screenHeightPx = with(density) {
                 LocalContext.current.resources.displayMetrics.heightPixels.toFloat()
             }
-            val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
+            val calculatedMaxHeightDp: Dp? = drawersTasksScreenState.titlePositionY?.let { titleYPx ->
                 val availableHeightPx = screenHeightPx - titleYPx
                 if (availableHeightPx > 0) {
                     with(density) { availableHeightPx.toDp() }
@@ -644,17 +617,17 @@ fun TasksScreen(
             }
             ModalBottomSheet(
                 onDismissRequest = {
-                    showDateBottomSheet = false
-                                   },
+                    viewModel.setShowDateBottomSheet(false)
+                },
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {
                     DateDragHandle(
-                        day = day,
-                        month = month,
-                        year = year,
+                        day = datesState.day,
+                        month = datesState.month,
+                        year = datesState.year,
                         onClickClosing = {
-                            showDateBottomSheet = false
+                            viewModel.setShowDateBottomSheet(false)
                         }
                     )
                 }
@@ -677,11 +650,11 @@ fun TasksScreen(
                 }
             }
         }
-        if (showCategoryBottomSheet && currentCategoryId != null) {
+        if (drawersTasksScreenState.showCategoryBottomSheet && currentCategoryId != null) {
             val screenHeightPx = with(density) {
                 LocalContext.current.resources.displayMetrics.heightPixels.toFloat()
             }
-            val calculatedMaxHeightDp: Dp? = titlePositionY?.let { titleYPx ->
+            val calculatedMaxHeightDp: Dp? = drawersTasksScreenState.titlePositionY?.let { titleYPx ->
                 val availableHeightPx = screenHeightPx - titleYPx
                 if (availableHeightPx > 0) {
                     with(density) { availableHeightPx.toDp() }
@@ -691,15 +664,15 @@ fun TasksScreen(
             }
             ModalBottomSheet(
                 onDismissRequest = {
-                    showCategoryBottomSheet = false
+                    viewModel.setShowCategoryBottomSheet(false)
                                    },
                 sheetState = sheetState,
                 scrimColor = Color.Transparent,
                 dragHandle = {
                     CategoryDragHandle(
-                        categoryName = categorySelected,
+                        categoryName = drawersTasksScreenState.categorySelectedTaskScreen,
                         onClickClosing = {
-                            showCategoryBottomSheet = false
+                            viewModel.setShowCategoryBottomSheet(false)
                         }
                     )
                 }

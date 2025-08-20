@@ -18,9 +18,10 @@ import com.example.geyugoapp.domain.users.usecases.GetUserById
 import com.example.geyugoapp.domain.users.usecases.UpdateAllUsersOnlineStatus
 import com.example.geyugoapp.domain.users.usecases.UpdateUserOnlineStatus
 import com.example.geyugoapp.feature.tasks.DrawerTaskState
-import com.example.geyugoapp.feature.tasks.TaskDate
+import com.example.geyugoapp.feature.tasks.TaskDateModalDrawer
 import com.example.geyugoapp.feature.tasks.TasksState
 import com.example.geyugoapp.ui.theme.ColorCategoryOthers
+import com.example.geyugoapp.ui.utils.tasks.addOneDayToMillis
 import com.example.geyugoapp.ui.utils.tasks.getCombinedDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +81,7 @@ class MainViewModel @Inject constructor(
     private val _drawerTaskState = MutableStateFlow(DrawerTaskState())
     val drawerTaskState = _drawerTaskState.asStateFlow()
 
-    private val _datesState = MutableStateFlow(TaskDate())
+    private val _datesState = MutableStateFlow(TaskDateModalDrawer())
     val datesState = _datesState.asStateFlow()
 
     private val _categoriesByUser = MutableStateFlow<List<Category>>(emptyList())
@@ -128,7 +129,7 @@ class MainViewModel @Inject constructor(
 
     fun createOthersCategory(selectedDateMillis: Long?, hour: Int, minute: Int) {
         val dateTimeByUI = getCombinedDateTimeMillis(
-            selectedDateMillis = selectedDateMillis,
+            selectedDateMillis = addOneDayToMillis(selectedDateMillis),
             hour = hour,
             minute = minute
         )
@@ -174,7 +175,7 @@ class MainViewModel @Inject constructor(
     fun addTask(selectedDateMillis: Long?, hour: Int, minute: Int, name: String) {
         val myNewTask = _state.value.name
         val dateTimeByUI = getCombinedDateTimeMillis(
-            selectedDateMillis = selectedDateMillis,
+            selectedDateMillis = addOneDayToMillis(selectedDateMillis),
             hour = hour,
             minute = minute
         )
