@@ -1,6 +1,11 @@
 package com.example.geyugoapp.feature.tasks
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -89,6 +95,7 @@ fun TasksScreen(
     val tasksByUserId by viewModel.tasksByUserId.collectAsStateWithLifecycle()
     val datesState by viewModel.datesState.collectAsStateWithLifecycle()
     val drawersTasksScreenState by viewModel.drawersTasksScreenState.collectAsStateWithLifecycle()
+    val areNotificationsEnabled by viewModel.areNotificationsEnabled.collectAsStateWithLifecycle()
 
     val currentCategoryId = drawersTasksScreenState.categorySelectedIdTaskScreen
 
@@ -112,11 +119,41 @@ fun TasksScreen(
         skipPartiallyExpanded = true
     )
 
+    // Permission launcher for notifications
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.enableNotificationsAfterPermission()
+        } else {
+            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     LaunchedEffect(key1 = context) {
         viewModel.events.collect { event ->
             when (event) {
                 is TasksViewModel.Event.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is TasksViewModel.Event.RequestNotificationPermission -> {
+                    // Check if permission is already granted
+                    val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } else {
+                        true // Pre-Android 13 doesn't need runtime permission
+                    }
+
+                    if (hasPermission) {
+                        viewModel.enableNotificationsAfterPermission()
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
                 }
             }
         }
@@ -190,10 +227,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }
@@ -385,10 +426,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }
@@ -466,10 +511,14 @@ fun TasksScreen(
                                     painter = painterResource(R.drawable.notification),
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable {},
+                                        .clickable {
+                                            viewModel.toggleNotifications {}
+                                        },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
-                                    colorFilter = ColorFilter.tint(Color.White)
+                                    colorFilter = ColorFilter.tint(
+                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                    )
                                 )
                             }
                         }

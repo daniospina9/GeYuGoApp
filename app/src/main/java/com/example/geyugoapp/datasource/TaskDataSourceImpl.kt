@@ -11,8 +11,9 @@ class TaskDataSourceImpl(
     private val taskDao: TaskDao
 ): TaskDataSource {
 
-    override suspend fun insert(task: Task) {
-        taskDao.insert(task.toDbDto())
+    override suspend fun insert(task: Task): Task {
+        val insertedId = taskDao.insert(task.toDbDto())
+        return task.copy(id = insertedId)
     }
 
     override suspend fun deleteTask(task: Task) {

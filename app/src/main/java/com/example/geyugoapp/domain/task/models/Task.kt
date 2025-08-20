@@ -7,5 +7,6 @@ data class Task(
     val isTimeSet: Boolean = true,
     val userId: Long,
     val categoryId: Long,
-    val isClicked: Boolean = false
+    val isClicked: Boolean = false,
+    val notificationId: String? = null
 )

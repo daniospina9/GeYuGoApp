@@ -2,8 +2,9 @@ package com.example.geyugoapp.domain.task.usecases
 
 import com.example.geyugoapp.domain.task.models.Task
 import com.example.geyugoapp.repository.TaskRepository
+import javax.inject.Inject
 
-class UpdateTask(
+class UpdateTask @Inject constructor(
     private val repository: TaskRepository
 ) {
     suspend operator fun invoke(task: Task) {

@@ -8,8 +8,8 @@ class TaskRepositoryImpl(
     private val taskDataSource: TaskDataSource
 ): TaskRepository {
 
-    override suspend fun insert(task: Task) {
-        taskDataSource.insert(task)
+    override suspend fun insert(task: Task): Task {
+        return taskDataSource.insert(task)
     }
 
     override suspend fun deleteTask(task: Task) {
