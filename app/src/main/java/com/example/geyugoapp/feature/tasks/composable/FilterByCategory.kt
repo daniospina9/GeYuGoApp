@@ -1,6 +1,5 @@
 package com.example.geyugoapp.feature.tasks.composable
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
@@ -27,10 +26,6 @@ fun FilterByCategory(
     )
 
     val datesList = getDatesList( tasksForCategory = tasksForCategory)
-
-    val TAG = "datesList"
-
-    Log.d(TAG, "Botón 'Your Categories' clickeado. Valor de userId: $datesList")
 
     TasksListByCategory(
         tasksForDay = tasksForCategory,
