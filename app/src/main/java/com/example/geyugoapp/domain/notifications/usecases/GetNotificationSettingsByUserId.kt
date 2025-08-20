@@ -1,4 +1,14 @@
 package com.example.geyugoapp.domain.notifications.usecases
 
-class GetNotificationSettingsByUserId {
+import com.example.geyugoapp.domain.notifications.models.NotificationSettings
+import com.example.geyugoapp.repository.NotificationSettingsRepository
+import javax.inject.Inject
+
+class GetNotificationSettingsByUserId @Inject constructor(
+    private val notificationSettingsRepository: NotificationSettingsRepository
+) {
+
+    suspend operator fun invoke(userId: Long): NotificationSettings? {
+        return notificationSettingsRepository.getNotificationSettingsByUserId(userId)
+    }
 }

@@ -4,12 +4,14 @@ import com.example.geyugoapp.database.AppDatabase
 import com.example.geyugoapp.database.TaskDao
 import com.example.geyugoapp.datasource.TaskDataSource
 import com.example.geyugoapp.datasource.TaskDataSourceImpl
+import com.example.geyugoapp.domain.notifications.usecases.GetNotificationSettingsByUserId
 import com.example.geyugoapp.domain.task.usecases.DeleteTask
 import com.example.geyugoapp.domain.task.usecases.GetCountTasksByCategory
 import com.example.geyugoapp.domain.task.usecases.GetTasksByUserId
 import com.example.geyugoapp.domain.task.usecases.InsertTask
 import com.example.geyugoapp.domain.task.usecases.ObserveAll
 import com.example.geyugoapp.domain.task.usecases.UpdateTask
+import com.example.geyugoapp.notifications.TaskNotificationManager
 import com.example.geyugoapp.repository.TaskRepository
 import com.example.geyugoapp.repository.TaskRepositoryImpl
 import dagger.Module
@@ -47,9 +49,13 @@ object TaskUseCaseModule {
     @Singleton
     @Provides
     fun provideInsertTask(
-        repository: TaskRepository
+        repository: TaskRepository,
+        notificationManager: TaskNotificationManager,
+        getNotificationSettings: GetNotificationSettingsByUserId
     ): InsertTask = InsertTask(
-        repository = repository
+        repository = repository,
+        notificationManager = notificationManager,
+        getNotificationSettings = getNotificationSettings
     )
 
     @Singleton
@@ -71,9 +77,11 @@ object TaskUseCaseModule {
     @Singleton
     @Provides
     fun provideDeleteTask(
-        repository: TaskRepository
+        repository: TaskRepository,
+        notificationManager: TaskNotificationManager
     ): DeleteTask = DeleteTask(
-        repository = repository
+        repository = repository,
+        notificationManager = notificationManager
     )
 
     @Singleton

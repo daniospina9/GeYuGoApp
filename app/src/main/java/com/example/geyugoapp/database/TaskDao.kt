@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
 
     @Insert
-    suspend fun insert(task: TaskDbDto)
+    suspend fun insert(task: TaskDbDto): Long
 
     @Delete
     suspend fun deleteTask(task: TaskDbDto)
