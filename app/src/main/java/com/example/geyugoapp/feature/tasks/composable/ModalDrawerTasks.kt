@@ -84,12 +84,12 @@ fun ModalDrawerTasks(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val categoriesByUser by viewModel.categoriesByUser.collectAsStateWithLifecycle()
     val drawerTaskState by viewModel.drawerTaskState.collectAsStateWithLifecycle()
-    val datesState by viewModel.datesState.collectAsStateWithLifecycle()
+    val datesDrawerState by viewModel.datesDrawerState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = datesState.calendar.timeInMillis,
+        initialSelectedDateMillis = datesDrawerState.calendar.timeInMillis,
         initialDisplayMode = DisplayMode.Input
     )
 
@@ -244,7 +244,7 @@ fun ModalDrawerTasks(
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = "${datesState.day}/${datesState.month}/${datesState.year}",
+                                            text = "${datesDrawerState.day}/${datesDrawerState.month}/${datesDrawerState.year}",
                                             color = Color.White,
                                             fontSize = 14.sp,
                                         )
@@ -346,7 +346,7 @@ fun ModalDrawerTasks(
                         val result = datePickerState.selectedDateMillis
                         if (result != null) {
                             val newCalendar = Calendar.getInstance().apply { timeInMillis = result }
-                            viewModel.setTaskDate(
+                            viewModel.setTaskDateModalDrawer(
                                 day = newCalendar.get(Calendar.DAY_OF_MONTH) + 1,
                                 month = newCalendar.get(Calendar.MONTH) + 1,
                                 year = newCalendar.get(Calendar.YEAR)

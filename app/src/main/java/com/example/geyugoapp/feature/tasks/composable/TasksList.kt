@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.R
 import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.domain.task.models.Task
@@ -62,11 +63,10 @@ fun TasksList(
     bottomPadding: Dp,
     backgroundColor: Long
 ) {
-    var taskByDelete by remember { mutableStateOf<Task?>(null) }
 
-    val currentTaskByDelete = taskByDelete
+    val tasksListByDateState by viewModel.tasksListByDateState.collectAsStateWithLifecycle()
 
-    var showDialog by remember { mutableStateOf(false) }
+    val currentTaskByDelete = tasksListByDateState.taskListTaskByDelete
 
     LazyColumn(
         modifier = Modifier
@@ -170,8 +170,8 @@ fun TasksList(
                         modifier = Modifier
                             .padding(start = 6.dp, end = 6.dp)
                             .clickable {
-                                taskByDelete = taskItem
-                                showDialog = true
+                                viewModel.setTaskByDelete(taskItem)
+                                viewModel.setShowListByDateDialog(true)
                                 expanded = false
                             },
                         text = stringResource(R.string.delete_task),
@@ -180,14 +180,16 @@ fun TasksList(
             }
         }
     }
-    if (showDialog && currentTaskByDelete != null) {
+    if (tasksListByDateState.showListByDateDialog && currentTaskByDelete != null) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = {
+                viewModel.setShowListByDateDialog(false)
+            },
             confirmButton = {
                 Button(
                     onClick = {
                         viewModel.removeTask(currentTaskByDelete)
-                        showDialog = false
+                        viewModel.setShowListByDateDialog(false)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = FirstUserButton,
@@ -201,7 +203,7 @@ fun TasksList(
             dismissButton = {
                 Button(
                     onClick = {
-                        showDialog = false
+                        viewModel.setShowListByDateDialog(false)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,

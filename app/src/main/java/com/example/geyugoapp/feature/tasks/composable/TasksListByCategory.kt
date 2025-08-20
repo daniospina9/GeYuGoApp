@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.geyugoapp.R
 import com.example.geyugoapp.domain.categories.models.Category
 import com.example.geyugoapp.domain.task.models.Task
@@ -53,7 +54,6 @@ import com.example.geyugoapp.feature.tasks.TasksViewModel
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.FirstUserButton
 import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
-import com.example.geyugoapp.ui.utils.tasks.adjustDates
 import com.example.geyugoapp.ui.utils.tasks.getDateFromTask
 import com.example.geyugoapp.ui.utils.tasks.tasksListDetails
 
@@ -68,11 +68,9 @@ fun TasksListByCategory(
     backgroundColor: Long,
     datesList: List<String>
 ) {
-    var taskByDelete by remember { mutableStateOf<Task?>(null) }
+    val tasksListByCategory by viewModel.tasksListByCategory.collectAsStateWithLifecycle()
 
-    val currentTaskByDelete = taskByDelete
-
-    var showDialog by remember { mutableStateOf(false) }
+    val currentTaskByDelete = tasksListByCategory.taskListCategoryByDelete
 
     LazyColumn(
         modifier = Modifier
@@ -88,7 +86,7 @@ fun TasksListByCategory(
                 getDateFromTask(task) == datesList[dateIndex]
             }
             Text(
-                text = adjustDates(datesList[dateIndex]),
+                text = datesList[dateIndex],
                 color = UnselectedMenuBackground,
                 style = TextStyle (
                     fontStyle = FontStyle.Italic
@@ -189,8 +187,8 @@ fun TasksListByCategory(
                                 modifier = Modifier
                                     .padding(start = 6.dp, end = 6.dp)
                                     .clickable {
-                                        taskByDelete = taskItem
-                                        showDialog = true
+                                        viewModel.setTaskListCategoryByDelete(taskItem)
+                                        viewModel.setShowListByCategoryDialog(true)
                                         expanded = false
                                     },
                                 text = stringResource(R.string.delete_task),
@@ -201,14 +199,16 @@ fun TasksListByCategory(
             }
         }
     }
-    if (showDialog && currentTaskByDelete != null) {
+    if (tasksListByCategory.showListByCategoryDialog && currentTaskByDelete != null) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = {
+                viewModel.setShowListByCategoryDialog(false)
+            },
             confirmButton = {
                 Button(
                     onClick = {
                         viewModel.removeTask(currentTaskByDelete)
-                        showDialog = false
+                        viewModel.setShowListByCategoryDialog(false)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = FirstUserButton,
@@ -222,7 +222,7 @@ fun TasksListByCategory(
             dismissButton = {
                 Button(
                     onClick = {
-                        showDialog = false
+                        viewModel.setShowListByCategoryDialog(false)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
