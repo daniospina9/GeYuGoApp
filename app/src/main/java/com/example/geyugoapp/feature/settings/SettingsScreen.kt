@@ -52,6 +52,7 @@ import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.navigation.firstuser.FirstUserRoute
 import com.example.geyugoapp.navigation.main.MainRoute
+import com.example.geyugoapp.navigation.settings.SettingsRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundUsersDropMenu
@@ -85,12 +86,22 @@ fun SettingScreen(
                         MainRoute(
                             userId = event.userId
                         )
-                    )
+                    ) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
                 is SettingsViewModel.Event.NavigateToFirstUser -> {
                     navController.navigate(
                         FirstUserRoute
-                    )
+                    ) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             }
         }
