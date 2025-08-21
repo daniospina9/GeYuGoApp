@@ -56,11 +56,6 @@ class NotificationService @Inject constructor(
         taskName: String,
         notificationId: String
     ) {
-        Log.d(TAG, "📱 === SHOWING NOTIFICATION ===")
-        Log.d(TAG, "Task ID: $taskId")
-        Log.d(TAG, "Task Name: $taskName")
-        Log.d(TAG, "Notification ID: $notificationId")
-        Log.d(TAG, "Channel ID: $CHANNEL_ID")
 
         try {
             val intent = Intent(context, MainActivity::class.java).apply {
@@ -73,8 +68,6 @@ class NotificationService @Inject constructor(
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-
-            Log.d(TAG, "Creating notification...")
 
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification)
@@ -91,7 +84,6 @@ class NotificationService @Inject constructor(
                 .build()
 
             val notificationIdInt = notificationId.hashCode()
-            Log.d(TAG, "Notification hash code: $notificationIdInt")
 
             notificationManager.notify(notificationIdInt, notification)
 

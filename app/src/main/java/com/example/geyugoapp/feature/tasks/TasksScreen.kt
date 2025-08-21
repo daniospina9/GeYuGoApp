@@ -76,6 +76,7 @@ import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundLevel3
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.LinesCategories
+import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
 import com.example.geyugoapp.ui.utils.tasks.filterTasksByDate
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -224,16 +225,18 @@ fun TasksScreen(
                                 )
                                 Spacer(modifier = Modifier.width(15.dp))
                                 Image(
-                                    painter = painterResource(R.drawable.notification),
+                                    painter = painterResource(
+                                        if (areNotificationsEnabled) R.drawable.notification else R.drawable.notification_off
+                                    ),
                                     modifier = Modifier
-                                        .size(30.dp)
+                                        .size(32.dp)
                                         .clickable {
                                             viewModel.toggleNotifications {}
                                         },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(
-                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                        if (areNotificationsEnabled) Color.White else UnselectedMenuBackground
                                     )
                                 )
                             }
@@ -423,16 +426,18 @@ fun TasksScreen(
                                 )
                                 Spacer(modifier = Modifier.width(15.dp))
                                 Image(
-                                    painter = painterResource(R.drawable.notification),
+                                    painter = painterResource(
+                                        if (areNotificationsEnabled) R.drawable.notification else R.drawable.notification_off
+                                    ),
                                     modifier = Modifier
-                                        .size(30.dp)
+                                        .size(32.dp)
                                         .clickable {
                                             viewModel.toggleNotifications {}
                                         },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(
-                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                        if (areNotificationsEnabled) Color.White else UnselectedMenuBackground
                                     )
                                 )
                             }
@@ -508,16 +513,18 @@ fun TasksScreen(
                                 )
                                 Spacer(modifier = Modifier.width(15.dp))
                                 Image(
-                                    painter = painterResource(R.drawable.notification),
+                                    painter = painterResource(
+                                        if (areNotificationsEnabled) R.drawable.notification else R.drawable.notification_off
+                                    ),
                                     modifier = Modifier
-                                        .size(30.dp)
+                                        .size(32.dp)
                                         .clickable {
                                             viewModel.toggleNotifications {}
                                         },
                                     contentDescription = null,
                                     contentScale = ContentScale.Inside,
                                     colorFilter = ColorFilter.tint(
-                                        if (areNotificationsEnabled) Color.Green else Color.White
+                                        if (areNotificationsEnabled) Color.White else UnselectedMenuBackground
                                     )
                                 )
                             }

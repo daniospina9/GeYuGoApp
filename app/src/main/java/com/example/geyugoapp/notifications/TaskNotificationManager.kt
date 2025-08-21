@@ -19,7 +19,7 @@ class TaskNotificationManager @Inject constructor(
 
     companion object {
         private const val TAG = "TaskNotificationManager"
-        private const val NOTIFICATION_ADVANCE_MILLIS = 5 * 60 * 1000L // 5 minutos
+        private const val NOTIFICATION_ADVANCE_MILLIS = 5 * 60 * 1000L
     }
 
     fun scheduleNotification(task: Task): String {
@@ -28,20 +28,7 @@ class TaskNotificationManager @Inject constructor(
         val notificationTime = task.dateTime - NOTIFICATION_ADVANCE_MILLIS
         val currentTime = System.currentTimeMillis()
 
-        Log.d(TAG, "=== SCHEDULING NOTIFICATION DEBUG ===")
-        Log.d(TAG, "Task ID: ${task.id}")
-        Log.d(TAG, "Task Name: ${task.name}")
-        Log.d(TAG, "Task DateTime: ${task.dateTime} (${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(task.dateTime))})")
-        Log.d(TAG, "Current Time: $currentTime (${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(currentTime))})")
-        Log.d(TAG, "Notification Time: $notificationTime (${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(notificationTime))})")
-        Log.d(TAG, "Time difference: ${notificationTime - currentTime} ms")
-        Log.d(TAG, "Notification ID: $notificationId")
-
-        // Solo programar si la notificación es en el futuro
         if (notificationTime <= currentTime) {
-            Log.w(TAG, "❌ Task ${task.id} notification time is in the past, skipping")
-            Log.w(TAG, "   Notification should be at: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(notificationTime))}")
-            Log.w(TAG, "   Current time is: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(java.util.Date(currentTime))}")
             return notificationId
         }
 
@@ -90,7 +77,6 @@ class TaskNotificationManager @Inject constructor(
         pendingIntent?.let {
             alarmManager.cancel(it)
             it.cancel()
-            Log.d(TAG, "Cancelled notification with ID: $notificationId")
         }
     }
 
@@ -100,7 +86,6 @@ class TaskNotificationManager @Inject constructor(
                 cancelNotification(notificationId)
             }
         }
-        Log.d(TAG, "Cancelled ${tasks.size} notifications")
     }
 
     fun rescheduleAllNotifications(tasks: List<Task>): List<Task> {

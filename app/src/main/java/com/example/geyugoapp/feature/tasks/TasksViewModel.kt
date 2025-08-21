@@ -1,7 +1,6 @@
 package com.example.geyugoapp.feature.tasks
 
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -250,30 +249,22 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userId?.let { userId ->
                 val currentState = _areNotificationsEnabled.value
-                Log.d("TasksViewModel", "🔄 Toggle notifications called. Current state: $currentState")
 
-                // Si estamos activando las notificaciones, necesitamos verificar permisos
                 if (!currentState) {
-                    Log.d("TasksViewModel", "📋 Requesting notification permission...")
                     _events.send(Event.RequestNotificationPermission)
                     return@launch
                 }
 
-                // Si estamos desactivando, proceder directamente
-                Log.d("TasksViewModel", "❌ Disabling notifications...")
                 val result = toggleNotifications.invoke(userId, false)
 
                 result.onSuccess { settings ->
                     _areNotificationsEnabled.update { settings.areNotificationsEnabled }
                     _events.send(Event.ShowMessage("Notifications disabled for all tasks"))
-                    Log.d("TasksViewModel", "✅ Notifications disabled successfully")
                 }.onFailure { error ->
                     _events.send(Event.ShowMessage("Error toggling notifications: ${error.message}"))
-                    Log.e("TasksViewModel", "❌ Error disabling notifications: ${error.message}")
                 }
             } ?: run {
                 _events.send(Event.ShowMessage("Error: User ID not found"))
-                Log.e("TasksViewModel", "❌ User ID not found")
             }
         }
     }
@@ -281,16 +272,12 @@ class TasksViewModel @Inject constructor(
     fun enableNotificationsAfterPermission() {
         viewModelScope.launch(Dispatchers.IO) {
             userId?.let { userId ->
-                Log.d("TasksViewModel", "✅ Enabling notifications after permission granted...")
                 val result = toggleNotifications.invoke(userId, true)
-
                 result.onSuccess { settings ->
                     _areNotificationsEnabled.update { settings.areNotificationsEnabled }
                     _events.send(Event.ShowMessage("Notifications enabled for all tasks"))
-                    Log.d("TasksViewModel", "🎉 Notifications enabled successfully!")
                 }.onFailure { error ->
                     _events.send(Event.ShowMessage("Error enabling notifications: ${error.message}"))
-                    Log.e("TasksViewModel", "❌ Error enabling notifications: ${error.message}")
                 }
             }
         }

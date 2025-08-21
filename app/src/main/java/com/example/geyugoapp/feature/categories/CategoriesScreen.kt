@@ -72,6 +72,7 @@ import com.example.geyugoapp.ui.theme.ColorCategoryOthers
 import com.example.geyugoapp.ui.theme.CreateButtons
 import com.example.geyugoapp.ui.theme.FirstUserButton
 import com.example.geyugoapp.ui.theme.LinesCategories
+import com.example.geyugoapp.ui.theme.UnselectedMenuBackground
 
 @Composable
 fun CategoriesScreen(
@@ -172,16 +173,18 @@ fun CategoriesScreen(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.notification),
+                            painter = painterResource(
+                                if (areNotificationsEnabled) R.drawable.notification else R.drawable.notification_off
+                            ),
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(32.dp)
                                 .clickable {
                                     viewModel.toggleNotifications {}
                                 },
                             contentDescription = null,
                             contentScale = ContentScale.Inside,
                             colorFilter = ColorFilter.tint(
-                                if (areNotificationsEnabled) Color.Green else Color.White
+                                if (areNotificationsEnabled) Color.White else UnselectedMenuBackground
                             )
                         )
                     }
