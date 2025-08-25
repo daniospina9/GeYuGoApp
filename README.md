@@ -34,15 +34,15 @@ cd GeYuGoApp
 ```
 ### 2. Abrir en Android Studio
 
-- [ ] Importa el proyecto como proyecto Gradle existente.
+- Importa el proyecto como proyecto Gradle existente.
 
-- [ ] Sincroniza las dependencias.
+- Sincroniza las dependencias.
 
-- [ ] Conecta tu dispositivo o usa un emulador Android.
+- Conecta tu dispositivo o usa un emulador Android.
 
-- [ ] Ejecuta el proyecto con el botón Run ▶️.
+- Ejecuta el proyecto con el botón Run ▶️.
 
-- [ ] O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
+- O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
 
 ## 🎥 Demo en acción
 
