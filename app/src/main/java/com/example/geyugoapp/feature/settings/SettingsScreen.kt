@@ -52,7 +52,6 @@ import androidx.navigation.NavController
 import com.example.geyugoapp.R
 import com.example.geyugoapp.navigation.firstuser.FirstUserRoute
 import com.example.geyugoapp.navigation.main.MainRoute
-import com.example.geyugoapp.navigation.settings.SettingsRoute
 import com.example.geyugoapp.ui.theme.BackgroundLevel1
 import com.example.geyugoapp.ui.theme.BackgroundLevel2
 import com.example.geyugoapp.ui.theme.BackgroundUsersDropMenu
