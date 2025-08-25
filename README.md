@@ -52,26 +52,13 @@ cd GeYuGoApp
 
 ## 🔮 Roadmap / Futuras mejoras
 
- Implementar modo oscuro.
+- [ ] Implementar modo oscuro.
 
- Sincronización en la nube.
+- [ ] Sincronización en la nube.
 
- Soporte para widgets en la pantalla principal.
+- [ ] Soporte para widgets en la pantalla principal.
 
 
 ## 🤝 Contribuciones
 ¡Las contribuciones son bienvenidas!
-Para colaborar:
-
-Haz un fork del repositorio.
-
-Crea un branch con tu feature o fix (git checkout -b feature/nueva-funcionalidad).
-
-Realiza tus cambios y haz commit.
-
-Envía un Pull Request.
-
-## 📜 Licencia
-Este proyecto está bajo la licencia MIT.
-Consulta el archivo LICENSE para más información.
 
