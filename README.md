@@ -46,7 +46,7 @@ O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo pr
 ```
 
 <p align="center">
-  <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="400"/>
+  <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="300"/>
 </p>
 
 🔮 Roadmap / Futuras mejoras
