@@ -41,7 +41,7 @@ Conecta tu dispositivo o usa un emulador Android.
 Ejecuta el proyecto con el botón Run ▶️.
 
 📸 Capturas de pantalla
-(Aquí puedes añadir imágenes o GIFs de la app en funcionamiento. Ejemplo: ![screenshot](assets/screenshot1.png) )
+![GeYuGoApp Demo](demo:hd.gif)
 
 🔮 Roadmap / Futuras mejoras
  Implementar modo oscuro.
