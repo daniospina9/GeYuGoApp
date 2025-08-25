@@ -45,8 +45,9 @@ Ejecuta el proyecto con el botón Run ▶️.
 O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
 ```
 
-![GeYuGoApp Demo](assets/demo_hd.gif)
-
+<p align="center">
+  <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="400"/>
+</p>
 
 🔮 Roadmap / Futuras mejoras
 
