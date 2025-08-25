@@ -31,7 +31,7 @@ Además, la aplicación soporta la creación de múltiples usuarios, lo que faci
 ```bash
 git clone https://github.com/daniospina9/GeYuGoApp.git
 cd GeYuGoApp
-2. Abrir en Android Studio
+### 2. Abrir en Android Studio
 Importa el proyecto como proyecto Gradle existente.
 
 Sincroniza las dependencias.
@@ -40,17 +40,20 @@ Conecta tu dispositivo o usa un emulador Android.
 
 Ejecuta el proyecto con el botón Run ▶️.
 
+O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
+
 📸 Capturas de pantalla
-![GeYuGoApp Demo](assets/demo_hd.gif)
+![GeYuGoApp](assets/demo_hd.gif)
+
 
 🔮 Roadmap / Futuras mejoras
+
  Implementar modo oscuro.
 
  Sincronización en la nube.
 
  Soporte para widgets en la pantalla principal.
 
- Integración con calendario externo.
 
 🤝 Contribuciones
 ¡Las contribuciones son bienvenidas!
@@ -68,19 +71,3 @@ Envía un Pull Request.
 Este proyecto está bajo la licencia MIT.
 Consulta el archivo LICENSE para más información.
 
-yaml
-Copiar
-Editar
-
----
-
-👉 Esto ya es **copiar y pegar en tu `README.md`** y lo tienes listo.  
-¿Quieres que también te lo prepare en **inglés** para que tu portafolio sea más internacional?
-
-
-
-
-
-
-
-Preguntar a ChatGPT
