@@ -71,7 +71,7 @@ Realiza tus cambios y haz commit.
 
 Envía un Pull Request.
 
-##📜 Licencia
+## 📜 Licencia
 Este proyecto está bajo la licencia MIT.
 Consulta el archivo LICENSE para más información.
 
