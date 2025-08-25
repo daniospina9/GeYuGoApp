@@ -50,7 +50,7 @@ cd GeYuGoApp
   <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="270"/>
 </p>
 
-##🔮 Roadmap / Futuras mejoras
+## 🔮 Roadmap / Futuras mejoras
 
  Implementar modo oscuro.
 
@@ -59,7 +59,7 @@ cd GeYuGoApp
  Soporte para widgets en la pantalla principal.
 
 
-##🤝 Contribuciones
+## 🤝 Contribuciones
 ¡Las contribuciones son bienvenidas!
 Para colaborar:
 
