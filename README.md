@@ -33,23 +33,24 @@ git clone https://github.com/daniospina9/GeYuGoApp.git
 cd GeYuGoApp
 ```
 ### 2. Abrir en Android Studio
-```bash
-Importa el proyecto como proyecto Gradle existente.
 
-Sincroniza las dependencias.
+- [ ] Importa el proyecto como proyecto Gradle existente.
 
-Conecta tu dispositivo o usa un emulador Android.
+- [ ] Sincroniza las dependencias.
 
-Ejecuta el proyecto con el botón Run ▶️.
+- [ ] Conecta tu dispositivo o usa un emulador Android.
 
-O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
-```
+- [ ] Ejecuta el proyecto con el botón Run ▶️.
+
+- [ ] O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
+
+## 🎥 Demo en acción
 
 <p align="center">
   <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="270"/>
 </p>
 
-🔮 Roadmap / Futuras mejoras
+##🔮 Roadmap / Futuras mejoras
 
  Implementar modo oscuro.
 
@@ -58,7 +59,7 @@ O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo pr
  Soporte para widgets en la pantalla principal.
 
 
-🤝 Contribuciones
+##🤝 Contribuciones
 ¡Las contribuciones son bienvenidas!
 Para colaborar:
 
@@ -70,7 +71,7 @@ Realiza tus cambios y haz commit.
 
 Envía un Pull Request.
 
-📜 Licencia
+##📜 Licencia
 Este proyecto está bajo la licencia MIT.
 Consulta el archivo LICENSE para más información.
 
