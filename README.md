@@ -44,7 +44,7 @@ Ejecuta el proyecto con el botón Run ▶️.
 
 O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
 ```
-📸 Capturas de pantalla
+
 ![GeYuGoApp Demo](assets/demo_hd.gif)
 
 
