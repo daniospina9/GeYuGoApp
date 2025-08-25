@@ -1,64 +1,64 @@
 # 📌 GeYuGoApp
 
-## 📖 Descripción
-**GeYuGoApp** es una aplicación móvil desarrollada en **Kotlin** pensada para mejorar la productividad en el día a día.  
-Permite gestionar tus tareas de manera sencilla y organizada, clasificándolas por categorías y recibiendo recordatorios en tu dispositivo móvil justo antes de que inicien.  
+## 📖 Description
+**GeYuGoApp** is a mobile application developed in **Kotlin**, designed to improve daily productivity.   
+It allows you to manage your tasks in a simple and organized way, classifying them by categories and receiving reminders on your mobile device just before they start.  
 
-Además, la aplicación soporta la creación de múltiples usuarios, lo que facilita gestionar diferentes perfiles y navegar entre ellos sin complicaciones.
-
----
-
-## ✨ Características principales
-- ✅ Agregar, editar y eliminar tareas.
-- 🗂️ Clasificación de tareas por categorías personalizadas.
-- ⏰ Recordatorios mediante notificaciones push (5 minutos antes de cada tarea).
-- 👥 Creación y administración de múltiples usuarios.
-- 📱 Interfaz intuitiva y amigable, desarrollada con buenas prácticas de Android.
+In addition, the application supports the creation of multiple users, making it easy to manage different profiles and switch between them without complications.
 
 ---
 
-## 🛠️ Tecnologías utilizadas
-- **Lenguaje:** Kotlin  
-- **Arquitectura:** Android con Gradle  
-- **Dependencias principales:** Jetpack (Compose, Navigation, ViewModel, etc.), Notifications Manager  
-- **IDE recomendado:** Android Studio  
+## ✨ Main Features
+- ✅ Add, edit, and delete tasks.
+- 🗂️ Categorize tasks with custom categories.
+- ⏰ Reminders via push notifications (5 minutes before each task).
+- 👥 Create and manage multiple users.
+- 📱 Intuitive and user-friendly interface, developed with Android best practices.
 
 ---
 
-## 🚀 Instalación y ejecución
+## 🛠️ Technologies Used
+- **Language:** Kotlin 
+- **Architecture:** Android with Gradle 
+- **Main dependencies:** Jetpack (Compose, Navigation, ViewModel, etc.), Notifications Manager 
+- **Recommended IDE:** Android Studio 
 
-### 1. Clonar el repositorio
+---
+
+## 🚀 Installation & Execution
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/daniospina9/GeYuGoApp.git
 cd GeYuGoApp
 ```
-### 2. Abrir en Android Studio
+### 2. Open in Android Studio
 
-- Importa el proyecto como proyecto Gradle existente.
+- Import the project as an existing Gradle project.
 
-- Sincroniza las dependencias.
+- Sync the dependencies.
 
-- Conecta tu dispositivo o usa un emulador Android.
+- Connect your device or use an Android emulator.
 
-- Ejecuta el proyecto con el botón Run ▶️.
+- Run the project with the Run ▶️ button.
 
-- O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
+- Or, if you prefer, download the APK directly and run it on your own device.
 
-## 🎥 Demo en acción
+## 🎥 Demo in Action
 
 <p align="center">
   <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="270"/>
 </p>
 
-## 🔮 Roadmap / Futuras mejoras
+## 🔮 Roadmap / Future Improvements
 
-- [ ] Implementar modo oscuro.
+- [ ] Implement dark mode.
 
-- [ ] Sincronización en la nube.
+- [ ] Cloud synchronization.
 
-- [ ] Soporte para widgets en la pantalla principal.
+- [ ] Support for home screen widgets.
 
 
-## 🤝 Contribuciones
-¡Las contribuciones son bienvenidas!
+## 🤝 Contributions
+Contributions are welcome!
 
