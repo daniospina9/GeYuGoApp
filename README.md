@@ -28,12 +28,12 @@ Además, la aplicación soporta la creación de múltiples usuarios, lo que faci
 ## 🚀 Instalación y ejecución
 
 ### 1. Clonar el repositorio
-
+```bash
 git clone https://github.com/daniospina9/GeYuGoApp.git
 cd GeYuGoApp
-
+```
 ### 2. Abrir en Android Studio
-
+```bash
 Importa el proyecto como proyecto Gradle existente.
 
 Sincroniza las dependencias.
@@ -43,7 +43,7 @@ Conecta tu dispositivo o usa un emulador Android.
 Ejecuta el proyecto con el botón Run ▶️.
 
 O si prefieres descarga directamente el APK y ejecútalo desde tu dispositivo propio
-
+```
 📸 Capturas de pantalla
 ![GeYuGoApp Demo](assets/demo_hd.gif)
 
