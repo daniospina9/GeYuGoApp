@@ -6,6 +6,8 @@ It allows you to manage your tasks in a simple and organized way, classifying th
 
 In addition, the application supports the creation of multiple users, making it easy to manage different profiles and switch between them without complications.
 
+From a technical perspective, GeYuGoApp was structured following Clean Architecture principles, implementing the MVVM pattern to ensure a scalable, maintainable, and testable codebase.
+
 ---
 
 ## ✨ Main Features
