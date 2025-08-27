@@ -19,6 +19,14 @@ From a technical perspective, GeYuGoApp was structured following Clean Architect
 
 ---
 
+## 🎥 Demo in Action
+
+<p align="center">
+  <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="270"/>
+</p>
+
+---
+
 ## 🛠️ Technologies Used
 - **Languages:** Kotlin, Java
 - **Build System:** Gradle
@@ -49,12 +57,6 @@ cd GeYuGoApp
 - Run the project with the Run ▶️ button.
 
 - Or, if you prefer, download the app-debug.apk directly and run it on your own device.
-
-## 🎥 Demo in Action
-
-<p align="center">
-  <img src="assets/demo_hd.gif" alt="GeYuGoApp Demo" width="270"/>
-</p>
 
 ## 🔮 Roadmap / Future Improvements
 
