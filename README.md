@@ -18,10 +18,14 @@ In addition, the application supports the creation of multiple users, making it 
 ---
 
 ## 🛠️ Technologies Used
-- **Language:** Kotlin 
-- **Architecture:** Android with Gradle 
-- **Main dependencies:** Jetpack (Compose, Navigation, ViewModel, etc.), Notifications Manager 
-- **Recommended IDE:** Android Studio 
+- **Languages:** Kotlin, Java
+- **Build System:** Gradle
+- **Architecture:** Clean Architecture with MVVM pattern
+- **Dependency Injection:** Dagger Hilt
+- **UI Framework:** Jetpack Compose (with Navigation, ViewModel, Material 3)
+- **Persistence:** Room Database, MySQL
+- **Notifications:** Android Notifications Manager
+- **IDE:** Android Studio
 
 ---
 
