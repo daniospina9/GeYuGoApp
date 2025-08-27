@@ -13,7 +13,7 @@ From a technical perspective, GeYuGoApp was structured following Clean Architect
 ## ✨ Main Features
 - ✅ Add, edit, and delete tasks.
 - 🗂️ Categorize tasks with custom categories.
-- ⏰ Reminders via push notifications (5 minutes before each task).
+- ⏰ Reminders via **push notifications** (5 minutes before each task).
 - 👥 Create and manage multiple users.
 - 📱 Intuitive and user-friendly interface, developed with Android best practices.
 
