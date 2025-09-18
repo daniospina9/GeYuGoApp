@@ -32,6 +32,7 @@ From a technical perspective, GeYuGoApp was structured following Clean Architect
 - **Build System:** Gradle
 - **Architecture:** Clean Architecture with MVVM pattern
 - **Dependency Injection:** Dagger Hilt
+- **Navigation:*** NavigationHost
 - **UI Framework:** Jetpack Compose (with Navigation, ViewModel, Material 3)
 - **Persistence:** Room Database, MySQL
 - **Notifications:** Android Notifications Manager
