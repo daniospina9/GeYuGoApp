@@ -10,7 +10,6 @@ build/
 app/build/
 
 # Android Studio generated files
-*.apk
 *.ap_
 *.aab
 *.dex
